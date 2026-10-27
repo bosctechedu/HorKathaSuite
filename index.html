@@ -2020,7 +2020,7 @@
     (function initEmailJS() {
         if (typeof emailjs !== 'undefined' && typeof emailjs.init === 'function') {
             try {
-                emailjs.init("YOUR_EMAILJS_PUBLIC_KEY");
+                emailjs.init("oJPZwNpcBCwV9cvpj");
                 console.log("✅ EmailJS initialized");
             } catch (e) {
                 console.warn("⚠️ EmailJS init error:", e);
@@ -2079,8 +2079,8 @@ window.handleTrialFlow = async function() {
             }));
 
             const result = await emailjs.send(
-                "YOUR_TRIAL_SERVICE_ID",
-                "YOUR_TRIAL_TEMPLATE_ID",
+                "service_l04b5og",
+                "service_l04b5og",
                 {
                     to_email: email,
                     to_name: name,
@@ -2218,8 +2218,8 @@ window.initiateProLicenseFlow = async function() {
         }));
 
         const result = await emailjs.send(
-            "YOUR_PRO_SERVICE_ID",
-            "YOUR_PRO_TEMPLATE_ID",
+            "service_l04b5og",
+            "template_c3fxm0s",
             {
                 to_email: email,
                 to_name: name,
@@ -2259,8 +2259,8 @@ window.sendProOtp = async function() {
             email: pendingProData.email
         }));
         await emailjs.send(
-            "YOUR_PRO_SERVICE_ID",
-            "YOUR_PRO_TEMPLATE_ID",
+            "service_l04b5og",
+            "template_c3fxm0s",
             {
                 to_email: pendingProData.email,
                 to_name: pendingProData.name,
