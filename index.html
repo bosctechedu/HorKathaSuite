@@ -13,7 +13,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="referrer" content="strict-origin-when-cross-origin">
 
-    <!-- 🚨 CSP UPDATED FOR FIREBASE AUTH & CLOUD FUNCTIONS -->
+    <!-- 🚨 CSP UPDATED FOR CLOUDFLARE WORKER & FIREBASE -->
     <meta http-equiv="Content-Security-Policy"
           content="default-src 'self';
                    script-src 'self' 'unsafe-inline'
@@ -31,6 +31,7 @@
                            https://quickchart.io
                            https://www.gstatic.com;
                    connect-src 'self'
+                               https://hor-katha-api.bosctechedu.workers.dev
                                https://*.firebaseio.com
                                https://*.firebasedatabase.app
                                https://*.cloudfunctions.net
@@ -39,8 +40,7 @@
                                https://securetoken.googleapis.com
                                https://formsubmit.co
                                https://api.qrserver.com
-                               https://quickchart.io
-                               https://api.emailjs.com;
+                               https://quickchart.io;
                    media-src 'self' blob:;
                    object-src 'none';
                    worker-src 'self' blob:;
@@ -51,8 +51,6 @@
 
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="assets/icon.ico">
-
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" defer></script>
 
     <script src="js/config-private.local.js" onerror="(function(){try{console.log('ℹ️ config-private.local.js not present');}catch(e){}})()"></script>
     <script src="js/config-private.js" onerror="(function(){try{console.warn('⚠️ config-private.js NOT FOUND — using public config only');}catch(e){}})()"></script>
@@ -127,28 +125,9 @@
             touch-action: manipulation; -webkit-touch-callout: none;
         }
 
-        /* 🔒 LOCKED BUTTON STYLES 🔒 */
+        /* 🔒 UNIFORM LOCKED BUTTON STYLES 🔒 */
         .is-locked { position: relative !important; opacity: 0.65 !important; filter: grayscale(20%); }
         .is-locked::after { content: '🔒'; position: absolute; top: -5px; right: -5px; font-size: 12px; background: #ef4444; color: white; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.3); z-index: 10; pointer-events: none; }
-
-        /* 🌟 UNIQUE GLOWING HINDI PHONETIC TAB UI 🌟 */
-        #tab-hindi-phonetic {
-            background: linear-gradient(120deg, #a855f7, #ec4899, #6366f1) !important;
-            background-size: 200% 200% !important; color: #ffffff !important;
-            font-weight: 900 !important; border: none !important;
-            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.5) !important;
-            animation: gradientShift 3s ease infinite, pulseGlow 2s infinite alternate !important;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3) !important; position: relative; overflow: hidden;
-        }
-        #tab-hindi-phonetic::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: linear-gradient(45deg, transparent 45%, rgba(255,255,255,0.4) 50%, transparent 55%);
-            animation: shine 3.5s infinite;
-        }
-        #tab-hindi-phonetic.active { transform: scale(1.05); z-index: 2; }
-        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        @keyframes pulseGlow { 0% { box-shadow: 0 0 10px rgba(168,85,247,0.5), 0 0 5px rgba(236,72,153,0.3); } 100% { box-shadow: 0 0 20px rgba(168,85,247,0.8), 0 0 15px rgba(236,72,153,0.6); } }
-        @keyframes shine { 0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); } 100% { transform: translateX(100%) translateY(100%) rotate(45deg); } }
 
         /* ══════════ PROFESSIONAL SVG ICONS ══════════ */
         .svg-icon {
@@ -878,13 +857,12 @@
 
     <div class="status-strip" id="statusStrip" role="status" aria-live="polite" aria-atomic="false">
         <div class="lang-switcher-group" role="tablist" aria-label="Language selection">
-            <button id="tab-roman" class="tab-pill" onmousedown="event.preventDefault()" onclick="switchLanguage('roman')" role="tab" aria-selected="false">Santali (R)</button>
-            <button id="tab-santali-dev" class="tab-pill" onmousedown="event.preventDefault()" onclick="switchLanguage('santali-dev')" role="tab" aria-selected="false">Santali (D)</button>
-            <button id="tab-olchiki" class="tab-pill" onmousedown="event.preventDefault()" onclick="switchLanguage('olchiki')" role="tab" aria-selected="false">ओ़लचिकी</button>
-            <button id="tab-hindi-dev" class="tab-pill" onmousedown="event.preventDefault()" onclick="switchLanguage('hindi-dev')" role="tab" aria-selected="false">हिन्दी</button>
-            <!-- 🌟 HINDI PHONETIC LOCKED TAB 🌟 -->
+            <button id="tab-roman" class="tab-pill" data-tier="1" onmousedown="event.preventDefault()" onclick="switchLanguage('roman')" role="tab" aria-selected="false">Santali (R)</button>
+            <button id="tab-santali-dev" class="tab-pill" data-tier="1" onmousedown="event.preventDefault()" onclick="switchLanguage('santali-dev')" role="tab" aria-selected="false">Santali (D)</button>
+            <button id="tab-olchiki" class="tab-pill" data-tier="1" onmousedown="event.preventDefault()" onclick="switchLanguage('olchiki')" role="tab" aria-selected="false">ओ़लचिकी</button>
+            <button id="tab-hindi-dev" class="tab-pill" data-tier="1" onmousedown="event.preventDefault()" onclick="switchLanguage('hindi-dev')" role="tab" aria-selected="false">हिन्दी</button>
             <button id="tab-hindi-phonetic" class="tab-pill" data-tier="3" onmousedown="event.preventDefault()" onclick="switchLanguage('hindi-phonetic')" role="tab" aria-selected="false" title="Type in English → Devanagari">हिन्दी ✨</button>
-            <button id="tab-english" class="tab-pill active" onmousedown="event.preventDefault()" onclick="switchLanguage('english')" role="tab" aria-selected="true">Eng</button>
+            <button id="tab-english" class="tab-pill active" data-tier="0" onmousedown="event.preventDefault()" onclick="switchLanguage('english')" role="tab" aria-selected="true">Eng</button>
         </div>
         <!-- 🔴 DYNAMIC STATUS CHIP -->
         <div class="status-chip" id="statusMode"><span class="pulse-dot orange"></span><span>Checking...</span></div>
@@ -984,14 +962,12 @@
                 <div class="action-btns" id="actionBtnsCapsule">
                     <button class="btn-action" onmousedown="event.preventDefault()" onclick="shareViaWhatsApp()">📲 Share</button>
                     
-                    <!-- 🔒 TIER ASSIGNMENTS -->
                     <button class="btn-action" data-tier="1" onmousedown="event.preventDefault()" onclick="openKrutiDevModal()">🅰️ KrutiDev</button>
                     <button class="btn-action" data-tier="1" onmousedown="event.preventDefault()" onclick="openConverterModal()">🔄 Convert</button>
                     <button class="btn-action" data-tier="2" onmousedown="event.preventDefault()" onclick="openImeExportModal()">⚙️ IME Map</button>
                     <button class="btn-action" onmousedown="event.preventDefault()" onclick="openEmojiModal()">😀 Emoji</button>
                     <button class="btn-action" onmousedown="event.preventDefault()" onclick="openCharMapModal()">🔣 Char Map</button>
                     <button class="btn-action" onmousedown="event.preventDefault()" onclick="copyText()">📋 Copy</button>
-                    <!-- 🔒 Typing Practice Requires Tier 3 -->
                     <button class="btn-action" data-tier="3" onmousedown="event.preventDefault()" onclick="openTypingTestModal()">🎯 Typing Practice</button>
                     
                     <button class="btn-action btn-clear" onmousedown="event.preventDefault()" onclick="clearText()">🗑️ Clear</button>
@@ -1488,7 +1464,15 @@
                 <input type="text" id="proOtpInput" class="otp-input-box" placeholder="XXXXXX" maxlength="6" autocomplete="off">
             </div>
             <div id="proOtpStatus" style="font-size: 0.8rem; font-weight: 800; color: #ef4444; display: none;"></div>
-            <div style="font-size: 0.75rem; color: #64748b; font-weight: 600;">Didn't receive? <span style="color: #7c3aed; cursor: pointer;" onclick="sendProOtp()">Resend</span></div>
+            
+            <!-- 🔥 TIMER & RESEND SECTION ADDED HERE -->
+            <div style="font-size: 0.75rem; color: #64748b; font-weight: 600;">
+                Didn't receive? 
+                <button id="btnResendProOtp" onclick="sendProOtp()" disabled style="background: none; border: none; color: #7c3aed; cursor: not-allowed; opacity: 0.5; font-weight: 800; padding: 0;">
+                    Resend <span id="proTimerText"></span>
+                </button>
+            </div>
+
         </div>
         <div class="lcn-footer" style="justify-content: center;">
             <button class="lcn-btn lcn-btn-activate" onclick="verifyProOtp()" style="width: 100%; padding: 14px; font-size: 0.9rem;">Verify & Activate 🚀</button>
@@ -1622,6 +1606,15 @@
                     <input type="text" id="trialOtpInput" maxlength="6" placeholder="X X X X X X" style="width: 180px; padding: 12px; border: 2px solid #cbd5e1; border-radius: 10px; font-size: 1.2rem; font-weight: 900; text-align: center; letter-spacing: 4px; outline: none; font-family: monospace;">
                 </div>
                 <div style="font-size: 0.65rem; color: #ef4444; margin-top: 6px;">OTP valid for 5 minutes only.</div>
+                
+                <!-- 🔥 TIMER & RESEND SECTION ADDED HERE -->
+                <div style="margin-top: 10px; font-size: 0.75rem; font-weight: 600;">
+                    OTP नहीं मिला? 
+                    <button id="btnResendTrialOtp" onclick="resendTrialOtp()" disabled style="background: none; border: none; color: #7c3aed; cursor: not-allowed; opacity: 0.5; font-weight: 800; padding: 0;">
+                        Resend OTP <span id="trialTimerText"></span>
+                    </button>
+                </div>
+
             </div>
 
             <div id="trialActivationStatus" class="trm-status"></div>
@@ -2015,37 +2008,74 @@
     } catch (error) {
         console.warn("⚠️ Firebase Init Failed. Check config.", error);
     }
-
-    /* 📧 EMAILJS INIT — Public Key यहाँ डालें */
-    (function initEmailJS() {
-        if (typeof emailjs !== 'undefined' && typeof emailjs.init === 'function') {
-            try {
-                emailjs.init("oJPZwNpcBCwV9cvpj");
-                console.log("✅ EmailJS initialized");
-            } catch (e) {
-                console.warn("⚠️ EmailJS init error:", e);
-            }
-        } else {
-            setTimeout(initEmailJS, 200);
-        }
-    })();
 </script>
 
 <!-- ========================================================= -->
-<!-- 🎁 2. TRIAL FLOW (FULLY SECURED VIA CLOUD FUNCTIONS) -->
+<!-- 🎁 2. TRIAL FLOW (FULLY SECURED VIA CLOUDFLARE WORKER) -->
 <!-- ========================================================= -->
 <script>
 let trialStep = 'send_otp';
 
+// 🕒 TIMER VARIABLES & FUNCTIONS
+let trialTimerInterval, proTimerInterval;
+
+function startTimer(type) {
+    let timeLeft = 59;
+    let btn, text;
+    
+    if (type === 'trial') {
+        btn = document.getElementById('btnResendTrialOtp');
+        text = document.getElementById('trialTimerText');
+        clearInterval(trialTimerInterval);
+    } else {
+        btn = document.getElementById('btnResendProOtp');
+        text = document.getElementById('proTimerText');
+        clearInterval(proTimerInterval);
+    }
+
+    if (!btn || !text) return;
+
+    btn.disabled = true;
+    btn.style.opacity = '0.5';
+    btn.style.cursor = 'not-allowed';
+    text.innerText = `(${timeLeft}s)`;
+
+    let interval = setInterval(() => {
+        timeLeft--;
+        if (timeLeft <= 0) {
+            clearInterval(interval);
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            btn.style.cursor = 'pointer';
+            text.innerText = '';
+        } else {
+            text.innerText = `(${timeLeft}s)`;
+        }
+    }, 1000);
+
+    if (type === 'trial') {
+        trialTimerInterval = interval;
+    } else {
+        proTimerInterval = interval;
+    }
+}
+
+window.resendTrialOtp = function() {
+    // 🛠️ FIX: Reset UI for form so user can change email if they want
+    document.getElementById('trialFormSection').style.opacity = '1';
+    document.getElementById('trialFormSection').style.pointerEvents = 'auto';
+    document.getElementById('trialOtpSection').style.display = 'none';
+    document.getElementById('trialOtpInput').value = ''; // Clear old OTP
+    document.getElementById('trialActivationStatus').textContent = '';
+    
+    trialStep = 'send_otp'; // Reset step
+    window.handleTrialFlow(); // Trigger send again
+};
+
+// ══════════ MAIN TRIAL FLOW ══════════
 window.handleTrialFlow = async function() {
     const btn = document.getElementById('btnTrialAction');
     const statusEl = document.getElementById('trialActivationStatus');
-
-    if (typeof emailjs === 'undefined') {
-        statusEl.className = 'trm-status error';
-        statusEl.textContent = 'EmailJS load नहीं हुआ। Page reload करें।';
-        return;
-    }
 
     if (trialStep === 'send_otp') {
         const name = document.getElementById('trialCustomerName').value.trim();
@@ -2068,29 +2098,17 @@ window.handleTrialFlow = async function() {
         btn.disabled = true;
 
         try {
-            const otp = Math.floor(100000 + Math.random() * 900000).toString();
+            const workerUrl = "https://hor-katha-api.bosctechedu.workers.dev/send-otp";
+            const response = await fetch(workerUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email, name: name })
+            });
 
-            localStorage.setItem('hk_trial_otp_' + email, JSON.stringify({
-                otp: otp,
-                expiry: Date.now() + (5 * 60 * 1000),
-                name: name,
-                mobile: mobile,
-                email: email
-            }));
-
-            const result = await emailjs.send(
-                "service_l04b5og",
-                "service_l04b5og",
-                {
-                    to_email: email,
-                    to_name: name,
-                    otp_code: otp,
-                    app_name: "Hor Katha Suite",
-                    expiry_minutes: "5"
-                }
-            );
-
-            console.log("EmailJS Trial Response:", result);
+            if (!response.ok) {
+                const err = await response.json();
+                throw new Error(err.error || 'OTP भेजने में विफल');
+            }
 
             trialStep = 'verify_otp';
             document.getElementById('trialOtpSection').style.display = 'block';
@@ -2101,13 +2119,15 @@ window.handleTrialFlow = async function() {
             btn.disabled = false;
             statusEl.className = 'trm-status success';
             statusEl.textContent = 'OTP sent to your email! Check inbox (5 min valid).';
+            
+            startTimer('trial'); // 🕒 टाइमर शुरू करें
 
         } catch (error) {
-            console.error("EmailJS Error:", error);
+            console.error("OTP Error:", error);
             btn.textContent = '📩 Send OTP';
             btn.disabled = false;
             statusEl.className = 'trm-status error';
-            statusEl.textContent = (error && (error.text || error.message)) || 'OTP भेजने में error। Retry करें।';
+            statusEl.textContent = error.message;
         }
 
     } else if (trialStep === 'verify_otp') {
@@ -2124,21 +2144,26 @@ window.handleTrialFlow = async function() {
         btn.disabled = true;
 
         try {
-            const stored = localStorage.getItem('hk_trial_otp_' + email);
-            if (!stored) throw new Error("OTP नहीं मिला। दोबारा Send OTP करें।");
+            const workerUrl = "https://hor-katha-api.bosctechedu.workers.dev/verify-otp";
+            const response = await fetch(workerUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email, otp: otp })
+            });
 
-            const data = JSON.parse(stored);
-            if (Date.now() > data.expiry) {
-                localStorage.removeItem('hk_trial_otp_' + email);
-                throw new Error("OTP expire हो गया। दोबारा भेजें।");
+            if (!response.ok) {
+                const err = await response.json();
+                throw new Error(err.error || 'गलत OTP');
             }
-            if (data.otp !== otp) throw new Error("गलत OTP। दोबारा try करें।");
 
-            localStorage.removeItem('hk_trial_otp_' + email);
+            // सफल होने पर ट्रायल डेटा सेव करें
+            const name = document.getElementById('trialCustomerName').value.trim();
+            const mobile = document.getElementById('trialCustomerMobile').value.trim();
+
             localStorage.setItem('hk_trial_data', JSON.stringify({
                 email: email,
-                name: data.name,
-                mobile: data.mobile,
+                name: name,
+                mobile: mobile,
                 activatedAt: Date.now(),
                 expiresAt: Date.now() + (7 * 24 * 60 * 60 * 1000)
             }));
@@ -2175,17 +2200,12 @@ window.resetTrialFlow = function() {
 </script>
 
 <!-- ========================================================= -->
-<!-- 🔑 3. PRO LICENSE FLOW (SECURED VIA CLOUD FUNCTIONS) -->
+<!-- 🔑 3. PRO LICENSE FLOW (SECURED VIA CLOUDFLARE WORKER) -->
 <!-- ========================================================= -->
 <script>
 let pendingProData = null;
 
 window.initiateProLicenseFlow = async function() {
-    if (typeof emailjs === 'undefined') {
-        if (typeof showToast === 'function') showToast('EmailJS load नहीं हुआ। Reload करें।', 'error');
-        return;
-    }
-
     const name = document.getElementById('licCustomerName').value.trim();
     const email = document.getElementById('licCustomerEmail').value.trim();
     const mobile = document.getElementById('licCustomerMobile').value.trim();
@@ -2206,72 +2226,54 @@ window.initiateProLicenseFlow = async function() {
     if (btn) { btn.textContent = '⏳ Sending OTP...'; btn.disabled = true; }
 
     try {
-        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        const workerUrl = "https://hor-katha-api.bosctechedu.workers.dev/send-otp";
+        const response = await fetch(workerUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email, name: name })
+        });
 
-        localStorage.setItem('hk_pro_otp_' + email, JSON.stringify({
-            otp: otp,
-            expiry: Date.now() + (10 * 60 * 1000),
-            key: key,
-            name: name,
-            mobile: mobile,
-            email: email
-        }));
-
-        const result = await emailjs.send(
-            "service_l04b5og",
-            "template_c3fxm0s",
-            {
-                to_email: email,
-                to_name: name,
-                otp_code: otp,
-                license_key: key,
-                app_name: "Hor Katha Suite — Pro Activation"
-            }
-        );
-
-        console.log("EmailJS Pro Response:", result);
+        if (!response.ok) {
+            const err = await response.json();
+            throw new Error(err.error || 'OTP भेजने में विफल');
+        }
 
         if (typeof closeLicenseModal === 'function') closeLicenseModal();
         document.getElementById('proOtpEmailDisplay').textContent = email;
         document.getElementById('proOtpInput').value = '';
         document.getElementById('proOtpStatus').style.display = 'none';
         document.getElementById('proOtpModal').style.display = 'flex';
+        
+        startTimer('pro'); // 🕒 टाइमर शुरू करें
 
         if (btn) { btn.textContent = '🚀 Send OTP & Activate'; btn.disabled = false; }
 
     } catch (error) {
         console.error("Pro Flow Error:", error);
         if (btn) { btn.textContent = '🚀 Send OTP & Activate'; btn.disabled = false; }
-        if (typeof showToast === 'function') showToast((error && (error.text || error.message)) || 'OTP भेजने में error।', 'error');
+        if (typeof showToast === 'function') showToast(error.message, 'error');
     }
 };
 
 window.sendProOtp = async function() {
-    if (!pendingProData || typeof emailjs === 'undefined') return;
+    if (!pendingProData) return;
     try {
-        const otp = Math.floor(100000 + Math.random() * 900000).toString();
-        localStorage.setItem('hk_pro_otp_' + pendingProData.email, JSON.stringify({
-            otp: otp,
-            expiry: Date.now() + (10 * 60 * 1000),
-            key: pendingProData.key,
-            name: pendingProData.name,
-            mobile: pendingProData.mobile,
-            email: pendingProData.email
-        }));
-        await emailjs.send(
-            "service_l04b5og",
-            "template_c3fxm0s",
-            {
-                to_email: pendingProData.email,
-                to_name: pendingProData.name,
-                otp_code: otp,
-                license_key: pendingProData.key,
-                app_name: "Hor Katha Suite — Pro Activation"
-            }
-        );
+        const workerUrl = "https://hor-katha-api.bosctechedu.workers.dev/send-otp";
+        const response = await fetch(workerUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: pendingProData.email, name: pendingProData.name })
+        });
+
+        if (!response.ok) {
+            const err = await response.json();
+            throw new Error(err.error || 'OTP भेजने में विफल');
+        }
+
         if (typeof showToast === 'function') showToast('OTP Resent!', 'success');
+        startTimer('pro'); // 🕒 रीसेंड करने पर टाइमर फिर से शुरू
     } catch (e) {
-        if (typeof showToast === 'function') showToast((e && (e.text || e.message)) || 'Resend failed', 'error');
+        if (typeof showToast === 'function') showToast(e.message, 'error');
     }
 };
 
@@ -2295,30 +2297,30 @@ window.verifyProOtp = async function() {
     if (btn) { btn.textContent = '⏳ Verifying...'; btn.disabled = true; }
 
     try {
-        const stored = localStorage.getItem('hk_pro_otp_' + pendingProData.email);
-        if (!stored) throw new Error("OTP नहीं मिला। Resend करें।");
+        const workerUrl = "https://hor-katha-api.bosctechedu.workers.dev/verify-otp";
+        const response = await fetch(workerUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: pendingProData.email, otp: otp })
+        });
 
-        const data = JSON.parse(stored);
-        if (Date.now() > data.expiry) {
-            localStorage.removeItem('hk_pro_otp_' + pendingProData.email);
-            throw new Error("OTP expire हो गया। Resend करें।");
+        if (!response.ok) {
+            const err = await response.json();
+            throw new Error(err.error || 'गलत OTP');
         }
-        if (data.otp !== otp) throw new Error("गलत OTP। दोबारा try करें।");
-        if (data.key !== pendingProData.key) throw new Error("License key mismatch।");
 
         let tier = 'P1';
-        if (data.key.indexOf('HKP-P3-') === 0) tier = 'P3';
-        else if (data.key.indexOf('HKP-P2-') === 0) tier = 'P2';
+        if (pendingProData.key.indexOf('HKP-P3-') === 0) tier = 'P3';
+        else if (pendingProData.key.indexOf('HKP-P2-') === 0) tier = 'P2';
 
         localStorage.setItem('hk_pro_license', JSON.stringify({
-            name: data.name,
-            email: data.email,
-            mobile: data.mobile,
-            key: data.key,
+            name: pendingProData.name,
+            email: pendingProData.email,
+            mobile: pendingProData.mobile,
+            key: pendingProData.key,
             tier: tier,
             activatedAt: Date.now()
         }));
-        localStorage.removeItem('hk_pro_otp_' + pendingProData.email);
 
         statusEl.style.display = 'block';
         statusEl.style.color = '#16a34a';
@@ -2333,7 +2335,7 @@ window.verifyProOtp = async function() {
         console.error("Verify Pro Error:", error);
         statusEl.style.display = 'block';
         statusEl.style.color = '#ef4444';
-        statusEl.textContent = error.message || 'Invalid OTP. Try again.';
+        statusEl.textContent = error.message;
         if (btn) { btn.textContent = 'Verify & Activate 🚀'; btn.disabled = false; }
     }
 };
