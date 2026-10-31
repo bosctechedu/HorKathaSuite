@@ -844,7 +844,7 @@
 
     <h1>🔒 Privacy Policy</h1>
     <p class="subtitle">Hoṛ/हो़ड़ Katha Suite v3.7.4 — BOSC Tech &amp; Edu</p>
-    <p class="subtitle-last-updated">Last Updated: <span id="ppLastUpdated">September 2026</span> · Effective: Immediately</p>
+    <p class="subtitle-last-updated">Last Updated: <span id="ppLastUpdated">October 2026</span> · Effective: Immediately</p>
 
     <!-- ═══ COMPLIANCE BADGES ═══ -->
     <div class="compliance-badges">
@@ -905,17 +905,17 @@
                 <tr>
                     <td><strong>Device ID</strong> (anonymous fingerprint)</td>
                     <td>License verification &amp; device lock</td>
-                    <td>Encrypted (AES-256)</td>
+                    <td>Hashed / encoded (local + server)</td>
                 </tr>
                 <tr>
                     <td><strong>License Key</strong></td>
                     <td>Pro activation</td>
-                    <td>Encrypted (local + server)</td>
+                    <td>Local device + server (HTTPS से भेजी जाती है)</td>
                 </tr>
                 <tr>
                     <td><strong>Activation Timestamp</strong></td>
                     <td>Support &amp; audit</td>
-                    <td>Encrypted server</td>
+                    <td>Server (HTTPS)</td>
                 </tr>
                 <tr>
                     <td><strong>Browser &amp; OS Type</strong></td>
@@ -926,6 +926,46 @@
                     <td><strong>Crash Reports</strong> (if enabled)</td>
                     <td>Bug fixing</td>
                     <td>Anonymous</td>
+                </tr>
+                <tr>
+                    <td><strong>Email, Mobile number</strong> (₹9 Trial / Pro)</td>
+                    <td>Trial key को आपसे जोड़ना, license recovery, support</td>
+                    <td>Server (Firebase / Cloudflare)</td>
+                </tr>
+                <tr>
+                    <td><strong>Typing test data</strong> (सिर्फ़ certificate माँगने पर)</td>
+                    <td>Typing proof: lesson text, आपका typed text और keystroke timing server पर भेजा जाता है ताकि असली speed जाँची जा सके</td>
+                    <td>Server पर सिर्फ़ result (chars, errors, accuracy, समय) 2 घंटे तक; typed text और keystrokes save नहीं होते</td>
+                </tr>
+                <tr>
+                    <td><strong>Certificate record</strong></td>
+                    <td>नाम, WPM, accuracy, category, certificate number — verification के लिए; साथ में request का IP address (धोखाधड़ी रोकने के लिए)</td>
+                    <td>Server (Firebase / Cloudflare KV)</td>
+                </tr>
+                <tr>
+                    <td><strong>Leaderboard entry</strong></td>
+                    <td>Weekly leaderboard (सिर्फ़ verified certificates)</td>
+                    <td>Public पर नाम छोटा दिखता है (जैसे "Ram M."); 70 दिन बाद अपने-आप हटता है</td>
+                </tr>
+                <tr>
+                    <td><strong>Referral data</strong></td>
+                    <td>Referral code, code के मालिक का नाम/email, खरीदार का license, cashback status</td>
+                    <td>Server (Firebase, admin-only)</td>
+                </tr>
+                <tr>
+                    <td><strong>Institute data</strong> (Bulk license)</td>
+                    <td>संस्था का नाम, email, mobile, seats</td>
+                    <td>Server (Firebase, admin-only)</td>
+                </tr>
+                <tr>
+                    <td><strong>Cloud Sync documents</strong> (Pro, आपकी मर्ज़ी से)</td>
+                    <td>आपके documents दूसरे device पर वापस पाना</td>
+                    <td>आपके device पर license key से encrypt (AES-256-GCM) होकर Cloudflare KV में; हम इन्हें पढ़ नहीं सकते</td>
+                </tr>
+                <tr>
+                    <td><strong>IP address</strong></td>
+                    <td>Rate limiting और abuse रोकना (अस्थायी counters)</td>
+                    <td>Cloudflare, कुछ मिनट से 1 घंटे तक</td>
                 </tr>
             </tbody>
         </table>
@@ -942,12 +982,13 @@
     <div class="danger">
         <strong>❌ Hum ye kabhi collect nahi karte:</strong>
         <ul style="margin-top: 8px; margin-bottom: 0;">
-            <li>Aapki files ya documents</li>
-            <li>Keystrokes ya typing history</li>
+            <li>Aapki files ya documents (Cloud Sync चालू न करें तो कुछ भी server पर नहीं जाता; चालू करने पर भी सिर्फ़ encrypted रूप में, जिसे हम पढ़ नहीं सकते)</li>
+            <li>Editor में लिखा text, या app के बाहर के keystrokes (typing test का data सिर्फ़ certificate जाँच के लिए जाता है, Section 1 देखें)</li>
             <li>Passwords ya bank details</li>
             <li>Camera ya microphone data</li>
-            <li>Location (GPS ya IP-based)</li>
+            <li>Location (GPS); IP address सिर्फ़ abuse रोकने के लिए, location पता करने के लिए नहीं</li>
             <li>Other apps ya browsing history</li>
+            <li>Progress, streak और weak-keys data — यह सिर्फ़ आपके device पर रहता है</li>
             <li>Contacts ya SMS</li>
         </ul>
     </div>
@@ -965,6 +1006,11 @@
         <li><strong>Piracy Prevention</strong> — Same license multiple devices pe rokne ke liye</li>
         <li><strong>Customer Support</strong> — Agar aapko issue ho to aapka device ID se help kar sakein</li>
         <li><strong>Security Audit</strong> — Suspicious activity detect karne ke liye</li>
+        <li><strong>Certificate की सच्चाई</strong> — नकली या बढ़ा-चढ़ाकर बताई गई typing speed पर certificate न बने</li>
+        <li><strong>Leaderboard</strong> — सिर्फ़ verified results का साप्ताहिक ranking</li>
+        <li><strong>Referral और छूट</strong> — सही व्यक्ति को छूट और cashback देना</li>
+        <li><strong>Institute licenses</strong> — संस्था की keys और seats का हिसाब रखना</li>
+        <li><strong>Cloud Sync</strong> — आपकी माँग पर documents दूसरे device पर पहुँचाना</li>
     </ul>
 
     <!-- ═══════════════════════════════════════════ -->
@@ -976,12 +1022,12 @@
     </h2>
 
     <div class="highlight">
-        <strong>🔐 Encryption:</strong> Saara sensitive data <strong>AES-256 encryption</strong> se store hota hai. Transmission <strong>HTTPS/TLS 1.3</strong> se hota hai.
+        <strong>🔐 Encryption:</strong> Cloud Sync documents आपके device पर <strong>AES-256-GCM</strong> से encrypt होते हैं; बाकी server data हमारे providers (Google Firebase, Cloudflare) की storage-level encryption से सुरक्षित रहता है। Transmission <strong>HTTPS/TLS 1.3</strong> se hota hai.
     </div>
 
     <ul>
         <li><strong>Local Storage</strong> — Device pe encrypted format me</li>
-        <li><strong>Server Storage</strong> — Firebase / Supabase (encrypted at rest)</li>
+        <li><strong>Server Storage</strong> — Google Firebase (Singapore region) और Cloudflare (encrypted at rest)</li>
         <li><strong>Backup</strong> — Retention policy के हिसाब से (Section 12 देखें)</li>
     </ul>
 
@@ -1069,7 +1115,7 @@
                     <td><strong>Firebase (Google)</strong></td>
                     <td>License verification</td>
                     <td>Anonymous Device ID</td>
-                    <td>🇮🇳 Mumbai Region</td>
+                    <td>🇸🇬 Singapore Region (asia-southeast1)</td>
                 </tr>
                 <tr>
                     <td><strong>Formsubmit.co</strong></td>
@@ -1082,6 +1128,12 @@
                     <td>Customer support</td>
                     <td>Name, Message</td>
                     <td>🇮🇳 India</td>
+                </tr>
+                <tr>
+                    <td><strong>Cloudflare Workers / KV</strong></td>
+                    <td>Trial और certificate जाँच, leaderboard, referral, Cloud Sync</td>
+                    <td>Email, license key, certificate details, encrypted documents, IP (अस्थायी)</td>
+                    <td>🌍 Global</td>
                 </tr>
                 <tr>
                     <td><strong>Vercel (Hosting)</strong></td>
@@ -1197,12 +1249,12 @@
                 <tr>
                     <td>Activation Logs</td>
                     <td>180 days (CERT-In)</td>
-                    <td>Auto-delete</td>
+                    <td>Periodic manual deletion</td>
                 </tr>
                 <tr>
                     <td>Support Emails</td>
                     <td>3 years</td>
-                    <td>Auto-delete</td>
+                    <td>Periodic manual deletion</td>
                 </tr>
                 <tr>
                     <td>Consent Records</td>
@@ -1212,14 +1264,44 @@
                 <tr>
                     <td>Crash Reports</td>
                     <td>90 days</td>
+                    <td>Periodic manual deletion</td>
+                </tr>
+                <tr>
+                    <td>Typing test session (result)</td>
+                    <td>2 घंटे</td>
                     <td>Auto-delete</td>
+                </tr>
+                <tr>
+                    <td>Leaderboard entries</td>
+                    <td>70 दिन</td>
+                    <td>Auto-delete</td>
+                </tr>
+                <tr>
+                    <td>Certificate records (IP सहित)</td>
+                    <td>Certificate valid रहने तक</td>
+                    <td>Certificate revoke या User request</td>
+                </tr>
+                <tr>
+                    <td>Trial / Referral / Institute records</td>
+                    <td>License valid रहने तक + 1 year</td>
+                    <td>User request या license समाप्ति</td>
+                </tr>
+                <tr>
+                    <td>Cloud Sync documents</td>
+                    <td>जब तक Pro license active है</td>
+                    <td>User request (या app में documents हटाकर sync करें)</td>
+                </tr>
+                <tr>
+                    <td>Admin activity logs</td>
+                    <td>180 days (CERT-In)</td>
+                    <td>User request पर लागू नहीं (security record)</td>
                 </tr>
             </tbody>
         </table>
     </div>
 
     <div class="info">
-        <strong>💡 Automatic Deletion:</strong> हमारी system हर data type के लिए <strong>auto-delete</strong> mechanism configure करती है। Retention period खत्म होते ही data स्थायी रूप से मिट जाता है।
+        <strong>💡 Data Deletion:</strong> Typing test sessions, leaderboard entries और अस्थायी IP counters <strong>अपने-आप</strong> मिटते हैं। बाकी data को हम retention period खत्म होने पर समय-समय पर manually हटाते हैं, और user request पर 30 दिन के अंदर; हटाने के बाद data स्थायी रूप से मिट जाता है।
     </div>
 
     <!-- ═══════════════════════════════════════════ -->
@@ -1310,7 +1392,7 @@
                 </tr>
                 <tr>
                     <td><strong>Data Localization</strong></td>
-                    <td>✅ Indian users का data भारत में (Firebase Mumbai region)</td>
+                    <td>ℹ️ License data Google Firebase के Singapore region (asia-southeast1) में और Cloudflare के global network पर रहता है; DPDP Act के तहत भारत से बाहर transfer की अनुमति है, जब तक सरकार किसी देश को प्रतिबंधित न करे</td>
                 </tr>
                 <tr>
                     <td><strong>Annual Security Audit</strong></td>
