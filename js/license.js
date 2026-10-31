@@ -156,31 +156,12 @@ function _getCachedDeviceHash() {
 function hasProLevelAccess() {
     try {
         try { if (typeof isProLicensed !== 'undefined' && isProLicensed === true) return true; } catch (e) {}
-        try {
-            if (typeof _isTrialEnabled === 'function' && typeof _isTrialSystemReady === 'function' && _isTrialEnabled() && _isTrialSystemReady()) {
-                if (TrialSystem.isActive() === true) {
-                    try { const trialKey = localStorage.getItem('hor_trial_key'); if (trialKey && typeof trialKey === 'string') { const parts = trialKey.split('-'); if (parts.length === 3) { const currentHash = _getCachedDeviceHash(); if (!currentHash || parts[2] !== currentHash) return false; } } } catch (e) { return false; }
-                    return true;
-                }
-            }
-        } catch (e) {}
+        // HKT (₹9) trial keys retired — अब सिर्फ़ Worker-signed OTP trial मान्य
+        try { if (typeof window.hkSignedTrialActive === 'function' && window.hkSignedTrialActive() === true) return true; } catch (e) {}
         try {
             if (typeof _licenseSessionCache !== 'undefined' && _licenseSessionCache && _licenseSessionCache.verified === true && (Date.now() - _licenseSessionCache.timestamp) < LICENSE_SESSION_CACHE_TTL_MS) {
                 const licKey = localStorage.getItem('hor_lic_key');
                 if (licKey && licKey === _licenseSessionCache.key) return true;
-            }
-        } catch (e) {}
-        try {
-            const trialKey = localStorage.getItem('hor_trial_key');
-            if (trialKey && typeof trialKey === 'string' && /^HKT-\d{7}-[A-F0-9]{4}$/.test(trialKey)) {
-                let clockSafe = true;
-                try { if (typeof ClockGuard !== 'undefined' && ClockGuard && typeof ClockGuard.detectLocalRollbackThrottled === 'function') { const clockCheck = ClockGuard.detectLocalRollbackThrottled(); clockSafe = clockCheck.safe; } } catch (e) { clockSafe = true; }
-                if (!clockSafe) return false;
-                const trialParts = trialKey.split('-');
-                if (trialParts.length === 3) { const currentHash = _getCachedDeviceHash(); if (!currentHash || trialParts[2] !== currentHash) return false; }
-                try { if (typeof TrialSystem !== 'undefined' && TrialSystem && typeof TrialSystem.getInfo === 'function') { const info = TrialSystem.getInfo(); if (info && info.tampered === true) return false; if (info && info.deviceMismatch === true) return false; } } catch (e) {}
-                const startStr = localStorage.getItem('hor_trial_start');
-                if (startStr) { const startTime = parseInt(startStr, 10); if (!isNaN(startTime) && startTime > 0) { const elapsedMs = Date.now() - startTime; const totalMs = SMART_TRIAL_CONFIG.TRIAL_DAYS * 24 * 60 * 60 * 1000; if (elapsedMs >= 0 && elapsedMs < totalMs) return true; } }
             }
         } catch (e) {}
         return false;
@@ -389,6 +370,7 @@ const Validator = {
 // ============================================================
 const HKFbAuth = (function () {
     let _signInPromise = null;
+    let _anonDisabled = false;
     function _getAuth() {
         try { if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length && typeof firebase.auth === 'function') return firebase.auth(); } catch (e) {}
         return null;
@@ -402,6 +384,7 @@ const HKFbAuth = (function () {
         const auth = await _waitForAuth(6000);
         if (!auth) return null;
         if (auth.currentUser) return auth.currentUser;
+        if (_anonDisabled) return null;
         if (!_signInPromise) {
             _signInPromise = new Promise((resolve) => {
                 let done = false;
@@ -409,7 +392,7 @@ const HKFbAuth = (function () {
                 setTimeout(() => {
                     if (done) return;
                     auth.signInAnonymously().then(c => { if (!done) { done = true; try { unsub(); } catch (e) {} resolve(c.user); } })
-                        .catch(err => { console.warn('[FB Auth] Anonymous sign-in failed:', err && err.code); if (!done) { done = true; try { unsub(); } catch (e) {} resolve(null); } });
+                        .catch(err => { console.warn('[FB Auth] Anonymous sign-in failed:', err && err.code); _anonDisabled = true; if (!done) { done = true; try { unsub(); } catch (e) {} resolve(null); } });
                 }, 300);
             }).finally(() => { setTimeout(() => { _signInPromise = null; }, 0); });
         }
@@ -989,10 +972,9 @@ async function verifyLicensePayload(name, email, mobile, licenseKey) {
 
     const cleanName = name.trim().toLowerCase();
     const cleanEmail = email.trim().toLowerCase();
-    const cleanMobile = mobile.trim();
-
-    const payloadStr = `${cleanName}|${cleanEmail}|${cleanMobile}|${plan}|${expiryToken}|${LICENSE_PAYLOAD_VERSION}`;
-    const payloadBytes = new TextEncoder().encode(payloadStr);
+    // Keygen जैसा ही mobile normalize (सिर्फ़ 10 अंक) — पुराने keys के लिए raw trim भी आज़माते हैं
+    const _normMobile = (m) => { let x = String(m || '').replace(/[^0-9]/g, ''); if (x.startsWith('0')) x = x.substring(1); if (x.startsWith('91') && x.length > 10) x = x.slice(-10); return x; };
+    const mobileVariants = [...new Set([_normMobile(mobile), mobile.trim()])].filter(Boolean);
 
     const publicKey = await getCachedPublicKey();
     if (!publicKey) return { valid: false, reason: 'Public key not configured' };
@@ -1000,7 +982,11 @@ async function verifyLicensePayload(name, email, mobile, licenseKey) {
     if (!sigBytes) return { valid: false, reason: 'Signature Decode Error' };
 
     try {
-        const isValid = await crypto.subtle.verify({ name: 'ECDSA', hash: 'SHA-256' }, publicKey, sigBytes, payloadBytes);
+        let isValid = false;
+        for (const mv of mobileVariants) {
+            const payloadStr = `${cleanName}|${cleanEmail}|${mv}|${plan}|${expiryToken}|${LICENSE_PAYLOAD_VERSION}`;
+            if (await crypto.subtle.verify({ name: 'ECDSA', hash: 'SHA-256' }, publicKey, sigBytes, new TextEncoder().encode(payloadStr))) { isValid = true; break; }
+        }
         if (!isValid) return { valid: false, reason: 'Signature Mismatch' };
 
         if (navigator.onLine && _isTrialSystemReady() && TrialSystem.CONFIG.NETWORK.SERVER_SYNC_ENABLED) {
@@ -1039,8 +1025,12 @@ async function _doCheckLicenseIntegrity() {
             if (verification.valid) {
                 isProLicensed = true;
                 _licenseSessionCache = { user: String(savedName), email: String(savedEmail), mobile: String(savedMobile), key: String(savedKey), verified: true, plan: String(verification.plan), expiry: String(verification.expiry || ''), timestamp: now };
-                if (navigator.onLine && typeof TrialSystem !== 'undefined' && typeof TrialSystem._queueFbWrite === 'function') {
-                    TrialSystem._queueFbWrite(`activations/${savedKey}`, { name: savedName, email: savedEmail, mobile: savedMobile, plan: verification.plan || 'P1', timestamp: now, expiryToken: verification.expiry || '9999' });
+                // Firebase rules: activation रिकॉर्ड सिर्फ़ एक बार बनता है (hwid ज़रूरी) — हर check पर दोबारा न भेजें
+                let _actLogged = false; try { _actLogged = localStorage.getItem('hor_act_logged') === String(savedKey); } catch (e) {}
+                if (!_actLogged && navigator.onLine && typeof TrialSystem !== 'undefined' && typeof TrialSystem._queueFbWrite === 'function') {
+                    let _hw = 'unknown'; try { _hw = localStorage.getItem('hor_device_hwid') || 'unknown'; } catch (e) {}
+                    TrialSystem._queueFbWrite(`activations/${savedKey}`, { name: savedName, email: savedEmail, mobile: savedMobile, hwid: _hw, plan: verification.plan || 'P1', timestamp: now, expiryToken: verification.expiry || '9999', status: 'active' });
+                    try { localStorage.setItem('hor_act_logged', String(savedKey)); } catch (e) {}
                 }
                 applyProState(savedName, verification.plan, false); return;
             } else {
@@ -1177,10 +1167,15 @@ async function deactivateLicenseOnly(skipConfirm = false) {
             if (baseUrl) {
                 TrialSystem._queueFbWrite(`revoked/licenses/${licKey}`, { revokedAt: Date.now(), device: currentHwid, reason: 'user-deactivated', revokedBy: 'user' });
                 try {
-                    const actResult = await TrialSystem._fbGet(`activations/${licKey}`);
-                    const existing = (actResult.ok && actResult.data) ? actResult.data : {};
-                    const updatedRecord = { ...existing, name: existing.name || licUser || 'Unknown', hwid: existing.hwid || currentHwid, plan: existing.plan || 'P1', timestamp: existing.timestamp || Date.now(), expiryToken: existing.expiryToken || '9999', status: 'deactivated', deactivatedBy: 'user', deactivatedAt: Date.now(), deactivateReason: 'User manually deactivated license from app' };
-                    await TrialSystem._fbSet(`activations/${licKey}`, updatedRecord); console.log('[Deactivate] ✅ activations record updated successfully');
+                    // Rules: user सिर्फ़ ये 4 fields बदल सकता है; deactivatedBy पहले लिखना ज़रूरी
+                    const base = `activations/${licKey}`; const at = Date.now();
+                    const r1 = await TrialSystem._fbSet(`${base}/deactivatedBy`, 'user');
+                    if (r1.ok) {
+                        await TrialSystem._fbSet(`${base}/status`, 'deactivated');
+                        await TrialSystem._fbSet(`${base}/deactivatedAt`, at);
+                        await TrialSystem._fbSet(`${base}/deactivateReason`, 'User manually deactivated license from app');
+                        console.log('[Deactivate] ✅ activations record updated successfully');
+                    } else { console.warn('[Deactivate] activations update denied:', r1.error); }
                 } catch (e) { console.warn('[Deactivate] Could not update activations:', e.message); }
             }
         } catch (e) {}
@@ -1235,6 +1230,49 @@ function deactivateLicense(force = false) { if (force === true) return deactivat
 // 🌐 GLOBAL EXPORTS & DEBUG
 // ============================================================
 window.ClockGuard = ClockGuard; window.getDeviceHardwareFingerprint = getDeviceHardwareFingerprint; window.generateDeviceFingerprint = generateDeviceFingerprint; window.getShortDeviceHash = getShortDeviceHash; window.verifyLicensePayload = verifyLicensePayload; window.checkLicenseIntegrity = checkLicenseIntegrity; window.applyProState = applyProState; window.applyTrialState = applyTrialState; window.applyFreeState = applyFreeState; window.requireProAccess = requireProAccess; window.getActiveKeysInfo = getActiveKeysInfo; window.deactivateLicenseOnly = deactivateLicenseOnly; window.deactivateTrialOnly = deactivateTrialOnly; window.deactivateAllKeys = deactivateAllKeys; window.deactivateCurrentKey = deactivateCurrentKey; window.openDeactivationModal = openDeactivationModal; window.deactivateLicense = deactivateLicense;
+
+// ============================================================
+// 🛡️ PRO WATCHDOG — console से isProLicensed = true / applyProState() करने पर
+//    30 सेकंड में असली signed license से दोबारा जाँच; न मिले तो Free
+// ============================================================
+const _HK_VERIFY = verifyLicensePayload; // load के समय पकड़ा; बाद में global बदलने से असर नहीं
+try { Object.defineProperty(window, 'hkVerifyLicense', { value: _HK_VERIFY, writable: false, configurable: false }); } catch (e) {}
+
+(function _proWatchdog() {
+    const RESET_REASONS = ['Missing Details', 'Invalid Key Format', 'Invalid Plan Code', 'Invalid Signature Format',
+        'Signature Decode Error', 'Signature Mismatch', 'License Expired', 'License Revoked', 'Clock Tampering Detected'];
+    let busy = false;
+    async function audit() {
+        if (busy || isProLicensed !== true) return;
+        busy = true;
+        try {
+            let n = '', e = '', m = '', k = '';
+            try {
+                n = localStorage.getItem('hor_lic_user') || ''; e = localStorage.getItem('hor_lic_email') || '';
+                m = localStorage.getItem('hor_lic_mobile') || ''; k = localStorage.getItem('hor_lic_key') || '';
+            } catch (err) {}
+            let r = null;
+            try { r = await _HK_VERIFY(n, e, m, k); } catch (err) { r = { valid: false, reason: 'Verification Error' }; }
+            if (r && r.valid) {
+                // plan भी key से ही — बाहर से बढ़ाया गया plan वापस
+                if (_licenseSessionCache.plan && _licenseSessionCache.plan !== r.plan) _licenseSessionCache.plan = r.plan;
+                return;
+            }
+            if (r && RESET_REASONS.indexOf(r.reason) === -1) return; // network/config गड़बड़ी पर असली user को न हटाएँ
+            console.warn('[License] Unverified Pro state reset:', r && r.reason);
+            isProLicensed = false;
+            _licenseSessionCache = { user: null, email: null, mobile: null, key: null, verified: false, plan: null, expiry: null, timestamp: 0 };
+            try { _invalidateAllCaches(); } catch (err) {}
+            let trialOn = false;
+            try { trialOn = (_isTrialEnabled() && _isTrialSystemReady() && TrialSystem.isActive()) || !!localStorage.getItem('hk_trial_data'); } catch (err) {}
+            try { if (trialOn && _isTrialSystemReady() && TrialSystem.isActive()) applyTrialState(); else applyFreeState(); } catch (err) {}
+            // signed trial (hk_trial_data) की जाँच index.html खुद करता है
+            if (!trialOn) { try { if (typeof window.applyLocks === 'function') window.applyLocks('FREE'); } catch (err) {} }
+        } finally { busy = false; }
+    }
+    setTimeout(audit, 5000);
+    setInterval(audit, 30000);
+})();
 
 window.LicenseDebug = {
     status: () => { console.log('🔐 License Status'); console.log('  isProLicensed:', isProLicensed); console.log('  hasProLevelAccess():', hasProLevelAccess()); console.log('  Trial active:', _isTrialSystemReady() ? TrialSystem.isActive() : false); console.log('  Session verified:', _licenseSessionCache.verified); console.log('  Activation in progress:', _isActivating); console.log('  License check in progress:', _licenseCheckInProgress); console.log('  FB queue:', _fbWriteQueue.length); },

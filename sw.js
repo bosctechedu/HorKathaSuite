@@ -16,7 +16,7 @@
 //    • Any JS logic (even if not cached)
 //    • Any HTML/CSS in this project
 //    Without bumping, users will keep old cached versions!
-const SW_VERSION = '22';
+const SW_VERSION = '27';
 
 const CACHE_NAME = `hor-katha-v374-cache-v${SW_VERSION}`;
 const CACHE_PREFIX = 'hor-katha-v374-cache-';
@@ -114,6 +114,10 @@ const ASSETS_TO_CACHE = [
     './js/privacy.js',
     './js/app.js',
     './js/typing-test.js',
+    './js/insights.js',
+    './js/growth.js',
+    './js/hkscript.js',
+    './js/docs-pro.js',
     './js/certificate.js',
     './js/print-generator.js',
     './js/alerts.js',
@@ -563,6 +567,12 @@ self.addEventListener('fetch', (event) => {
     }
 
     if (!url.protocol.startsWith('http')) return;
+
+    // 🔐 Admin pages (keygen/dashboard) और उनसे होने वाली हर request — SW बिल्कुल दख़ल न दे
+    const _ref = event.request.referrer || '';
+    if (/\/admin(-secure)?\//i.test(url.pathname) || /\/admin(-secure)?\//i.test(_ref)) return;
+    // Firebase SDK (gstatic/firebasejs) सीधे network से — cache-first से auth/database टूट सकते हैं
+    if ((url.hostname === 'www.gstatic.com' || url.hostname === 'gstatic.com') && url.pathname.startsWith('/firebasejs/')) return;
 
     // ✅ Skip secret files FIRST (before any other logic)
     if (isSecretFile(url)) {

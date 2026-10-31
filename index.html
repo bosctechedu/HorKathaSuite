@@ -51,6 +51,85 @@
     <link rel="stylesheet" href="css/modals.css">
     <link rel="stylesheet" href="css/typing-test.css">
     <link rel="stylesheet" href="css/certificate.css">
+    <style id="hk-exam-mode">
+        .tt-lessons-grid { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)) !important; }
+        .tt-exam-col { background: #eff6ff !important; border-color: #93c5fd !important; }
+        .tt-exam-col .tt-lesson-heading { color: #1e3a8a; }
+        .tt-exam-options { flex-wrap: wrap; gap: 8px 16px; align-items: center; margin: 4px 0 10px; padding: 10px 12px;
+            background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; font-size: 0.8rem; font-weight: 700; color: #1e3a8a; }
+        .tt-exam-options label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+        .tt-exam-options span { flex-basis: 100%; font-weight: 600; color: #475569; }
+        #ttArena.tt-exam-hide .tt-char.correct, #ttArena.tt-exam-hide .tt-char.wrong {
+            color: #475569 !important; background: transparent !important; text-decoration: none !important; border-color: transparent !important; }
+        #ttArena.tt-exam-hide .tt-stat-box:has(#ttLiveAcc), #ttArena.tt-exam-hide .tt-stat-box:has(#ttLiveErr) { display: none !important; }
+    </style>
+    <style id="hk-header-labels">
+        /* Header: पूरे नाम के साथ settings buttons + horizontal scroll */
+        .header-bar .top-settings-bar {
+            display: flex !important; flex-wrap: nowrap !important; align-items: center; gap: 6px;
+            overflow-x: auto !important; overflow-y: hidden; min-width: 0; max-width: 100%;
+            scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: #a78bfa transparent;
+            padding-bottom: 4px; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain;
+            flex: 1 1 auto; justify-content: flex-start !important; margin-left: 6px;
+        }
+        .header-bar .top-settings-bar::-webkit-scrollbar { height: 6px; }
+        .header-bar .top-settings-bar::-webkit-scrollbar-thumb { background: #c4b5fd; border-radius: 6px; }
+        .header-bar .top-settings-bar::-webkit-scrollbar-thumb:hover { background: #8b5cf6; }
+        .header-bar .top-settings-bar > * { flex: 0 0 auto; }
+        .header-bar .top-settings-bar .hk-labeled {
+            display: inline-flex !important; align-items: center; gap: 6px; width: auto !important; min-width: 0 !important;
+            padding: 4px 9px !important; max-width: none !important; white-space: nowrap; font-weight: 800; font-size: 11px; line-height: 1;
+        }
+        .hk-labeled::after { order: 1; font-family: Inter, system-ui, sans-serif; font-weight: 700; letter-spacing: .1px; }
+        .hk-labeled::before {
+            order: 2; font-family: Inter, system-ui, sans-serif; font-size: 9px; font-weight: 900; letter-spacing: .4px;
+            padding: 2px 6px; border-radius: 999px; background: #e2e8f0; color: #475569;
+        }
+        .hk-labeled[title$=": ON"]::before  { content: "ON";  background: #dcfce7; color: #15803d; }
+        .hk-labeled[title$=": OFF"]::before { content: "OFF"; }
+        .header-bar .top-settings-bar .hk-labeled:hover { transform: translateY(-1px); }
+        #btn-sound-toggle::after  { content: "Click Sound"; }
+        #btn-hover-voice::after   { content: "Hover Voice"; }
+        #btn-voice-toggle::after  { content: "Read Aloud"; }
+        #btn-numpad-toggle::after { content: "Numpad"; }
+        #btn-zen-mode::after      { content: "Zen Mode"; }
+        #btn-theme-toggle::after  { content: "Dark Mode"; }
+        #btn-theme-toggle[title="Theme: Light"]::after { content: "Light Mode"; }
+        #btn-theme-toggle::before { display: none; }
+        #btn-easy-read::after { content: "Easy Read"; }
+        #btn-shortcuts::after { content: "Shortcuts"; }
+        #btn-easy-read::before, #btn-shortcuts::before, #btn-progress::before, #btn-leaderboard::before { display: none; }
+        #btn-progress::after { content: "Progress"; }
+        #btn-leaderboard::after { content: "Leaderboard"; }
+        #btn-refer::before { display: none; }
+        #btn-refer::after { content: "Refer & Earn"; }
+        #btn-docs-pro::before { display: none; }
+        #btn-docs-pro::after { content: "Docs Pro"; }
+        #btn-docs-pro { --hk-fill: linear-gradient(135deg, #1e40af, #6366f1); }
+        #btn-refer { --hk-fill: linear-gradient(135deg, #be185d, #ec4899); }
+        #btn-progress    { --hk-fill: linear-gradient(135deg, #15803d, #22c55e); }
+        #btn-leaderboard { --hk-fill: linear-gradient(135deg, #a16207, #eab308); }
+        #btn-easy-read  { --hk-fill: linear-gradient(135deg, #be185d, #f472b6); }
+        #btn-shortcuts  { --hk-fill: linear-gradient(135deg, #7c2d12, #c2410c); }
+        /* हर button का अलग fill color */
+        .header-bar .top-settings-bar .hk-labeled,
+        .header-bar .top-settings-bar .hk-labeled:hover,
+        .header-bar .top-settings-bar .hk-labeled.active-state {
+            color: #ffffff !important; border: 1px solid rgba(255,255,255,0.25) !important;
+            background: var(--hk-fill) !important; text-shadow: 0 1px 1px rgba(0,0,0,0.18);
+        }
+        .header-bar .top-settings-bar .hk-labeled:hover { filter: brightness(1.08); box-shadow: 0 3px 8px rgba(0,0,0,0.25); }
+        .header-bar .top-settings-bar .hk-labeled.active-state { box-shadow: 0 0 0 2px rgba(255,255,255,0.85) inset; }
+        #btn-sound-toggle  { --hk-fill: linear-gradient(135deg, #0d9488, #14b8a6); }
+        #btn-hover-voice   { --hk-fill: linear-gradient(135deg, #ea580c, #f97316); }
+        #btn-voice-toggle  { --hk-fill: linear-gradient(135deg, #0284c7, #38bdf8); }
+        #btn-numpad-toggle { --hk-fill: linear-gradient(135deg, #4f46e5, #818cf8); }
+        #btn-zen-mode      { --hk-fill: linear-gradient(135deg, #059669, #34d399); }
+        #btn-theme-toggle  { --hk-fill: linear-gradient(135deg, #1e293b, #475569); }
+        #btn-theme-toggle[title="Theme: Light"] { --hk-fill: linear-gradient(135deg, #d97706, #fbbf24); }
+        .hk-labeled[title$=": ON"]::before  { background: #ffffff !important; color: #15803d !important; text-shadow: none; }
+        .hk-labeled[title$=": OFF"]::before { background: rgba(255,255,255,0.28) !important; color: #ffffff !important; }
+    </style>
     <style>
         /* ═══ BASE CSS ═══ */
         .sr-only { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important; }
@@ -724,12 +803,18 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
             <button class="tool-btn priority-2" id="btn-privacy" onmousedown="event.preventDefault()" onclick="window.open('privacy.html','_blank','noopener,noreferrer')" title="Privacy Policy">🔒 <span class="btn-label">Privacy</span></button>
             <button class="tool-btn priority-2" id="btn-terms" onmousedown="event.preventDefault()" onclick="window.open('terms.html','_blank','noopener,noreferrer')" title="Terms of Service">📜 <span class="btn-label">Terms</span></button>
             <button class="tool-btn priority-2" onmousedown="event.preventDefault()" onclick="window.open('manual.html','_blank','noopener,noreferrer')" style="background:#7c3aed;color:#fff;border-color:#a855f7;" title="User Manual">📖 <span class="btn-label">Manual</span></button>
-            <button class="tool-btn btn-icon-only priority-0" id="btn-sound-toggle" onmousedown="event.preventDefault()" onclick="toggleClickSound()" title="Sound: ON" aria-label="Toggle sound">🔊</button>
-            <button class="tool-btn btn-icon-only priority-2" id="btn-hover-voice" onmousedown="event.preventDefault()" onclick="toggleHoverVoice()" title="Hover Voice: OFF" aria-label="Toggle hover voice">🗣️</button>
-            <button class="tool-btn btn-icon-only priority-1" id="btn-voice-toggle" onmousedown="event.preventDefault()" onclick="toggleVoiceOutput()" title="TTS: ON" aria-label="Toggle TTS">🎧</button>
-            <button class="tool-btn btn-icon-only priority-1" id="btn-numpad-toggle" onmousedown="event.preventDefault()" onclick="toggleNumpad()" title="Numpad: OFF" aria-label="Toggle numpad">🔢</button>
-            <button class="tool-btn btn-icon-only priority-1" id="btn-zen-mode" onmousedown="event.preventDefault()" onclick="toggleZenMode()" title="Zen Mode: OFF" aria-label="Toggle zen mode">🧘</button>
-            <button class="tool-btn btn-icon-only priority-0" id="btn-theme-toggle" onmousedown="event.preventDefault()" onclick="toggleTheme()" title="Theme: Dark" aria-label="Toggle theme">🌙</button>
+            <button class="tool-btn hk-labeled priority-0" id="btn-sound-toggle" onmousedown="event.preventDefault()" onclick="toggleClickSound()" title="Sound: ON" aria-label="Toggle sound">🔊</button>
+            <button class="tool-btn hk-labeled priority-2" id="btn-hover-voice" onmousedown="event.preventDefault()" onclick="toggleHoverVoice()" title="Hover Voice: OFF" aria-label="Toggle hover voice">🗣️</button>
+            <button class="tool-btn hk-labeled priority-1" id="btn-voice-toggle" onmousedown="event.preventDefault()" onclick="toggleVoiceOutput()" title="TTS: ON" aria-label="Toggle TTS">🎧</button>
+            <button class="tool-btn hk-labeled priority-1" id="btn-numpad-toggle" onmousedown="event.preventDefault()" onclick="toggleNumpad()" title="Numpad: OFF" aria-label="Toggle numpad">🔢</button>
+            <button class="tool-btn hk-labeled priority-1" id="btn-zen-mode" onmousedown="event.preventDefault()" onclick="toggleZenMode()" title="Zen Mode: OFF" aria-label="Toggle zen mode">🧘</button>
+            <button class="tool-btn hk-labeled priority-0" id="btn-theme-toggle" onmousedown="event.preventDefault()" onclick="toggleTheme()" title="Theme: Dark" aria-label="Toggle theme">🌙</button>
+            <button class="tool-btn hk-labeled priority-1" id="btn-easy-read" onmousedown="event.preventDefault()" onclick="hkOpenA11y()" title="Easy Read (F2)" aria-label="Easy Read settings">♿</button>
+            <button class="tool-btn hk-labeled priority-1" id="btn-shortcuts" onmousedown="event.preventDefault()" onclick="hkOpenShortcuts()" title="Keyboard Shortcuts (F1)" aria-label="Keyboard shortcuts">⌨️</button>
+            <button class="tool-btn hk-labeled priority-1" id="btn-progress" onmousedown="event.preventDefault()" onclick="hkOpenProgress()" title="My Progress" aria-label="My typing progress">📈</button>
+            <button class="tool-btn hk-labeled priority-1" id="btn-leaderboard" onmousedown="event.preventDefault()" onclick="hkOpenLeaderboard()" title="Leaderboard" aria-label="Weekly leaderboard">🏆</button>
+            <button class="tool-btn hk-labeled priority-1" id="btn-refer" onmousedown="event.preventDefault()" onclick="hkOpenReferral()" title="Refer &amp; Earn" aria-label="Refer and earn">🎁</button>
+            <button class="tool-btn hk-labeled priority-1" id="btn-docs-pro" onmousedown="event.preventDefault()" onclick="hkOpenDocsPro()" title="Docs Pro — Convert, Spell Check, Export, Templates, Cloud" aria-label="Docs Pro">📄</button>
             <button class="tool-btn btn-icon-only priority-0" id="btn-admin-lock" onmousedown="event.preventDefault()" onclick="openAdminLoginModal()" title="Admin Login" aria-label="Admin Login">🔒</button>
         </div>
     </div>
@@ -1224,6 +1309,7 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
         <div class="trm-footer">
             <button class="trm-btn trm-btn-activate" id="btnTrialAction" onclick="handleTrialFlow()">📩 Send OTP</button>
             <button class="trm-btn trm-btn-wa" id="btnTrialWa" onclick="showWaMessagePreview('trial')" disabled style="opacity: 0.5; cursor: not-allowed;">💬 Payment Screenshot भेजें</button>
+            
         </div>
     </div>
 </div>
@@ -1542,6 +1628,17 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
                         <button class="tt-lesson-btn" data-group="job" data-idx="1" onclick="selectTestLesson('job', 1)">Lesson 2 — Office Report</button>
                         <button class="tt-lesson-btn" data-group="job" data-idx="2" onclick="selectTestLesson('job', 2)">Lesson 3 — Government Format</button>
                     </div>
+                    <div class="tt-lesson-col tt-exam-col">
+                        <h2 class="tt-lesson-heading">🏛️ Govt Exam</h2>
+                        <button class="tt-lesson-btn" data-group="exam" data-idx="0" onclick="selectTestLesson('exam', 0)">Passage 1 — Digital India</button>
+                        <button class="tt-lesson-btn" data-group="exam" data-idx="1" onclick="selectTestLesson('exam', 1)">Passage 2 — Office Order</button>
+                        <button class="tt-lesson-btn" data-group="exam" data-idx="2" onclick="selectTestLesson('exam', 2)">Passage 3 — Agriculture</button>
+                    </div>
+                </div>
+                <div id="ttExamOptions" class="tt-exam-options" style="display:none;">
+                    <label><input type="checkbox" id="ttExamNoBack" checked onchange="setExamOption('noBackspace', this.checked)"> ⌫ Backspace बंद (असली exam जैसा)</label>
+                    <label><input type="checkbox" id="ttExamHide" checked onchange="setExamOption('hideLive', this.checked)"> 🙈 Live गलतियाँ छुपाएँ</label>
+                    <span>Exam के अंत में शब्द-दर-शब्द रिपोर्ट मिलेगी (5% तक गलती = Qualified)।</span>
                 </div>
                 <div class="tt-section-title">⏱️ Duration</div>
                 <div class="tt-time-row">
@@ -1549,6 +1646,7 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
                     <button class="tt-time-btn" data-sec="120" onclick="selectTestDuration(120)">2 Min</button>
                     <button class="tt-time-btn" data-sec="300" onclick="selectTestDuration(300)">5 Min</button>
                     <button class="tt-time-btn" data-sec="600" onclick="selectTestDuration(600)">10 Min</button>
+                    <button class="tt-time-btn" data-sec="900" onclick="selectTestDuration(900)">15 Min</button>
                 </div>
                 <div class="tt-selected-info">Selected: <b id="ttSelectedLesson">Select a lesson</b></div>
                 <div style="display:flex; justify-content:center;"><button id="ttStartBtn" class="modal-btn modal-btn-primary" disabled onclick="startTypingTest()" style="padding:12px 40px; font-weight:900;">▶️ Start Practice</button></div>
@@ -1600,6 +1698,10 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
 <script src="js/privacy.js" defer></script>
 <script src="js/app.js" defer></script>
 <script src="js/typing-test.js" defer></script>
+<script src="js/insights.js" defer></script>
+<script src="js/growth.js" defer></script>
+<script src="js/hkscript.js" defer></script>
+<script src="js/docs-pro.js" defer></script>
 <script src="js/qr-offline.js" defer></script>
 <script src="js/certificate.js" defer></script>
 <script src="js/print-generator.js" defer></script>
@@ -1667,9 +1769,11 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
     };
 
     async function checkProKey(name, email, mobile, key) {
-        if (typeof verifyLicensePayload !== 'function') return { valid: false, hard: false, message: 'License system load नहीं हुआ। Page refresh करें।' };
+        // license.js load होते ही पकड़ी गई verify function (console से बदली नहीं जा सकती)
+        const verifyFn = (typeof window.hkVerifyLicense === 'function') ? window.hkVerifyLicense : null;
+        if (!verifyFn) return { valid: false, hard: false, message: 'License system load नहीं हुआ। Page refresh करें।' };
         let r;
-        try { r = await verifyLicensePayload(String(name || ''), String(email || ''), String(mobile || ''), String(key || '')); }
+        try { r = await verifyFn(String(name || ''), String(email || ''), String(mobile || ''), String(key || '')); }
         catch (e) { return { valid: false, hard: false, message: 'Verification Error' }; }
         if (r && r.valid) return { valid: true, plan: r.plan, expiry: r.expiry };
         const reason = (r && r.reason) || 'Verification Error';
@@ -1745,8 +1849,10 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
     }
     try { Object.defineProperty(window, 'hkVerifyTrialData', { value: verifyTrialData, writable: false, configurable: false }); } catch (e) {}
 
+    let _verifiedUntil = 0;
+    try { Object.defineProperty(window, 'hkSignedTrialActive', { value: () => Date.now() < _verifiedUntil, writable: false, configurable: false }); } catch (e) {}
     async function check() {
-        let changed = false;
+        let changed = false, until = 0;
         for (const k of ['hk_trial_data', 'hk_trial_data_backup']) {
             let raw = null; try { raw = localStorage.getItem(k); } catch (e) {}
             if (!raw) continue;
@@ -1754,8 +1860,9 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
             if (!(await verifyTrialData(d))) {
                 try { localStorage.removeItem(k); } catch (e) {}
                 changed = true;
-            }
+            } else if (d.expiresAt > until) { until = d.expiresAt; }
         }
+        _verifiedUntil = changed ? 0 : until;
         if (changed) {
             console.warn('[Trial] Invalid/tampered trial data removed');
             try { if (typeof window.applyLocks === 'function') window.applyLocks('FREE'); } catch (e) {}
@@ -1833,6 +1940,12 @@ window.handleTrialFlow = async function() {
             statusEl.textContent = 'Valid email डालें।';
             return;
         }
+        const _tk = ((document.getElementById('trialKeyInput') || {}).value || '').trim().toUpperCase();
+        if (!/^HKT-\d{7}-[0-9A-F]{4}$/.test(_tk)) {
+            statusEl.className = 'trm-status error';
+            statusEl.textContent = '₹9 pay करके Admin से मिली Trial Key (HKT-XXXXXXX-XXXX) डालें।';
+            return;
+        }
         btn.textContent = '⏳ Sending OTP...';
         btn.disabled = true;
         try {
@@ -1873,7 +1986,8 @@ window.handleTrialFlow = async function() {
             const response = await fetch(workerUrl, {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    email: email, otp: otp, purpose: 'trial',
+                    email: email, otp: otp, purpose: 'trialkey',
+                    key: ((document.getElementById('trialKeyInput') || {}).value || '').trim().toUpperCase(),
                     name: document.getElementById('trialCustomerName').value.trim(),
                     mobile: document.getElementById('trialCustomerMobile').value.trim(),
                     hwid: (function(){ try { return localStorage.getItem('hor_device_hwid') || ''; } catch(e) { return ''; } })()
@@ -2194,6 +2308,7 @@ window.verifyProOtp = async function() {
                 startTierWatchdog('P3');
                 return;
             } else {
+                try { localStorage.setItem('hk_trial_ended_at', String(trialData.expiresAt)); } catch (e) {}
                 try { localStorage.removeItem('hk_trial_data'); } catch (e) {}
                 try { localStorage.removeItem('hk_trial_data_backup'); } catch (e) {}
             }
@@ -3641,5 +3756,221 @@ function hpConvertAllText() {
 <!-- 🚑 FIXPACK -->
 <script src="js/fixpack.js"></script>
 
+<script>
+/* Header settings bar: mouse wheel से भी horizontal scroll */
+(function () {
+    function bind() {
+        var bar = document.querySelector('.header-bar .top-settings-bar');
+        if (!bar || bar.dataset.hkWheel === '1') return;
+        bar.dataset.hkWheel = '1';
+        bar.addEventListener('wheel', function (e) {
+            if (bar.scrollWidth <= bar.clientWidth) return;
+            if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) { bar.scrollLeft += e.deltaY; e.preventDefault(); }
+        }, { passive: false });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind); else bind();
+})();
+</script>
+<!-- ⏳ TRIAL REMINDER BANNER -->
+<style>
+    #hkTrialBanner { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 9000; display: none;
+        align-items: center; gap: 10px; max-width: min(640px, calc(100vw - 24px)); padding: 10px 12px 10px 16px;
+        border-radius: 14px; color: #fff; font: 700 13px/1.35 Inter, system-ui, sans-serif;
+        background: linear-gradient(135deg, #7c3aed, #db2777); box-shadow: 0 10px 30px rgba(0,0,0,.28); }
+    #hkTrialBanner.hk-ended { background: linear-gradient(135deg, #b91c1c, #ea580c); }
+    #hkTrialBanner .hk-tb-text { flex: 1; }
+    #hkTrialBanner button { border: 0; cursor: pointer; border-radius: 10px; font: 800 12px Inter, system-ui, sans-serif; }
+    #hkTrialBanner .hk-tb-buy { background: #fff; color: #7c3aed; padding: 8px 12px; white-space: nowrap; }
+    #hkTrialBanner.hk-ended .hk-tb-buy { color: #b91c1c; }
+    #hkTrialBanner .hk-tb-x { background: rgba(255,255,255,.2); color: #fff; width: 28px; height: 28px; }
+    body.zen-mode #hkTrialBanner, body.typing-focus #hkTrialBanner { display: none !important; }
+</style>
+<div id="hkTrialBanner" role="status" aria-live="polite">
+    <span class="hk-tb-text" id="hkTrialBannerText"></span>
+    <button class="hk-tb-buy" onclick="try{openBuyModal()}catch(e){}">💎 Pro खरीदें</button>
+    <button class="hk-tb-x" aria-label="बंद करें" onclick="hkDismissTrialBanner()">✕</button>
+</div>
+<script>
+(function () {
+    const DAY = 86400000, SHOW_WITHIN = 2 * DAY, ENDED_SHOW_FOR = 3 * DAY;
+    const today = () => new Date().toISOString().slice(0, 10);
+    function hasPro() { try { return !!(localStorage.getItem('hk_pro_license') || localStorage.getItem('hk_pro_license_backup')); } catch (e) { return false; } }
+    function render() {
+        const el = document.getElementById('hkTrialBanner'), tx = document.getElementById('hkTrialBannerText');
+        if (!el || !tx) return;
+        el.style.display = 'none'; el.classList.remove('hk-ended');
+        if (hasPro()) return;
+        let dismissed = ''; try { dismissed = localStorage.getItem('hk_trial_banner_dismissed') || ''; } catch (e) {}
+        if (dismissed === today()) return;
+        const now = Date.now();
+        let d = null; try { d = JSON.parse(localStorage.getItem('hk_trial_data') || 'null'); } catch (e) {}
+        const active = d && d.expiresAt > now && typeof window.hkSignedTrialActive === 'function' && window.hkSignedTrialActive();
+        if (active) {
+            const left = d.expiresAt - now;
+            if (left > SHOW_WITHIN) return;
+            const hrs = Math.ceil(left / 3600000);
+            tx.textContent = hrs > 24
+                ? `⏳ आपका trial ${Math.ceil(left / DAY)} दिन में खत्म होगा। काम बिना रुकावट जारी रखने के लिए Pro लें।`
+                : `⏳ आपका trial ${hrs} घंटे में खत्म होगा। अभी Pro लें, आपका सारा काम सुरक्षित रहेगा।`;
+            el.style.display = 'flex';
+            return;
+        }
+        let ended = 0; try { ended = Number(localStorage.getItem('hk_trial_ended_at')) || 0; } catch (e) {}
+        if (ended && now - ended < ENDED_SHOW_FOR) {
+            el.classList.add('hk-ended');
+            tx.textContent = '⌛ आपका 7 दिन का trial खत्म हो गया। Pro features फिर से चालू करने के लिए Pro लें।';
+            el.style.display = 'flex';
+        }
+    }
+    window.hkDismissTrialBanner = function () {
+        try { localStorage.setItem('hk_trial_banner_dismissed', today()); } catch (e) {}
+        const el = document.getElementById('hkTrialBanner'); if (el) el.style.display = 'none';
+    };
+    window.addEventListener('load', () => setTimeout(render, 2500));
+    setInterval(render, 10 * 60000);
+})();
+</script>
+<!-- ⌨️ SHORTCUTS + ♿ EASY READ -->
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+    .hk-ov { position: fixed; inset: 0; z-index: 10050; display: none; align-items: center; justify-content: center;
+        background: rgba(15, 23, 42, .55); padding: 16px; }
+    .hk-ov.show { display: flex; }
+    .hk-ov-card { width: min(560px, 100%); max-height: 86vh; overflow: auto; background: #fff; color: #0f172a;
+        border-radius: 16px; box-shadow: 0 20px 50px rgba(0,0,0,.35); font: 14px/1.5 Inter, system-ui, sans-serif; }
+    .hk-ov-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px;
+        border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; background: #fff; }
+    .hk-ov-head h3 { margin: 0; font-size: 16px; font-weight: 900; }
+    .hk-ov-x { border: 0; background: #f1f5f9; border-radius: 8px; width: 32px; height: 32px; cursor: pointer; font-size: 15px; }
+    .hk-ov-body { padding: 12px 18px 18px; }
+    .hk-sc-group { margin: 10px 0 4px; font-size: 11px; font-weight: 900; letter-spacing: .6px; text-transform: uppercase; color: #7c3aed; }
+    .hk-sc-row { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-bottom: 1px dashed #e2e8f0; }
+    .hk-sc-row span:first-child { color: #334155; }
+    .hk-kbd { display: inline-block; min-width: 22px; padding: 2px 7px; margin-left: 3px; border: 1px solid #cbd5e1; border-bottom-width: 3px;
+        border-radius: 6px; background: #f8fafc; font: 800 12px/1.4 ui-monospace, Consolas, monospace; text-align: center; color: #0f172a; }
+    .hk-sc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 6px; margin-top: 6px; }
+    .hk-sc-grid div { display: flex; justify-content: space-between; align-items: center; padding: 5px 8px; background: #f8fafc; border-radius: 8px; font-size: 13px; }
+    .hk-a11y-opt { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+    .hk-a11y-opt b { display: block; font-size: 14px; }
+    .hk-a11y-opt small { color: #64748b; }
+    .hk-switch { position: relative; width: 46px; height: 26px; flex: 0 0 auto; }
+    .hk-switch input { opacity: 0; width: 0; height: 0; }
+    .hk-switch i { position: absolute; inset: 0; border-radius: 999px; background: #cbd5e1; transition: .2s; cursor: pointer; }
+    .hk-switch i::after { content: ""; position: absolute; left: 3px; top: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: .2s; }
+    .hk-switch input:checked + i { background: #16a34a; }
+    .hk-switch input:checked + i::after { transform: translateX(20px); }
+    .hk-switch input:focus-visible + i { outline: 3px solid #7c3aed; outline-offset: 2px; }
+
+    /* ♿ Easy Read modes */
+    body.hk-a11y-contrast #editor { background: #000 !important; color: #fff200 !important; caret-color: #fff200 !important; }
+    body.hk-a11y-contrast button, body.hk-a11y-contrast .tab-pill, body.hk-a11y-contrast .status-chip { outline: 2px solid #000 !important; outline-offset: -1px; }
+    body.hk-a11y-contrast[data-theme="dark"] button, body.hk-a11y-contrast[data-theme="dark"] .tab-pill { outline-color: #fff !important; }
+    body.hk-a11y-contrast :focus-visible { outline: 3px solid #f59e0b !important; outline-offset: 2px !important; }
+    body.hk-a11y-large #editor { font-size: 1.4em !important; line-height: 1.75 !important; }
+    body.hk-a11y-large .tool-btn, body.hk-a11y-large .tab-pill, body.hk-a11y-large .status-chip { font-size: 13px !important; }
+    body.hk-a11y-readable #editor { font-family: "Atkinson Hyperlegible", "Noto Sans Devanagari", "Noto Sans Ol Chiki", sans-serif !important;
+        letter-spacing: .03em !important; word-spacing: .14em !important; line-height: 1.8 !important; }
+    body.hk-a11y-calm *, body.hk-a11y-calm *::before, body.hk-a11y-calm *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+</style>
+
+<div class="hk-ov" id="hkShortcutsOv" role="dialog" aria-modal="true" aria-labelledby="hkScTitle" onclick="if(event.target===this)hkCloseOv(this)">
+    <div class="hk-ov-card">
+        <div class="hk-ov-head"><h3 id="hkScTitle">⌨️ Keyboard Shortcuts</h3><button class="hk-ov-x" aria-label="बंद करें" onclick="hkCloseOv(this.closest('.hk-ov'))">✕</button></div>
+        <div class="hk-ov-body">
+            <div class="hk-sc-group">सामान्य</div>
+            <div class="hk-sc-row"><span>यह सूची खोलें</span><span><kbd class="hk-kbd">F1</kbd></span></div>
+            <div class="hk-sc-row"><span>Easy Read settings</span><span><kbd class="hk-kbd">F2</kbd></span></div>
+            <div class="hk-sc-row"><span>Zen Mode चालू / बंद</span><span><kbd class="hk-kbd">F9</kbd></span></div>
+            <div class="hk-sc-row"><span>Focus mode से बाहर / पढ़ना रोकें</span><span><kbd class="hk-kbd">Esc</kbd></span></div>
+            <div class="hk-sc-group">Editor</div>
+            <div class="hk-sc-row"><span>Undo / Redo</span><span><kbd class="hk-kbd">Ctrl</kbd><kbd class="hk-kbd">Z</kbd> &nbsp;<kbd class="hk-kbd">Ctrl</kbd><kbd class="hk-kbd">Y</kbd></span></div>
+            <div class="hk-sc-row"><span>Bold / Italic / Underline</span><span><kbd class="hk-kbd">Ctrl</kbd><kbd class="hk-kbd">B</kbd> <kbd class="hk-kbd">I</kbd> <kbd class="hk-kbd">U</kbd></span></div>
+            <div class="hk-sc-row"><span>सब चुनें / Copy / Paste</span><span><kbd class="hk-kbd">Ctrl</kbd><kbd class="hk-kbd">A</kbd> <kbd class="hk-kbd">C</kbd> <kbd class="hk-kbd">V</kbd></span></div>
+            <div class="hk-sc-group">Santali (Roman): Alt + अक्षर</div>
+            <div class="hk-sc-grid" id="hkScRoman"></div>
+            <p style="margin:10px 0 0;color:#64748b;font-size:12px;">Shift साथ में दबाएँ तो बड़ा अक्षर आता है (Alt + Shift + N = Ñ)।</p>
+        </div>
+    </div>
+</div>
+
+<div class="hk-ov" id="hkA11yOv" role="dialog" aria-modal="true" aria-labelledby="hkA11yTitle" onclick="if(event.target===this)hkCloseOv(this)">
+    <div class="hk-ov-card">
+        <div class="hk-ov-head"><h3 id="hkA11yTitle">♿ Easy Read</h3><button class="hk-ov-x" aria-label="बंद करें" onclick="hkCloseOv(this.closest('.hk-ov'))">✕</button></div>
+        <div class="hk-ov-body">
+            <label class="hk-a11y-opt"><span><b>गाढ़े रंग (High Contrast)</b><small>काले पर पीले अक्षर, साफ़ बॉर्डर</small></span><span class="hk-switch"><input type="checkbox" data-a11y="contrast"><i></i></span></label>
+            <label class="hk-a11y-opt"><span><b>बड़े अक्षर</b><small>Editor में लगभग 40% बड़ा text</small></span><span class="hk-switch"><input type="checkbox" data-a11y="large"><i></i></span></label>
+            <label class="hk-a11y-opt"><span><b>आसानी से पढ़ने वाला font</b><small>Dyslexia में मददगार, अक्षरों में ज़्यादा जगह</small></span><span class="hk-switch"><input type="checkbox" data-a11y="readable"><i></i></span></label>
+            <label class="hk-a11y-opt" style="border-bottom:0"><span><b>Animation बंद</b><small>हिलती-डुलती चीज़ें रोकें</small></span><span class="hk-switch"><input type="checkbox" data-a11y="calm"><i></i></span></label>
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    const KEYS = ['contrast', 'large', 'readable', 'calm'];
+    let lastFocus = null;
+    function load() { try { return JSON.parse(localStorage.getItem('hk_a11y') || '{}') || {}; } catch (e) { return {}; } }
+    function ensureFont() {
+        if (document.getElementById('hkReadableFont')) return;
+        const l = document.createElement('link');
+        l.id = 'hkReadableFont'; l.rel = 'stylesheet';
+        l.href = 'https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap';
+        document.head.appendChild(l);
+    }
+    function apply(st) {
+        KEYS.forEach(k => document.body.classList.toggle('hk-a11y-' + k, !!st[k]));
+        if (st.readable) ensureFont();
+        const b = document.getElementById('btn-easy-read');
+        if (b) b.classList.toggle('active-state', KEYS.some(k => st[k]));
+    }
+    function openOv(id) {
+        const ov = document.getElementById(id); if (!ov) return;
+        lastFocus = document.activeElement;
+        ov.classList.add('show');
+        const f = ov.querySelector('input, .hk-ov-x'); if (f) setTimeout(() => f.focus(), 30);
+    }
+    window.hkCloseOv = function (ov) {
+        if (!ov) return; ov.classList.remove('show');
+        try { if (lastFocus && lastFocus.focus) lastFocus.focus(); } catch (e) {}
+    };
+    window.hkOpenA11y = function () {
+        const st = load();
+        document.querySelectorAll('#hkA11yOv input[data-a11y]').forEach(i => { i.checked = !!st[i.dataset.a11y]; });
+        openOv('hkA11yOv');
+    };
+    window.hkOpenShortcuts = function () {
+        const grid = document.getElementById('hkScRoman');
+        if (grid && !grid.childElementCount) {
+            const map = (typeof romanShortcutMap !== 'undefined' && romanShortcutMap) ? romanShortcutMap : {};
+            Object.keys(map).filter(k => !/[A-Z{}:"<>?|!]/.test(k)).forEach(k => {
+                const d = document.createElement('div');
+                const lab = document.createElement('span'); lab.textContent = 'Alt ';
+                const kb = document.createElement('kbd'); kb.className = 'hk-kbd'; kb.textContent = k;
+                lab.appendChild(kb);
+                const v = document.createElement('b'); v.textContent = map[k];
+                d.append(lab, v);
+                grid.appendChild(d);
+            });
+        }
+        openOv('hkShortcutsOv');
+    };
+    document.addEventListener('change', (e) => {
+        const k = e.target && e.target.dataset && e.target.dataset.a11y;
+        if (!k) return;
+        const st = load(); st[k] = e.target.checked;
+        try { localStorage.setItem('hk_a11y', JSON.stringify(st)); } catch (err) {}
+        apply(st);
+    });
+    document.addEventListener('keydown', (e) => {
+        const open = document.querySelector('.hk-ov.show');
+        if (open && e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); hkCloseOv(open); return; }
+        if (e.ctrlKey || e.altKey || e.metaKey) return; // Roman Alt-shortcuts से टकराव नहीं
+        if (e.key === 'F1') { e.preventDefault(); hkOpenShortcuts(); }
+        else if (e.key === 'F2') { e.preventDefault(); hkOpenA11y(); }
+        else if (e.key === 'F9' && typeof toggleZenMode === 'function') { e.preventDefault(); toggleZenMode(); }
+    }, true);
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => apply(load())); else apply(load());
+})();
+</script>
 </body>
 </html>

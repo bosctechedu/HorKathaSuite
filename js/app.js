@@ -2502,9 +2502,9 @@ window.AppDebug.securityStatus = () => {
         if (!hostname) return false;
         const hn = hostname.toLowerCase();
         if (['localhost', '127.0.0.1', '0.0.0.0', '::1', '[::1]'].includes(hn)) return true;
+        // ⚠️ '.dev' हटाया — live site horkathasuite.pages.dev इसी से "development" मानी जा रही थी
         if (hn.endsWith('.local') || hn.endsWith('.localhost') ||
-            hn.endsWith('.test') || hn.endsWith('.dev') ||
-            hn.endsWith('.internal')) return true;
+            hn.endsWith('.test') || hn.endsWith('.internal')) return true;
         if (hn.startsWith('192.168.') || hn.startsWith('10.')) return true;
         const ipMatch = hn.match(/^172\.(\d+)\./);
         if (ipMatch && parseInt(ipMatch[1], 10) >= 16 && parseInt(ipMatch[1], 10) <= 31) return true;
@@ -2554,7 +2554,11 @@ window.AppDebug.securityStatus = () => {
     ];
 
     const _debugBackups = {};
-    window.__debugUnlocked = false;
+    // 🔒 Unlock flag closure में; console से window.__debugUnlocked = true काम नहीं करेगा
+    let _dbgUnlocked = false;
+    try {
+        Object.defineProperty(window, '__debugUnlocked', { get: () => _dbgUnlocked, set: () => {}, configurable: false });
+    } catch (e) {}
 
     if (isProduction && typeof window.TrialSystem !== 'undefined') {
         const _origReset = window.TrialSystem.reset;
@@ -2712,7 +2716,7 @@ window.AppDebug.securityStatus = () => {
 
         if (window.__debugUnlocked === true) {
             if (confirm('🔒 Hide debug tools again?')) {
-                window.__debugUnlocked = false;
+                _dbgUnlocked = false;
                 const removed = _captureAndHide();
                 console.log('🔒 Debug hidden again (' + removed + ' removed)');
                 if (typeof showToast === 'function') {
@@ -2766,7 +2770,7 @@ window.AppDebug.securityStatus = () => {
                 sessionStorage.removeItem(_DEBUG_LOCKOUT_KEY);
             } catch (e) {}
 
-            window.__debugUnlocked = true;
+            _dbgUnlocked = true;
             const restored = _restoreAll();
 
             console.log('🔓 Debug unlocked — ' + restored + ' tools restored');

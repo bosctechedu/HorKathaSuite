@@ -33,6 +33,8 @@ const CertificateSystem = {
     _escHandler: null,
     _verifyUrlDiagnostics: null,
     _qrPromise: null,
+    _signed: null,          // { key, token, sig } — Worker से मिला signature
+    CERT_API: 'https://hor-katha-api.bosctechedu.workers.dev',
     _resizeHandler: null,
 
     _acquireLock(action) {
@@ -64,11 +66,14 @@ const CertificateSystem = {
     },
 
     open(testResult) {
-        if (!testResult || typeof testResult !== 'object') {
-            testResult = { group: 'basic', idx: 0, wpm: 45, accuracy: 96, grade: 'A+', chars: 250, errors: 3, duration: '01:00' };
+        if (!testResult || typeof testResult !== 'object' || !(Number(testResult.wpm) > 0)) {
+            if (typeof showToast === 'function') showToast('पहले typing test पूरा करें', 'warning', 3000);
+            return;
         }
         this._releaseLock();
         this._qrPromise = null;
+        this._signed = null;
+        this._proofReady = (testResult.proofReady && typeof testResult.proofReady.then === 'function') ? testResult.proofReady : Promise.resolve(null);
 
         let safeDate = new Date();
         if (testResult.date) {
@@ -76,9 +81,10 @@ const CertificateSystem = {
             if (!isNaN(parsed.getTime())) safeDate = parsed;
         }
 
+        const _grp = testResult.group === 'exam' ? 'job' : (testResult.group || 'basic'); // Exam certificate = Job level
         this.currentData = {
-            category: testResult.group || 'basic',
-            categoryName: this.getCategoryName(testResult.group),
+            category: _grp,
+            categoryName: testResult.group === 'exam' ? '🏛️ Govt Exam Level' : this.getCategoryName(_grp),
             lessonName: this.getLessonName(testResult.group, testResult.idx),
             wpm: Number(testResult.wpm) || 0,
             accuracy: Number(testResult.accuracy) || 0,
@@ -87,7 +93,7 @@ const CertificateSystem = {
             errors: Number(testResult.errors) || 0,
             duration: testResult.duration || '00:00',
             date: safeDate,
-            certificateNo: this.generateCertificateNo(testResult.group),
+            certificateNo: this.generateCertificateNo(_grp),
             studentName: ''
         };
 
@@ -280,6 +286,10 @@ const CertificateSystem = {
 
         this.currentData.studentName = name;
         try { localStorage.setItem('hor_cert_last_name', name); } catch (e) {}
+
+        // 🔏 Server से sign करवाएँ (offline हो तो certificate बनेगा पर "असत्यापित" दिखेगा)
+        if (typeof showToast === 'function') showToast('🔏 Certificate सत्यापित किया जा रहा है...', 'info', 1500);
+        await this.ensureSigned();
 
         try {
             if (document.fonts && document.fonts.ready) {
@@ -514,9 +524,68 @@ const CertificateSystem = {
         return diag;
     },
 
+    _certDateStr() {
+        const d = this.currentData;
+        return (d && d.date instanceof Date && !isNaN(d.date.getTime())) ? d.date.toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
+    },
+
+    _signKey() {
+        const d = this.currentData || {};
+        return [d.certificateNo, d.studentName, d.wpm, d.accuracy].join('|');
+    },
+
+    async ensureSigned() {
+        const d = this.currentData;
+        if (!d) return null;
+        if (this._signed && this._signed.key === this._signKey()) return this._signed;
+        this._signed = null;
+        let sid = null;
+        try {
+            sid = await Promise.race([this._proofReady || Promise.resolve(null), new Promise(r => setTimeout(() => r(null), 8000))]);
+        } catch (e) { sid = null; }
+        for (let attempt = 0; attempt < 2; attempt++) {
+            try {
+                const ctrl = new AbortController();
+                const timer = setTimeout(() => ctrl.abort(), 8000);
+                const res = await fetch(`${this.CERT_API}/sign-cert`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    signal: ctrl.signal,
+                    body: JSON.stringify({
+                        no: d.certificateNo, name: d.studentName, wpm: d.wpm, acc: d.accuracy,
+                        date: this._certDateStr(), cat: d.category, lesson: d.lessonName,
+                        chars: d.chars, errors: d.errors, dur: d.duration, sid
+                    })
+                });
+                clearTimeout(timer);
+                const data = await res.json().catch(() => ({}));
+                if (res.status === 409 && data.code === 'DUPLICATE') {
+                    d.certificateNo = this.generateCertificateNo(d.category);
+                    continue;
+                }
+                if (!res.ok || !data.token || !data.sig) {
+                    console.warn('[Cert] sign failed:', data.error || res.status);
+                    if (typeof showToast === 'function' && data.error) showToast('⚠️ Certificate सत्यापित नहीं हुआ: ' + data.error, 'warning', 4000);
+                    return null;
+                }
+                if (data.grade) d.grade = data.grade; // server की grade ही मान्य
+                this._signed = { key: this._signKey(), token: data.token, sig: data.sig };
+                return this._signed;
+            } catch (e) {
+                console.warn('[Cert] sign error (offline?):', e.message);
+                return null;
+            }
+        }
+        return null;
+    },
+
     getVerifyUrl() {
         const d = this.currentData;
         const res = this._resolveBaseUrlForVerify();
+        if (this._signed && this._signed.key === this._signKey()) {
+            const p = new URLSearchParams({ c: this._signed.token, s: this._signed.sig });
+            return `${res.url}/verify.html?${p.toString()}`;
+        }
         this._verifyUrlDiagnostics = { ...res, certificateNo: d ? d.certificateNo : null, timestamp: Date.now() };
         const dateStr = (d && d.date instanceof Date && !isNaN(d.date.getTime())) ? d.date.toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
         const params = new URLSearchParams({ cert: d ? d.certificateNo : '', name: d ? d.studentName : '', wpm: String(d ? d.wpm : 0), acc: String(d ? d.accuracy : 0), grade: d ? d.grade : 'D', date: dateStr });
@@ -537,7 +606,7 @@ const CertificateSystem = {
     },
 
     getLessonName(group, idx) {
-        const names = { basic: ['Home Row', 'Common Words', 'Short Sentences'], advanced: ['Punctuation', 'Numbers', 'Complex'], job: ['Email', 'Report', 'Govt Format'] };
+        const names = { basic: ['Home Row', 'Common Words', 'Short Sentences'], advanced: ['Punctuation', 'Numbers', 'Complex'], job: ['Email', 'Report', 'Govt Format'], exam: ['Govt Exam Passage 1', 'Govt Exam Office Order', 'Govt Exam Passage 3'] };
         return (names[group] || names.basic)[idx] || 'Typing Practice';
     },
 
@@ -740,10 +809,7 @@ if (typeof window !== 'undefined') {
             console.log('🎓 Certificate System v7.8.2 (Stable)');
             console.log('═══════════════════════════════════════════');
         },
-        testGenerate: () => CertificateSystem.open({
-            group: 'basic', idx: 0, wpm: 45, accuracy: 96,
-            grade: 'A+', chars: 250, errors: 3, duration: '01:00'
-        })
+        signed: () => !!CertificateSystem._signed
     };
 }
 

@@ -125,6 +125,27 @@ const TT_LESSONS = {
         ]
     }
 };
+// ============================================================
+// 🏛️ GOVT EXAM PASSAGES (Phase 2)
+// Worker के LESSON_HASHES में इनके hash जुड़े हैं — passage बदलें तो hash फिर बनाएँ।
+// ============================================================
+TT_LESSONS['english'].exam = [
+    "The Government of India has launched several schemes to promote digital literacy among citizens living in rural areas. Under these schemes, every family is encouraged to have at least one member who can operate a computer, use the internet and access online services. Training centres have been opened at the block level where trained instructors teach basic computer skills free of cost. The programme also helps young people prepare for competitive examinations, apply for jobs online and receive government benefits directly in their bank accounts.",
+    "Office Order No. 112/2025. In pursuance of the instructions received from the Department of Personnel and Training, all officers and staff are hereby directed to mark their attendance through the biometric system before 9:30 a.m. on every working day. Leave applications shall be submitted through the online portal at least three days in advance, except in case of emergency. The Head of Office will review the attendance report on the first working day of each month and take necessary action against habitual late comers.",
+    "Agriculture continues to be the backbone of the Indian economy, providing livelihood to nearly half of the population. Farmers today face many challenges such as irregular rainfall, rising cost of seeds and fertilisers, and lack of proper storage facilities. To address these problems, the government has introduced crop insurance, soil health cards and minimum support prices for major crops. Modern methods like drip irrigation, organic farming and the use of mobile applications for weather updates are helping farmers increase their income steadily."
+];
+TT_LESSONS['hindi-dev'].exam = [
+    "भारत सरकार ने ग्रामीण क्षेत्रों में रहने वाले नागरिकों के बीच डिजिटल साक्षरता बढ़ाने के लिए कई योजनाएँ शुरू की हैं। इन योजनाओं के अंतर्गत हर परिवार के कम से कम एक सदस्य को कंप्यूटर चलाना, इंटरनेट का उपयोग करना और ऑनलाइन सेवाओं का लाभ लेना सिखाया जाता है। प्रखंड स्तर पर प्रशिक्षण केंद्र खोले गए हैं जहाँ प्रशिक्षित शिक्षक निःशुल्क कंप्यूटर की बुनियादी जानकारी देते हैं।",
+    "कार्यालय आदेश संख्या 112/2025। कार्मिक एवं प्रशिक्षण विभाग से प्राप्त निर्देशों के अनुपालन में सभी पदाधिकारियों एवं कर्मचारियों को निर्देश दिया जाता है कि वे प्रत्येक कार्य दिवस पर सुबह 9:30 बजे से पहले बायोमेट्रिक प्रणाली द्वारा अपनी उपस्थिति दर्ज करें। अवकाश के लिए आवेदन कम से कम तीन दिन पहले ऑनलाइन पोर्टल के माध्यम से जमा करना अनिवार्य होगा।",
+    "कृषि आज भी भारतीय अर्थव्यवस्था की रीढ़ है और देश की लगभग आधी जनसंख्या की आजीविका इसी पर निर्भर है। किसानों को अनियमित वर्षा, बीज और खाद की बढ़ती कीमत तथा भंडारण की कमी जैसी अनेक समस्याओं का सामना करना पड़ता है। इन समस्याओं को दूर करने के लिए सरकार ने फसल बीमा, मृदा स्वास्थ्य कार्ड और न्यूनतम समर्थन मूल्य जैसी योजनाएँ शुरू की हैं।"
+];
+// बाकी भाषाओं में exam passage = उसी भाषा के lessons को जोड़कर बना लंबा passage
+Object.keys(TT_LESSONS).forEach((lang) => {
+    const p = TT_LESSONS[lang];
+    if (p.exam) return;
+    p.exam = [(p.job || []).join(' '), (p.advanced || []).join(' '), (p.basic || []).join(' ')];
+});
+
 
 // ============================================================
 // 📊 CONSTANTS
@@ -199,8 +220,92 @@ function createFreshTTState() {
         // Set ONCE in finishTest(). All subsequent readers
         // (certificate, share, history) reuse these numbers.
         // Prevents WPM from drifting as wall-clock time grows.
-        _finalResults: null
+        _finalResults: null,
+        // ⌨️ Server typing proof
+        proofSid: null,
+        proofReady: null,
+        typedValue: '',
+        ks: [],
+        _lastKsT: 0
     };
+}
+
+// ============================================================
+// ⌨️ SERVER TYPING PROOF — test का समय और typed text Worker पर दर्ज
+// ============================================================
+const TT_PROOF_API = 'https://hor-katha-api.bosctechedu.workers.dev';
+
+async function _ttSha256Hex(str) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function _ttProofStart(state) {
+    state.proofReady = (async () => {
+        try {
+            const lh = (await _ttSha256Hex(state.text)).slice(0, 32);
+            const res = await fetch(TT_PROOF_API + '/test-start', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ lh })
+            });
+            const data = await res.json().catch(() => ({}));
+            if (res.ok && data.sid) state.proofSid = data.sid;
+        } catch (e) { console.warn('[TT] proof start failed (offline?):', e.message); }
+        return state.proofSid;
+    })();
+}
+
+function _ttProofFinish(state) {
+    const startP = state.proofReady || Promise.resolve(null);
+    state.proofReady = startP.then(async (sid) => {
+        if (!sid) return null;
+        try {
+            const res = await fetch(TT_PROOF_API + '/test-finish', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    sid, text: state.text, typed: state.typedValue || '',
+                    ks: state.ks.slice(0, 6000), pause: Math.round((state.pausedDuration || 0) / 1000)
+                })
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) { console.warn('[TT] proof finish rejected:', data.error || res.status); return null; }
+            return sid;
+        } catch (e) { console.warn('[TT] proof finish failed:', e.message); return null; }
+    });
+    return state.proofReady;
+}
+
+// 🏛️ Exam Mode options (setup में checkbox)
+let _ttExamOpts = (() => {
+    try { return Object.assign({ noBackspace: true, hideLive: true }, JSON.parse(localStorage.getItem('hor_tt_exam_opts') || '{}')); }
+    catch (e) { return { noBackspace: true, hideLive: true }; }
+})();
+function setExamOption(key, val) {
+    if (!(key in _ttExamOpts)) return;
+    _ttExamOpts[key] = !!val;
+    try { localStorage.setItem('hor_tt_exam_opts', JSON.stringify(_ttExamOpts)); } catch (e) {}
+}
+function _syncExamOptionUI() {
+    const a = document.getElementById('ttExamNoBack'), b = document.getElementById('ttExamHide');
+    if (a) a.checked = !!_ttExamOpts.noBackspace;
+    if (b) b.checked = !!_ttExamOpts.hideLive;
+    const box = document.getElementById('ttExamOptions');
+    if (box) box.style.display = _ttSelectedGroup === 'exam' ? 'flex' : 'none';
+}
+
+// SSC-जैसी रिपोर्ट: शब्द-दर-शब्द तुलना
+function _examReport(state) {
+    const typed = String(state.typedValue || '');
+    const tw = state.text.split(/\s+/).filter(Boolean);
+    const uw = typed.split(/\s+/).filter(Boolean);
+    const mistakes = [];
+    for (let i = 0; i < uw.length; i++) {
+        const exp = tw[i] || '';
+        if (uw[i] !== exp) mistakes.push({ n: i + 1, exp, got: uw[i] });
+    }
+    const typedWords = uw.length;
+    const errorPct = typedWords ? Math.round((mistakes.length / typedWords) * 1000) / 10 : 0;
+    return { totalWords: tw.length, typedWords, wrongWords: mistakes.length, errorPct, mistakes };
 }
 
 let _ttState = createFreshTTState();
@@ -700,6 +805,45 @@ function _renderResultExtras() {
     }
     extras.innerHTML = '';
 
+    if (_ttState.exam && _ttState.text) {
+        const r = _examReport(_ttState);
+        const box = document.createElement('div');
+        box.style.cssText = 'margin-bottom:12px; padding:12px; background:#fff; border:2px solid #1e3a8a; border-radius:10px;';
+        const head = document.createElement('div');
+        head.style.cssText = 'font-weight:900; color:#1e3a8a; margin-bottom:8px;';
+        head.textContent = '🏛️ Exam Report';
+        box.appendChild(head);
+        const row = document.createElement('div');
+        row.style.cssText = 'display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px;';
+        [['कुल शब्द', r.totalWords], ['टाइप किए', r.typedWords], ['गलत शब्द', r.wrongWords], ['Error %', r.errorPct + '%'],
+         ['परिणाम', r.errorPct <= 5 ? '✅ Qualified (≤5%)' : '❌ 5% से ज़्यादा गलती']].forEach(([k, v]) => {
+            const c = document.createElement('span');
+            c.style.cssText = 'background:#eff6ff; padding:4px 10px; border-radius:6px; font-weight:800; color:#1e3a8a;';
+            c.textContent = `${k}: ${v}`;
+            row.appendChild(c);
+        });
+        box.appendChild(row);
+        if (r.mistakes.length) {
+            const t = document.createElement('table');
+            t.style.cssText = 'width:100%; border-collapse:collapse; font-size:0.78rem;';
+            const hr = t.insertRow();
+            ['#', 'सही शब्द', 'आपने लिखा'].forEach(h => { const th = document.createElement('th'); th.textContent = h; th.style.cssText = 'text-align:left; padding:4px; border-bottom:1px solid #cbd5e1;'; hr.appendChild(th); });
+            r.mistakes.slice(0, 40).forEach(m => {
+                const tr = t.insertRow();
+                [m.n, m.exp || '(अतिरिक्त)', m.got].forEach((v, i) => {
+                    const td = tr.insertCell(); td.textContent = v;
+                    td.style.cssText = 'padding:4px; border-bottom:1px dashed #e2e8f0;' + (i === 1 ? 'color:#166534; font-weight:700;' : i === 2 ? 'color:#b91c1c;' : '');
+                });
+            });
+            box.appendChild(t);
+            if (r.mistakes.length > 40) {
+                const more = document.createElement('div'); more.style.cssText = 'margin-top:6px; color:#64748b;';
+                more.textContent = `+ ${r.mistakes.length - 40} और गलतियाँ`; box.appendChild(more);
+            }
+        }
+        extras.appendChild(box);
+    }
+
     const stats = getSessionStats();
     const consistency = _computeConsistency();
 
@@ -941,6 +1085,7 @@ function selectTestLesson(group, idx) {
 
     _ttSelectedGroup = group;
     _ttSelectedIdx = idxNum;
+    _syncExamOptionUI();
 
     document.querySelectorAll('.tt-lesson-btn').forEach(b => {
         const g = b.getAttribute('data-group');
@@ -978,7 +1123,8 @@ function getLessonName(group, idx) {
     const names = {
         basic:    ['Home Row Practice', 'Common Words', 'Short Sentences'],
         advanced: ['Punctuation & Quotes', 'Numbers & Symbols', 'Complex Paragraph'],
-        job:      ['Email Writing', 'Office Report', 'Government Format']
+        job:      ['Email Writing', 'Office Report', 'Government Format'],
+        exam:     ['Govt Exam — Passage 1', 'Govt Exam — Office Order', 'Govt Exam — Passage 3']
     };
     const groupNames = names[group] || names.basic;
     return groupNames[idx] || 'Lesson';
@@ -1012,6 +1158,12 @@ function startTypingTest() {
     _ttState.idx = _ttSelectedIdx;
     _ttState.duration = _ttSelectedDuration;
     _ttState.text = text;
+    _ttState.exam = _ttSelectedGroup === 'exam';
+    _ttState.examNoBackspace = _ttState.exam && !!_ttExamOpts.noBackspace;
+    {
+        const ar = document.getElementById('ttArena');
+        if (ar) ar.classList.toggle('tt-exam-hide', _ttState.exam && !!_ttExamOpts.hideLive);
+    }
     _ttState.timeLeft = _ttSelectedDuration;
     _ttState.lastInputTime = performance.now();
 
@@ -1103,6 +1255,8 @@ function startTypingTest() {
     _attachWindowHandlers();
 
     _ttState.startTime = performance.now();
+    _ttState._lastKsT = _ttState.startTime;
+    _ttProofStart(_ttState);
     _ttState.timerId = setInterval(tickTimer, 1000);
 
     _startIdleDetection();
@@ -1159,6 +1313,12 @@ function _blockBeforeInput(e) {
         return false;
     }
     if (e.isComposing) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    }
+    // 🏛️ Exam Mode: Backspace / Delete बंद
+    if (_ttState.examNoBackspace && /^delete/.test(e.inputType || '')) {
         e.preventDefault();
         e.stopPropagation();
         return false;
@@ -1247,6 +1407,12 @@ function handleTestInput(e) {
     }
 
     const inputVal = e.target.value;
+    {
+        const nowT = performance.now();
+        if (_ttState.ks.length < 6000) _ttState.ks.push(Math.round(nowT - (_ttState._lastKsT || nowT)));
+        _ttState._lastKsT = nowT;
+        _ttState.typedValue = inputVal;
+    }
     let correct = 0;
     let errors = 0;
     const totalChars = _ttState.charSpans.length;
@@ -1508,6 +1674,7 @@ function finishTest(reason) {
     // Any later call (certificate open, WhatsApp share, history save)
     // will reuse these exact numbers — no re-computation, no WPM drift.
     _ttState._finalResults = results;
+    _ttProofFinish(_ttState);
 
     const { elapsedSec, grossWPM, netWPM, accuracy, grade, msg, charsTyped } = results;
 
@@ -1753,7 +1920,8 @@ function _snapshotTestResult(state) {
         errors: Number(state.errors) || 0,
         duration: formatTTTime(results.elapsedSec),
         wasCapped: Boolean(results.wasCapped),
-        finishReason: String(results.reason || 'unknown')
+        finishReason: String(results.reason || 'unknown'),
+        proofReady: state.proofReady || Promise.resolve(null)
     });
 }
 
