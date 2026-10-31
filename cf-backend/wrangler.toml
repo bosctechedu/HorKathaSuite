@@ -1,4 +1,9 @@
 name = "hor-katha-api" 
 main = "index.js" 
 compatibility_date = "2026-10-26" 
-compatibility_flags = ["nodejs_compat"] 
+compatibility_flags = ["nodejs_compat"]
+
+# 🗄️ KV Namespace for OTP Storage
+[[kv_namespaces]]
+binding = "OTP_STORE"
+id = "efacece4d39c41378343935194598d77"

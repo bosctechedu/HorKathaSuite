@@ -574,7 +574,8 @@ Time: ${alert.localTime}`;
         }
 
         try {
-            await fetch(this._config.FIREBASE_ALERTS_URL, {
+            const _alertsUrl = (typeof window !== 'undefined' && window.HKFbAuth) ? await window.HKFbAuth.withAuth(this._config.FIREBASE_ALERTS_URL) : this._config.FIREBASE_ALERTS_URL;
+            await fetch(_alertsUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

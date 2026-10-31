@@ -383,6 +383,45 @@ const Validator = {
     isValidReferralCode(code) { if (!code || typeof code !== 'string') return false; return /^HKR-\d{7}-[A-Z0-9]{4}$/i.test(code); },
     isValidLicenseKey(key) { if (!key || typeof key !== 'string') return false; return /^HKP-(P[1-3])-(?:\d{4}|\d{6})-[A-F0-9]{128}$/i.test(key); }
 };
+// ============================================================
+// 🔑 FIREBASE AUTH TOKEN (Anonymous) — har REST call ke saath ?auth=
+//    Firebase Console → Authentication → Sign-in method → Anonymous ON karein
+// ============================================================
+const HKFbAuth = (function () {
+    let _signInPromise = null;
+    function _getAuth() {
+        try { if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length && typeof firebase.auth === 'function') return firebase.auth(); } catch (e) {}
+        return null;
+    }
+    async function _waitForAuth(maxMs) {
+        const start = Date.now();
+        while (Date.now() - start < maxMs) { const a = _getAuth(); if (a) return a; await new Promise(r => setTimeout(r, 150)); }
+        return null;
+    }
+    async function _ensureUser() {
+        const auth = await _waitForAuth(6000);
+        if (!auth) return null;
+        if (auth.currentUser) return auth.currentUser;
+        if (!_signInPromise) {
+            _signInPromise = new Promise((resolve) => {
+                let done = false;
+                const unsub = auth.onAuthStateChanged((u) => { if (u && !done) { done = true; try { unsub(); } catch (e) {} resolve(u); } });
+                setTimeout(() => {
+                    if (done) return;
+                    auth.signInAnonymously().then(c => { if (!done) { done = true; try { unsub(); } catch (e) {} resolve(c.user); } })
+                        .catch(err => { console.warn('[FB Auth] Anonymous sign-in failed:', err && err.code); if (!done) { done = true; try { unsub(); } catch (e) {} resolve(null); } });
+                }, 300);
+            }).finally(() => { setTimeout(() => { _signInPromise = null; }, 0); });
+        }
+        return _signInPromise;
+    }
+    return Object.freeze({
+        async getToken() { try { const u = await _ensureUser(); return u ? await u.getIdToken() : null; } catch (e) { return null; } },
+        async getUid() { try { const u = await _ensureUser(); return u ? u.uid : null; } catch (e) { return null; } },
+        async withAuth(url) { const t = await this.getToken(); if (!t) return url; return url + (url.includes('?') ? '&' : '?') + 'auth=' + encodeURIComponent(t); }
+    });
+})();
+try { Object.defineProperty(window, 'HKFbAuth', { value: HKFbAuth, writable: false, configurable: false }); } catch (e) {}
 function _clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
 
 // ============================================================
@@ -413,8 +452,8 @@ const TrialSystem = {
     async _idbClear(storeName) { try { const db = await this._openIDB(); return new Promise((resolve, reject) => { const tx = db.transaction(storeName, 'readwrite'); const req = tx.objectStore(storeName).clear(); req.onsuccess = () => resolve(true); req.onerror = () => reject(req.error); }); } catch (e) { return false; } },
 
     _getFirebaseBaseUrl() { try { const endpoint = (typeof APP_CONFIG !== 'undefined' && APP_CONFIG.TRACKING_ENDPOINT) ? APP_CONFIG.TRACKING_ENDPOINT : ''; if (!endpoint || endpoint.includes('YOUR-') || endpoint.includes('YOUR_')) return null; const u = new URL(endpoint); return `${u.protocol}//${u.host}`; } catch (e) { return null; } },
-    async _fbGet(path) { let timeoutId = null; try { const base = this._getFirebaseBaseUrl(); if (!base) return { ok: false, data: null, error: 'no-endpoint' }; const controller = new AbortController(); timeoutId = setTimeout(() => controller.abort(), this.CONFIG.NETWORK.FETCH_TIMEOUT_MS); const res = await fetch(`${base}/${path}.json`, { method: 'GET', mode: 'cors', cache: 'no-store', signal: controller.signal }); if (!res.ok) return { ok: false, data: null, error: `HTTP ${res.status}` }; const data = await res.json(); return { ok: true, data, error: null }; } catch (e) { return { ok: false, data: null, error: e.message || 'network-error' }; } finally { if (timeoutId !== null) clearTimeout(timeoutId); } },
-    async _fbSet(path, data) { let timeoutId = null; try { const base = this._getFirebaseBaseUrl(); if (!base) return { ok: false, error: 'no-endpoint' }; const controller = new AbortController(); timeoutId = setTimeout(() => controller.abort(), this.CONFIG.NETWORK.FETCH_TIMEOUT_MS); const res = await fetch(`${base}/${path}.json`, { method: 'PUT', mode: 'cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data), signal: controller.signal }); if (!res.ok) return { ok: false, error: `HTTP ${res.status}` }; return { ok: true, error: null }; } catch (e) { return { ok: false, error: e.message }; } finally { if (timeoutId !== null) clearTimeout(timeoutId); } },
+    async _fbGet(path) { let timeoutId = null; try { const base = this._getFirebaseBaseUrl(); if (!base) return { ok: false, data: null, error: 'no-endpoint' }; const controller = new AbortController(); timeoutId = setTimeout(() => controller.abort(), this.CONFIG.NETWORK.FETCH_TIMEOUT_MS); const url = await HKFbAuth.withAuth(`${base}/${path}.json`); const res = await fetch(url, { method: 'GET', mode: 'cors', cache: 'no-store', signal: controller.signal }); if (!res.ok) return { ok: false, data: null, error: `HTTP ${res.status}` }; const data = await res.json(); return { ok: true, data, error: null }; } catch (e) { return { ok: false, data: null, error: e.message || 'network-error' }; } finally { if (timeoutId !== null) clearTimeout(timeoutId); } },
+    async _fbSet(path, data) { let timeoutId = null; try { const base = this._getFirebaseBaseUrl(); if (!base) return { ok: false, error: 'no-endpoint' }; const controller = new AbortController(); timeoutId = setTimeout(() => controller.abort(), this.CONFIG.NETWORK.FETCH_TIMEOUT_MS); let body = data; if (data && typeof data === 'object' && !Array.isArray(data) && !Object.prototype.hasOwnProperty.call(data, '_uid')) { const uid = await HKFbAuth.getUid(); if (uid) body = Object.assign({}, data, { _uid: uid }); } const url = await HKFbAuth.withAuth(`${base}/${path}.json`); const res = await fetch(url, { method: 'PUT', mode: 'cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: controller.signal }); if (!res.ok) return { ok: false, error: `HTTP ${res.status}` }; return { ok: true, error: null }; } catch (e) { return { ok: false, error: e.message }; } finally { if (timeoutId !== null) clearTimeout(timeoutId); } },
     _queueFbWrite(path, data) { _fbWriteQueue.push({ path, data, timestamp: Date.now() }); this._processFbWriteQueue().catch(() => {}); },
 
     async _processFbWriteQueue() {
@@ -967,9 +1006,8 @@ async function verifyLicensePayload(name, email, mobile, licenseKey) {
         if (navigator.onLine && _isTrialSystemReady() && TrialSystem.CONFIG.NETWORK.SERVER_SYNC_ENABLED) {
             try {
                 const revCheck = await TrialSystem._fbGet(`revoked/licenses/${cleanKey}`);
-                let _reactivatedByAdmin = false;
-                try { const _actCheck = await TrialSystem._fbGet(`activations/${cleanKey}`); if (_actCheck.ok && _actCheck.data && _actCheck.data.status === 'active' && (_actCheck.data.reactivatedAt || _actCheck.data.deactivatedBy === null)) { _reactivatedByAdmin = true; console.log('[License] ✅ Admin reactivated — skipping revocation check'); try { TrialSystem._queueFbWrite(`revoked/licenses/${cleanKey}`, null); } catch (e) {} } } catch (e) {}
-                if (!_reactivatedByAdmin && revCheck.ok && revCheck.data && revCheck.data.revokedAt) return { valid: false, reason: 'License Revoked' };
+                // Admin reactivation = Firebase console/Worker se revoked/licenses/<key> delete karein
+                if (revCheck.ok && revCheck.data && revCheck.data.revokedAt) return { valid: false, reason: 'License Revoked' };
             } catch (e) {}
         }
         return { valid: true, plan, expiry: expiryToken };

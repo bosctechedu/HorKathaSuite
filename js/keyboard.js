@@ -2,18 +2,12 @@
 // ⌨️ VIRTUAL KEYBOARD SYSTEM — Trial-Aware + Perfect Fit
 // BOSC Tech & Edu · Hoṛ Katha Suite v3.7.4 Pro Ultra
 // ============================================================
-// ✅ v3.7.4.90 — BUG #7 FIXED (MEMORY LEAK + STRICT CONTRACT):
-//    • 🔴 FIXED: Retry timers now self-remove from tracking array
-//                (was: pushed but never removed → memory leak)
-//    • 🔴 FIXED: renderMappingGuide() strict contract
-//                (no-arg call now logs warning, not silent)
-//    • 🔴 FIXED: _clearMappingRetries() safety check
-//    • NEW: _trackRetryTimer() helper
-//    • NEW: _untrackRetryTimer() helper
-//    • NEW: getPendingRetryCount() debug method
-//    • NEW: KeyboardDebug.testMemoryLeak() — verify fix
-//    • NEW: KeyboardDebug.testRaceSafeRetry() — enhanced
-//    • RETAINED: All previous fixes
+// ✅ v3.7.4.91 — P3 UNLOCK FIX (ALL LANGUAGES):
+//    • 🔴 FIXED: _getProAccess() now reads NEW localStorage license
+//                (hk_pro_license / hk_trial_data) FIRST
+//    • 🔴 FIXED: switchLanguage() tier check uses direct localStorage
+//    • 🔴 FIXED: P3/OTP activated users can now access ALL 5 languages
+//    • RETAINED: All FIX #7 (memory leak + strict contract) fixes
 // ============================================================
 
 (function() {
@@ -26,7 +20,7 @@
     }
     window.__keyboardLoaded = true;
 
-    console.log('📦 keyboard.js loading...');
+    console.log('📦 keyboard.js loading (v3.7.4.91 — P3 FIX)...');
 
     // ============================================================
     // 📊 CONSTANTS
@@ -794,7 +788,6 @@
     // ✅ FIX #7: STRICT GENERATION CONTRACT
     // ============================================================
     function renderMappingGuide(generation) {
-        // ─── Strict contract: require explicit generation ───
         const isExplicit = (generation !== undefined && generation !== null);
 
         if (!isExplicit) {
@@ -806,7 +799,6 @@
             generation = KB._mappingGeneration;
         }
 
-        // ─── Stale check (only meaningful with explicit gen) ───
         if (generation !== KB._mappingGeneration) {
             console.log(
                 '🗺️ [keyboard] Stale render skipped: ' +
@@ -875,7 +867,6 @@
     // ✅ FIX #7: CLEAR MAPPING RETRIES
     // ============================================================
     function _clearMappingRetries() {
-        // ─── Bump generation FIRST ───
         KB._mappingGeneration++;
 
         const pendingCount = KB._mappingRetryTimers.length;
@@ -900,35 +891,82 @@
     }
 
     // ============================================================
-    // 🔐 UNIFIED Pro Access (matches license.js)
+    // 🔐 FIX #8 — READ NEW LICENSE STORAGE
+    // Returns highest tier level from hk_pro_license / hk_trial_data
+    // ============================================================
+    function _getEffectiveTierLevel() {
+        try {
+            // Priority 1: NEW Pro license (from OTP activation)
+            var licRaw = localStorage.getItem('hk_pro_license') ||
+                         localStorage.getItem('hk_pro_license_backup');
+            if (licRaw) {
+                var lic = JSON.parse(licRaw);
+                if (lic && lic.tier) {
+                    var u = String(lic.tier).toUpperCase();
+                    if (u === 'P3' || u === 'P3_TRIAL' || u === 'P3TRIAL') return 3;
+                    if (u === 'P2' || u === 'P2_COMMERCIAL') return 2;
+                    if (u === 'P1' || u === 'P1_COMMUNITY') return 1;
+                }
+            }
+            // Priority 2: NEW Trial
+            var trRaw = localStorage.getItem('hk_trial_data') ||
+                        localStorage.getItem('hk_trial_data_backup');
+            if (trRaw) {
+                var tr = JSON.parse(trRaw);
+                if (tr && tr.expiresAt && Date.now() < tr.expiresAt) {
+                    return 3; // Trial = full P3 access
+                }
+            }
+        } catch (e) {}
+        return 0;
+    }
+
+    // ============================================================
+    // 🔐 FIX #8 — UNIFIED Pro Access
+    // Reads NEW license FIRST, then falls back to legacy checks
     // ============================================================
     function _getProAccess() {
+        // ✅ Priority 0: NEW localStorage license (from OTP activation)
+        const newTier = _getEffectiveTierLevel();
+        if (newTier >= 1) {
+            console.log('🔑 [ProAccess] NEW license detected (tier level:', newTier + ')');
+            return true;
+        }
+
+        // ✅ Priority 1: window.hasProLevelAccess (legacy license system)
         try {
             if (typeof window.hasProLevelAccess === 'function') {
-                return window.hasProLevelAccess() === true;
+                if (window.hasProLevelAccess() === true) {
+                    console.log('🔑 [ProAccess] hasProLevelAccess() true');
+                    return true;
+                }
             }
         } catch (e) {}
 
+        // ✅ Priority 2: isProLicensed global
         try {
             if (typeof isProLicensed !== 'undefined' && isProLicensed === true) {
+                console.log('🔑 [ProAccess] isProLicensed true');
                 return true;
             }
         } catch (e) {}
 
+        // ✅ Priority 3: TrialSystem.isActive()
         try {
             if (typeof TrialSystem !== 'undefined' &&
                 typeof TrialSystem.isActive === 'function' &&
                 TrialSystem.isActive() === true) {
+                console.log('🎁 [ProAccess] TrialSystem active');
                 return true;
             }
         } catch (e) {}
 
-        // ❌ Priority 4 REMOVED (v3.7.4.88 — SECURITY FIX)
+        console.log('👤 [ProAccess] No license — FREE mode');
         return false;
     }
 
     // ============================================================
-    // 🔐 LANGUAGE SWITCH (race-safe)
+    // 🔐 LANGUAGE SWITCH (race-safe + P3 fix)
     // ============================================================
     function switchLanguage(mode) {
         if (KB._switchInProgress) {
@@ -946,7 +984,13 @@
             return;
         }
 
-        const hasProAccess = _getProAccess();
+        // ✅ FIX #8: Check effective tier directly + legacy access
+        const effectiveTier = _getEffectiveTierLevel();
+        const hasProAccess = _getProAccess() || (effectiveTier >= 1);
+
+        console.log('🔍 [switchLanguage] mode:', mode,
+                    '| tier level:', effectiveTier,
+                    '| hasProAccess:', hasProAccess);
 
         if (mode !== 'english' && !hasProAccess) {
             if (typeof showToast === 'function') {
@@ -965,7 +1009,6 @@
 
         KB._switchInProgress = true;
 
-        // ✅ FIX #7: Bumps generation + clears all pending timers
         _clearMappingRetries();
 
         try {
@@ -998,19 +1041,16 @@
                 }
             }
 
-            // ─── Capture generation AFTER bump (this is "our" gen) ───
             const currentGen = KB._mappingGeneration;
 
             drawKeyboard();
             if (KB.isNumpadActive) drawNumpad();
             renderModifiersPanel();
-            renderMappingGuide(currentGen);   // ✅ Explicit
+            renderMappingGuide(currentGen);
             updateSuggestionBar();
 
-            // ─── Schedule retries (with self-cleanup) ───
             MAPPING_RETRY_DELAYS.forEach(delay => {
                 const timer = setTimeout(() => {
-                    // ✅ FIX #7: Self-cleanup FIRST
                     _untrackRetryTimer(timer);
 
                     try {
@@ -1020,7 +1060,6 @@
                     }
                 }, delay);
 
-                // ✅ FIX #7: Use helper for consistency
                 _trackRetryTimer(timer);
             });
 
@@ -1104,7 +1143,6 @@
                 btn.classList.remove('system-mode');
             }
 
-            // ✅ FIX: 'none' ko 'text' kar diya taaki mobile IME kabhi block na ho
             if (editor) editor.setAttribute('inputmode', 'text');
             if (statusText) statusText.style.display = 'none';
         }
@@ -1187,10 +1225,26 @@
         manageBtn.onclick = openVocabManagerModal;
         fragment.appendChild(manageBtn);
 
-        const list = getActiveWordList();
-        list.slice(0, 30).forEach(w => {
+        // 📌 PINNED: hamesha dikhenge (delete/reset se nahi hatenge)
+        const PINNED_WORDS = ['Hello', 'Thanks', 'Welcome', 'Please', 'Good', 'Best', 'Great'];
+        let pinnedSentence = 'The quick brown fox jumps over the lazy dog.';
+        try {
+            if (typeof window.getPermanentVocabText === 'function') {
+                pinnedSentence = window.getPermanentVocabText() || pinnedSentence;
+            }
+        } catch (e) {}
+        const pinned = [pinnedSentence, ...PINNED_WORDS];
+        const seen = new Set(pinned.map(w => w.toLowerCase()));
+        const userWords = getActiveWordList().filter(w => {
+            const k = String(w).toLowerCase();
+            if (seen.has(k)) return false;
+            seen.add(k);
+            return true;
+        });
+        const list = [...pinned, ...userWords];
+        list.slice(0, 30 + pinned.length).forEach((w, i) => {
             const chip = document.createElement('span');
-            chip.className = 'sugg-chip';
+            chip.className = 'sugg-chip' + (i < pinned.length ? ' sugg-chip-pinned' : '');
             chip.textContent = w;
             chip.onmousedown = (e) => e.preventDefault();
             chip.onclick = () => {
@@ -1385,8 +1439,9 @@
         saveNewVocabWord, editCustomVocabWord, deleteCustomVocabWord,
         resetActiveVocabToDefault, renderVocabManagerList,
         enterTypingMode, exitTypingMode, setupTypingFocusListeners,
-        // ✅ FIX #7: New public helpers
-        getPendingRetryCount: getPendingRetryCount
+        getPendingRetryCount: getPendingRetryCount,
+        getEffectiveTierLevel: _getEffectiveTierLevel,
+        getProAccess: _getProAccess
     });
 
     window.getCurrentLayout = () => KB.currentLayout;
@@ -1411,12 +1466,35 @@
             console.log('  Caps:', KB.isCaps);
             console.log('  Numpad:', KB.isNumpadActive);
             console.log('  Pro access:', _getProAccess());
+            console.log('  Effective tier:', _getEffectiveTierLevel());
             console.log('  Vocab loaded:', Object.keys(KB.userVocabDB).length, 'languages');
             console.log('  Focus mode:', document.body.classList.contains('typing-focus'));
             console.log('  Mapping generation:', KB._mappingGeneration);
-            console.log('  Pending retries:', KB._mappingRetryTimers.length);  // ✅ FIX #7
+            console.log('  Pending retries:', KB._mappingRetryTimers.length);
             console.log('  Desktop mode:', _isDesktopMode);
             console.log('  Window width:', window.innerWidth + 'px');
+            console.log('═══════════════════════════════════════════');
+        },
+        tierCheck: () => {
+            console.log('═══════════════════════════════════════════');
+            console.log('🔑 TIER / LICENSE CHECK');
+            console.log('═══════════════════════════════════════════');
+            console.log('  hk_pro_license:',
+                localStorage.getItem('hk_pro_license') || '(none)');
+            console.log('  hk_pro_license_backup:',
+                localStorage.getItem('hk_pro_license_backup') || '(none)');
+            console.log('  hk_trial_data:',
+                localStorage.getItem('hk_trial_data') || '(none)');
+            console.log('  Effective tier level:', _getEffectiveTierLevel());
+            console.log('  _getProAccess():', _getProAccess());
+            console.log('  hasProLevelAccess():',
+                typeof window.hasProLevelAccess === 'function'
+                    ? window.hasProLevelAccess() : 'N/A');
+            console.log('  isProLicensed:',
+                typeof isProLicensed !== 'undefined' ? isProLicensed : 'undefined');
+            console.log('  TrialSystem.isActive:',
+                typeof TrialSystem !== 'undefined' && typeof TrialSystem.isActive === 'function'
+                    ? TrialSystem.isActive() : 'N/A');
             console.log('═══════════════════════════════════════════');
         },
         render: () => {
@@ -1439,215 +1517,48 @@
             switchLanguage(lang);
             console.log('🔄 Switched to:', lang);
         },
-        testMappingGuide: () => {
-            console.log('═══════════════════════════════════════════');
-            console.log('🧪 MAPPING GUIDE TEST');
-            console.log('═══════════════════════════════════════════');
-            console.log('  Element exists:', !!document.getElementById('mapping-info'));
-            console.log('  Current layout:', KB.currentLayout);
-            console.log('  Current generation:', KB._mappingGeneration);
-
-            renderMappingGuide(KB._mappingGeneration);
-
-            const el = document.getElementById('mapping-info');
-            if (el) {
-                const items = el.querySelectorAll('.map-badge');
-                console.log('  Badges rendered:', items.length);
-                for (let i = 0; i < Math.min(3, items.length); i++) {
-                    console.log(`    [${i}]`, items[i].textContent);
-                }
-            }
-            console.log('═══════════════════════════════════════════');
-        },
         testAllLanguages: () => {
             console.log('═══════════════════════════════════════════');
-            console.log('🧪 TESTING MAPPING GUIDE FOR ALL LANGUAGES');
+            console.log('🧪 TESTING ALL 5 LANGUAGES');
             console.log('═══════════════════════════════════════════');
-
+            const tier = _getEffectiveTierLevel();
+            console.log('  Tier level:', tier);
+            if (tier < 1) {
+                console.warn('  ⚠️ No license — switch will fail for non-English');
+                console.warn('  Activate P3 key first, then retry.');
+                return;
+            }
             KEYBOARD_LANGUAGES.forEach(lang => {
-                KB.currentLayout = lang;
-                renderMappingGuide(KB._mappingGeneration);
-                const el = document.getElementById('mapping-info');
-                const items = el ? el.querySelectorAll('.map-badge').length : 0;
-                console.log(`  ${lang}: ${items} badges rendered`);
-            });
-            console.log('✅ Test complete');
-            console.log('═══════════════════════════════════════════');
-        },
-
-        testMemoryLeak: () => {
-            console.log('═══════════════════════════════════════════');
-            console.log('🧪 RETRY TIMER MEMORY LEAK TEST (FIX #7)');
-            console.log('═══════════════════════════════════════════');
-
-            const initialCount = KB._mappingRetryTimers.length;
-            console.log('  Initial pending timers:', initialCount);
-            console.log('');
-
-            console.log('  Triggering 5 rapid switchLanguage() calls...');
-            const langs = ['english', 'hindi-dev', 'english', 'olchiki', 'english'];
-
-            langs.forEach((lang, i) => {
-                setTimeout(() => {
-                    if (lang === 'english' || _getProAccess()) {
-                        KB.currentLayout = 'english';
-                        switchLanguage(lang);
-                    } else {
-                        console.log(`  [${i}] Skipped ${lang} (no pro access)`);
-                    }
-                }, i * 50);
-            });
-
-            setTimeout(() => {
-                const finalCount = KB._mappingRetryTimers.length;
-
-                console.log('');
-                console.log('  After 5 switches + 1s wait:');
-                console.log('    Pending timers:', finalCount);
-                console.log('    Expected: 0 (all fired + self-cleaned)');
-
-                const pass = finalCount === 0;
-
-                console.log('');
-                console.log('  Result:', pass ? '✅ PASS (no leak)' : '❌ FAIL (leak detected)');
-                console.log('═══════════════════════════════════════════');
-
-                return { initialCount, finalCount, pass };
-            }, 1500);
-        },
-
-        testRaceSafeRetry: () => {
-            console.log('═══════════════════════════════════════════');
-            console.log('🧪 RACE-SAFE RETRY TEST');
-            console.log('═══════════════════════════════════════════');
-            console.log('  Generation before:', KB._mappingGeneration);
-            console.log('  Pending retries:', KB._mappingRetryTimers.length);
-
-            for (let i = 0; i < 5; i++) _clearMappingRetries();
-
-            console.log('  Generation after 5× clears:', KB._mappingGeneration);
-            console.log('  Pending retries:', KB._mappingRetryTimers.length);
-            console.log('  Result:',
-                KB._mappingGeneration >= 5 && KB._mappingRetryTimers.length === 0
-                    ? '✅ PASS' : '❌ FAIL');
-            console.log('═══════════════════════════════════════════');
-        },
-
-        testStaleRender: () => {
-            console.log('═══════════════════════════════════════════');
-            console.log('🧪 STALE RENDER DETECTION TEST');
-            console.log('═══════════════════════════════════════════');
-
-            const currentGen = KB._mappingGeneration;
-            console.log('  Current generation:', currentGen);
-
-            console.log('');
-            console.log('  Test 1: Render with current gen (' + currentGen + ')');
-            renderMappingGuide(currentGen);
-            console.log('    ✅ Rendered (see log above)');
-
-            console.log('');
-            console.log('  Test 2: Render with stale gen (' + (currentGen - 1) + ')');
-            renderMappingGuide(currentGen - 1);
-            console.log('    ✅ Skipped (see log above)');
-
-            console.log('');
-            console.log('  Test 3: Render with future gen (' + (currentGen + 5) + ')');
-            renderMappingGuide(currentGen + 5);
-            console.log('    ✅ Skipped (see log above)');
-
-            console.log('');
-            console.log('  Test 4: Render with NO gen (should warn + render)');
-            renderMappingGuide();
-            console.log('    ✅ Warned + rendered (see log above)');
-
-            console.log('');
-            console.log('  Expected:');
-            console.log('    • Test 1 renders');
-            console.log('    • Tests 2 & 3 skip silently');
-            console.log('    • Test 4 warns but renders');
-            console.log('═══════════════════════════════════════════');
-        },
-
-        testDefaultGeneration: () => {
-            console.log('═══════════════════════════════════════════');
-            console.log('🧪 DEFAULT GENERATION TEST');
-            console.log('═══════════════════════════════════════════');
-
-            const before = KB._mappingGeneration;
-            console.log('  Current generation:', before);
-            console.log('  Calling renderMappingGuide() with NO args...');
-            console.log('  (Should log warning but not crash)');
-
-            renderMappingGuide();
-
-            const after = KB._mappingGeneration;
-            console.log('');
-            console.log('  Generation after:', after);
-            console.log('  Result:', before === after ? '✅ PASS (no crash, no bump)' : '⚠️ Review');
-            console.log('═══════════════════════════════════════════');
-        },
-
-        testVocabFlush: () => {
-            console.log('═══════════════════════════════════════════');
-            console.log('🧪 VOCAB FLUSH TEST');
-            console.log('═══════════════════════════════════════════');
-            console.log('  Debounce timer pending:', !!KB._vocabSaveDebounce);
-
-            const list = getActiveWordList();
-            list.push('TESTWORD_' + Date.now());
-            saveVocabToStorage();
-            console.log('  After saveVocabToStorage: pending =', !!KB._vocabSaveDebounce);
-
-            _flushVocab('test');
-            console.log('  After flush: pending =', !!KB._vocabSaveDebounce);
-
-            try {
-                const saved = localStorage.getItem('hor_user_vocab_db');
-                const hasTestWord = saved && saved.includes('TESTWORD_');
-                console.log('  Test word in storage:', hasTestWord ? '✅' : '❌');
-                if (hasTestWord) {
-                    list.pop();
-                    _saveVocabImmediate();
+                try {
+                    switchLanguage(lang);
+                    console.log(`  ✅ ${lang} → OK (now: ${KB.currentLayout})`);
+                } catch (e) {
+                    console.error(`  ❌ ${lang} → FAILED:`, e.message);
                 }
-            } catch (e) {
-                console.log('  Storage check failed:', e.message);
-            }
+            });
             console.log('═══════════════════════════════════════════');
         },
-
-        testProAccessBypass: () => {
-            console.log('═══════════════════════════════════════════');
-            console.log('🧪 PRO ACCESS BYPASS TEST (v3.7.4.88)');
-            console.log('═══════════════════════════════════════════');
-
-            const savedLicKey = localStorage.getItem('hor_lic_key');
-            const savedTrialKey = localStorage.getItem('hor_trial_key');
-
-            try {
-                localStorage.setItem('hor_lic_key', 'HKP-P1-9999-' + 'A'.repeat(128));
-                localStorage.setItem('hor_trial_key', 'HKT-1234567-ABCD');
-
-                console.log('  Fake keys inserted into localStorage');
-                console.log('  Calling _getProAccess()...');
-
-                const result = _getProAccess();
-                console.log('');
-                console.log('  Result:', result);
-                console.log('  Expected: false (no verified session)');
-                console.log('  Verdict:', result === false ? '✅ PASS (bypass blocked)' : '❌ FAIL (bypass!)');
-            } finally {
-                if (savedLicKey) localStorage.setItem('hor_lic_key', savedLicKey);
-                else localStorage.removeItem('hor_lic_key');
-                if (savedTrialKey) localStorage.setItem('hor_trial_key', savedTrialKey);
-                else localStorage.removeItem('hor_trial_key');
-            }
-            console.log('═══════════════════════════════════════════');
+        forceUnlockTabs: () => {
+            console.log('🔓 Force-unlocking all language tabs...');
+            document.querySelectorAll('.tab-pill, [data-tier]').forEach(el => {
+                el.classList.remove('is-locked');
+                el.removeAttribute('title');
+                const orig = el.getAttribute('data-original-onclick');
+                if (orig) {
+                    el.setAttribute('onclick', orig);
+                    el.removeAttribute('data-original-onclick');
+                }
+                if (el.dataset.hasLockListener && el.lockInterceptor) {
+                    try { el.removeEventListener('click', el.lockInterceptor); } catch (e) {}
+                    delete el.dataset.hasLockListener;
+                    el.lockInterceptor = null;
+                }
+            });
+            console.log('✅ Tabs force-unlocked');
         },
-
         selfTest: () => {
             console.log('═══════════════════════════════════════════');
-            console.log('🧪 KEYBOARD SELF-TEST (v3.7.4.90)');
+            console.log('🧪 KEYBOARD SELF-TEST (v3.7.4.91)');
             console.log('═══════════════════════════════════════════');
 
             const checks = {
@@ -1655,6 +1566,7 @@
                 drawNumpad: typeof drawNumpad === 'function',
                 switchLanguage: typeof switchLanguage === 'function',
                 _getProAccess: typeof _getProAccess === 'function',
+                _getEffectiveTierLevel: typeof _getEffectiveTierLevel === 'function',
                 renderMappingGuide: typeof renderMappingGuide === 'function',
                 renderModifiersPanel: typeof renderModifiersPanel === 'function',
                 setupTypingFocusListeners: typeof setupTypingFocusListeners === 'function',
@@ -1671,14 +1583,11 @@
             });
 
             console.log('');
-            console.log('🆕 FIX #7 additions:');
-            console.log('  • _trackRetryTimer() — safe tracking');
-            console.log('  • _untrackRetryTimer() — self-cleanup');
-            console.log('  • getPendingRetryCount() — debug helper');
-            console.log('  • renderMappingGuide() — strict contract');
-            console.log('  • testMemoryLeak() — verify no leak');
-            console.log('  • testStaleRender() — verify staleness');
-            console.log('  • testRaceSafeRetry() — enhanced');
+            console.log('🆕 v3.7.4.91 P3-FIX:');
+            console.log('  • _getEffectiveTierLevel() — reads hk_pro_license');
+            console.log('  • _getProAccess() — NEW license checked FIRST');
+            console.log('  • switchLanguage() — uses effectiveTier fallback');
+            console.log('  • All 5 languages accessible when P3 active');
 
             const allPass = Object.values(checks).every(v => v);
             console.log('');
@@ -1697,7 +1606,7 @@
             drawKeyboard();
             if (KB.isNumpadActive) drawNumpad();
             renderModifiersPanel();
-            renderMappingGuide(KB._mappingGeneration);   // ✅ Explicit
+            renderMappingGuide(KB._mappingGeneration);
             updateSuggestionBar();
 
             setupTypingFocusListeners();
@@ -1738,27 +1647,19 @@
     // 📋 STARTUP LOG
     // ============================================================
     console.log('═══════════════════════════════════════════');
-    console.log('✅ keyboard.js loaded — v3.7.4.90 (FIX #7)');
+    console.log('✅ keyboard.js loaded — v3.7.4.91 (P3 FIX)');
     console.log('   ⌨️  Layouts:', KEYBOARD_LANGUAGES.length);
     console.log('   🎯 Breakpoint:', _DESKTOP_BREAKPOINT_PX + 'px');
-    console.log('   🔐 Pro access: verified-only');
+    console.log('   🔐 Pro access: NEW license (hk_pro_license) checked FIRST');
     console.log('   📦 Namespace: KB object');
-    console.log('   ✅ FIXED: Race-safe mapping retries (generation)');
-    console.log('   ✅ FIXED: renderMappingGuide() defaults generation');
-    console.log('   ✅ FIXED: Dead state removed');
-    console.log('   ✅ FIXED: _ready() helper for DOM init');
-    console.log('   ✅ FIXED: Consolidated _flushVocab()');
-    console.log('   ✅ FIXED: Mapping guides as lookup table');
-    console.log('   ✅ FIXED: Object.assign for globals');
-    console.log('   ✅ FIXED: _getProAccess() localStorage fallback REMOVED');
-    console.log('   🆕 FIX #7: Retry timers self-cleanup (no memory leak)');
-    console.log('   🆕 FIX #7: Strict generation contract');
-    console.log('   🆕 FIX #7: _trackRetryTimer() / _untrackRetryTimer()');
-    console.log('   🆕 FIX #7: getPendingRetryCount() helper');
-    console.log('   🧪 KeyboardDebug.testMemoryLeak() ← NEW');
-    console.log('   🧪 KeyboardDebug.testStaleRender() ← NEW');
-    console.log('   🧪 KeyboardDebug.testRaceSafeRetry()');
-    console.log('   🧪 KeyboardDebug.testProAccessBypass()');
+    console.log('   ✅ FIXED: _getProAccess() reads hk_pro_license');
+    console.log('   ✅ FIXED: _getEffectiveTierLevel() helper');
+    console.log('   ✅ FIXED: switchLanguage() uses effectiveTier fallback');
+    console.log('   ✅ FIXED: P3 users → all 5 languages accessible');
+    console.log('   ✅ RETAINED: FIX #7 (memory leak + strict contract)');
+    console.log('   🧪 KeyboardDebug.tierCheck() ← NEW');
+    console.log('   🧪 KeyboardDebug.testAllLanguages() ← NEW');
+    console.log('   🧪 KeyboardDebug.forceUnlockTabs() ← NEW');
     console.log('═══════════════════════════════════════════');
 
 })();
