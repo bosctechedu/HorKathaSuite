@@ -879,7 +879,7 @@
     </nav>
 
     <div class="highlight">
-        <strong>📌 Summary:</strong> Hum aapki personal files, keystrokes, ya passwords track <strong>nahi</strong> karte. Hum sirf anonymous device ID aur license information store karte hain — taaki license verify ho sake aur piracy rok sakein.
+        <strong>📌 Summary:</strong> Hum aapki personal files, keystrokes, ya passwords track <strong>nahi</strong> karte. Hum sirf aapka email, mobile aur license information store karte hain; koi Device ID ya hardware fingerprint nahi lete — taaki license verify ho sake aur piracy rok sakein.
     </div>
 
     <!-- ═══════════════════════════════════════════ -->
@@ -903,8 +903,8 @@
             </thead>
             <tbody>
                 <tr>
-                    <td><strong>Device ID</strong> (anonymous fingerprint)</td>
-                    <td>License verification &amp; device lock</td>
+                    <td><strong>Active session records</strong> (login time, browser type)</td>
+                    <td>एक साथ login की limit लागू करना</td>
                     <td>Hashed / encoded (local + server)</td>
                 </tr>
                 <tr>
@@ -1003,8 +1003,8 @@
 
     <ul>
         <li><strong>License Verification</strong> — Aapka Pro license sirf aapke device pe chale</li>
-        <li><strong>Piracy Prevention</strong> — Same license multiple devices pe rokne ke liye</li>
-        <li><strong>Customer Support</strong> — Agar aapko issue ho to aapka device ID se help kar sakein</li>
+        <li><strong>Piracy Prevention</strong> — Ek key se ek saath login ki limit lagane ke liye (active session records)</li>
+        <li><strong>Customer Support</strong> — Agar aapko issue ho to aapke registered email/mobile se aapka license dhoondh sakein</li>
         <li><strong>Security Audit</strong> — Suspicious activity detect karne ke liye</li>
         <li><strong>Certificate की सच्चाई</strong> — नकली या बढ़ा-चढ़ाकर बताई गई typing speed पर certificate न बने</li>
         <li><strong>Leaderboard</strong> — सिर्फ़ verified results का साप्ताहिक ranking</li>
@@ -1053,7 +1053,7 @@
     <div class="info">
         <strong>Email:</strong> <code>privacy@bosctech.in</code><br>
         <strong>Subject:</strong> "Data Erasure Request" / "Data Access Request"<br>
-        <strong>Body में लिखें:</strong> अपना Name, Device ID, और License Key<br>
+        <strong>Body में लिखें:</strong> अपना Name, registered Email/Mobile, और License Key<br>
         <strong>Response Time:</strong> 30 दिन के अंदर
     </div>
 
@@ -1114,7 +1114,7 @@
                 <tr>
                     <td><strong>Firebase (Google)</strong></td>
                     <td>License verification</td>
-                    <td>Anonymous Device ID</td>
+                    <td>License Key, Email/Mobile, active session records</td>
                     <td>🇸🇬 Singapore Region (asia-southeast1)</td>
                 </tr>
                 <tr>
@@ -1237,7 +1237,7 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>Device ID / HWID</td>
+                    <td>Active session records (browser login)</td>
                     <td>License expiry + 1 year</td>
                     <td>License deactivation या User request</td>
                 </tr>
@@ -1407,7 +1407,7 @@
     </div>
 
     <div class="highlight">
-        <strong>📍 Data Localization:</strong> आपका सारा sensitive data (Device ID, License Key) भारत के servers पर stored है। कोई data cross-border transfer नहीं होता, सिवाय user authorization के।
+        <strong>📍 Data Localization:</strong> License data Google Firebase (Singapore region) और Cloudflare पर stored है; DPDP Act के तहत यह भारत से बाहर रखा जा सकता है।
     </div>
 
     <!-- ═══════════════════════════════════════════ -->
@@ -1513,7 +1513,7 @@
     <ol class="steps">
         <li><strong>Email करें:</strong> <code>grievance@bosctech.in</code> पर अपनी शिकायत भेजें</li>
         <li><strong>Subject लिखें:</strong> "Privacy Grievance — [आपका नाम]"</li>
-        <li><strong>Details दें:</strong> अपनी समस्या, Device ID, और License Key</li>
+        <li><strong>Details दें:</strong> अपनी समस्या, registered Email/Mobile, और License Key</li>
         <li><strong>Acknowledgement:</strong> 72 घंटे के अंदर confirmation मिलेगा</li>
         <li><strong>Resolution:</strong> 30 दिन के अंदर final solution</li>
         <li><strong>Escalation:</strong> अगर संतुष्ट न हों, तो Data Protection Board of India को appeal</li>

@@ -2534,10 +2534,10 @@
 
         <div class="table-wrap">
             <table>
-                <tr><th>Plan</th><th>Devices</th><th>Price</th><th>Best For</th></tr>
-                <tr><td><strong>P1 — Community</strong></td><td>1 PC</td><td><strong>₹199</strong></td><td>Student / Individual</td></tr>
-                <tr><td><strong>P2 — Commercial</strong></td><td>3 PCs</td><td><strong>₹399</strong></td><td>DTP Shop / Freelancer</td></tr>
-                <tr><td><strong>P3 — Enterprise</strong></td><td>5 PCs</td><td><strong>₹699</strong></td><td>School / College / Office</td></tr>
+                <tr><th>Plan</th><th>एक साथ login</th><th>Price</th><th>Best For</th></tr>
+                <tr><td><strong>P1 — Community</strong></td><td>1</td><td><strong>₹199</strong></td><td>Student / Individual</td></tr>
+                <tr><td><strong>P2 — Commercial</strong></td><td>3</td><td><strong>₹399</strong></td><td>DTP Shop / Freelancer</td></tr>
+                <tr><td><strong>P3 — Enterprise</strong></td><td>5</td><td><strong>₹699</strong></td><td>School / College / Office</td></tr>
             </table>
         </div>
 
@@ -2551,16 +2551,16 @@
         </div>
 
         <div class="step">
-            <div class="step-title"><span class="step-number">2</span> Device ID Copy करें</div>
+            <div class="step-title"><span class="step-number">2</span> Plan चुनें</div>
             <div class="step-body">
-                Modal में आपकी <strong>Device ID</strong> दिखेगी (जैसे <code>DVC-A1B2-C3D4</code>) — इसे copy करें।
+                P1, P2 या P3 में से अपना plan चुनें।
             </div>
         </div>
 
         <div class="step">
-            <div class="step-title"><span class="step-number">3</span> Vendor को Device ID भेजें</div>
+            <div class="step-title"><span class="step-number">3</span> Vendor को Email और Mobile भेजें</div>
             <div class="step-body">
-                WhatsApp या Email पर Device ID और अपना नाम भेजें।
+                WhatsApp या Email पर अपना नाम, Email और Mobile number भेजें। Key इन्हीं से जुड़ेगी।
             </div>
         </div>
 
@@ -2579,7 +2579,7 @@
         </div>
 
         <div class="warning">
-            <strong>Device ID बदल गई है?</strong> Modal में <strong>"🔄 Recover करें"</strong> button दबाकर पुरानी Device ID डालें।
+            <strong>नया computer या Windows reinstall?</strong> कुछ recover नहीं करना है। नए browser में वही Key डालें; limit पूरी हो तो सबसे पुराना login अपने-आप logout हो जाएगा।
         </div>
 
         <!-- 14. PRIVACY -->
@@ -2628,8 +2628,8 @@
             </div>
             <div class="feature-card">
                 <div class="feature-icon">📱</div>
-                <div class="feature-title">3-Layer HWID</div>
-                <div class="feature-desc">Registry + File + localStorage</div>
+                <div class="feature-title">Login Limit</div>
+                <div class="feature-desc">Email + Mobile से जुड़ी Key, पुराना login auto-logout</div>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">🚫</div>
@@ -2644,10 +2644,9 @@
             <br><br>
             <strong>How it works:</strong>
             <ul style="margin-top: 8px; margin-bottom: 0;">
-                <li>आपका नाम <strong>device-specific key</strong> से encrypt होता है</li>
-                <li>Encryption key आपके <strong>Device ID (HWID)</strong> से derive होती है</li>
-                <li>Same name different devices पर different encrypted values बनाता है</li>
-                <li><strong>Backward compat:</strong> Legacy v1 salt भी auto-decrypt होती है</li>
+                <li>आपका नाम आपकी <strong>License Key</strong> से जुड़ी key से encrypt होता है</li>
+                <li>कोई Device ID या hardware fingerprint इस्तेमाल नहीं होता</li>
+                                <li><strong>Backward compat:</strong> Legacy v1 salt भी auto-decrypt होती है</li>
             </ul>
         </div>
 
@@ -2679,7 +2678,7 @@
 
         <h3>📋 क्या Collect होता है?</h3>
         <ul>
-            <li><strong>Anonymous Device ID</strong> — सिर्फ license verification के लिए</li>
+            <li><strong>Email, Mobile और active login records</strong> — सिर्फ license verification के लिए</li>
             <li><strong>License Key</strong> — Pro activation के लिए</li>
             <li><strong>Timestamps</strong> — Support के लिए</li>
         </ul>
@@ -2774,13 +2773,13 @@
         <ul>
             <li><strong>Check 1:</strong> Name में कोई extra space तो नहीं?</li>
             <li><strong>Check 2:</strong> License Key पूरी copy हुई? (128 chars signature)</li>
-            <li><strong>Check 3:</strong> Device ID match कर रही है?</li>
+            <li><strong>Check 3:</strong> Email/Mobile वही है जो खरीदते समय दिया था?</li>
             <li><strong>Check 4:</strong> System time सही है?</li>
             <li><strong>Check 5:</strong> Browser cache clear करें</li>
         </ul>
 
         <div class="warning">
-            अगर Windows reinstall के बाद Device ID बदल गई है, तो License modal में <strong>"🔄 Recover करें"</strong> button use करें।
+            Windows reinstall के बाद बस वही Key दोबारा डालें। "Login limit पूरी" दिखे तो सबसे पुराना login अपने-आप हट जाता है।
         </div>
 
         <h3>🔄 Update के बाद पुराना Version दिख रहा है</h3>
@@ -2857,15 +2856,15 @@
 
         <div class="faq-item">
             <button class="faq-question" type="button" aria-expanded="false">
-                <span>❓ कितने devices पर चलेगी?</span>
+                <span>❓ कितने browsers में एक साथ चलेगी?</span>
                 <span class="faq-arrow">▼</span>
             </button>
             <div class="faq-answer">
                 Plan के हिसाब से:
                 <ul>
-                    <li><strong>P1 (₹199)</strong> — 1 device</li>
-                    <li><strong>P2 (₹399)</strong> — 3 devices</li>
-                    <li><strong>P3 (₹699)</strong> — 5 devices</li>
+                    <li><strong>P1 (₹199)</strong> — एक साथ 1 login</li>
+                    <li><strong>P2 (₹399)</strong> — एक साथ 3 login</li>
+                    <li><strong>P3 (₹699)</strong> — एक साथ 5 login</li>
                 </ul>
                 हर license उस specific device पर bound होती है।
             </div>
@@ -2976,14 +2975,7 @@
                 <span class="faq-arrow">▼</span>
             </button>
             <div class="faq-answer">
-                अगर Device ID बदल गई है (Windows update, reinstall):
-                <ol>
-                    <li>License modal खोलें</li>
-                    <li><strong>"🔄 Recover करें"</strong> button दबाएँ</li>
-                    <li>पुरानी Device ID डालें</li>
-                    <li>License verify हो जाएगी</li>
-                </ol>
-                अगर नई device पर चलाना है, तो WhatsApp पर contact करें।
+                Windows update या reinstall के बाद कुछ recover नहीं करना। नए browser में वही License Key डालें। Plan की limit पूरी होने पर सबसे पुराना login अपने-आप logout हो जाएगा।
             </div>
         </div>
 
@@ -3234,7 +3226,7 @@
         <div class="table-wrap">
             <table>
                 <tr><th>Data Type</th><th>Retention Period</th></tr>
-                <tr><td>Device ID / HWID</td><td>License expiry + 1 year</td></tr>
+                <tr><td>Active login records</td><td>License expiry + 1 year</td></tr>
                 <tr><td>License Key</td><td>License lifetime + 2 years</td></tr>
                 <tr><td>Activation Logs</td><td>180 days (CERT-In)</td></tr>
                 <tr><td>Support Emails</td><td>3 years</td></tr>

@@ -16,7 +16,7 @@
 //    • Any JS logic (even if not cached)
 //    • Any HTML/CSS in this project
 //    Without bumping, users will keep old cached versions!
-const SW_VERSION = '27';
+const SW_VERSION = '28';
 
 const CACHE_NAME = `hor-katha-v374-cache-v${SW_VERSION}`;
 const CACHE_PREFIX = 'hor-katha-v374-cache-';
@@ -108,6 +108,7 @@ const ASSETS_TO_CACHE = [
     './js/tracker.js',
     './js/security.js',
     './js/license.js',
+    './js/session.js',
     './js/editor.js',
     './js/keyboard.js',
     './js/modals.js',

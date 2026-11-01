@@ -1653,88 +1653,12 @@ function showTrialWelcome() {
 }
 
 // ============================================================
-// 💾 HWID MANUAL RECOVERY
+// Device ID recovery हटाई गई — license Email + Mobile से जुड़ा है, recovery की ज़रूरत नहीं।
+// पुराने onclick handlers के लिए खाली stubs।
 // ============================================================
-function toggleManualRecovery() {
-    const box = document.getElementById('manualRecoveryBox');
-    const statusMsg = document.getElementById('recoveryStatusMsg');
-    if (!box) return;
-    if (box.style.display === 'none' || box.style.display === '') {
-        box.style.display = 'block';
-        if (statusMsg) { statusMsg.className = ''; statusMsg.style.display = 'none'; }
-        setTimeout(() => {
-            const input = document.getElementById('oldHwidInput');
-            if (input) input.focus();
-        }, 100);
-    } else {
-        box.style.display = 'none';
-    }
-}
-
-function cancelManualRecovery() {
-    const box = document.getElementById('manualRecoveryBox');
-    const input = document.getElementById('oldHwidInput');
-    const statusMsg = document.getElementById('recoveryStatusMsg');
-    if (box) box.style.display = 'none';
-    if (input) input.value = '';
-    if (statusMsg) { statusMsg.className = ''; statusMsg.style.display = 'none'; }
-}
-
-async function applyManualRecovery() {
-    const input = document.getElementById('oldHwidInput');
-    const statusMsg = document.getElementById('recoveryStatusMsg');
-    if (!input || !statusMsg) return;
-
-    const oldHwid = (input.value || '').trim().toUpperCase();
-    if (!oldHwid) {
-        statusMsg.className = 'error';
-        statusMsg.textContent = '❌ कृपया पुरानी Device ID डालें';
-        return;
-    }
-    if (!/^DVC-[A-F0-9]{4}-[A-F0-9]{4}$/i.test(oldHwid)) {
-        statusMsg.className = 'error';
-        statusMsg.textContent = '❌ गलत format! होना चाहिए: DVC-XXXX-YYYY';
-        return;
-    }
-
-    statusMsg.className = '';
-    statusMsg.style.display = 'none';
-
-    try {
-        localStorage.setItem('hor_device_hwid', oldHwid);
-        localStorage.setItem('hor_hwid_source', 'manual-recovery');
-        _call('invalidateHwidCache', oldHwid);
-
-        if (window.electronAPI && window.electronAPI.isElectron) {
-            try {
-                const result = await window.electronAPI.saveHwid(oldHwid);
-                if (result && result.success) console.log('💾 HWID saved to OS storage');
-                else console.warn('⚠️ OS save returned:', result);
-            } catch (e) {
-                console.warn('⚠️ Could not save HWID to OS:', e.message);
-            }
-        }
-
-        statusMsg.className = 'success';
-        statusMsg.textContent = '✅ Device ID recover हो गई! License re-verify हो रही है...';
-
-        setTimeout(async () => {
-            try {
-                await _call('checkLicenseIntegrity');
-                const dvcDisplay = document.getElementById('userDeviceIdDisplay');
-                if (dvcDisplay) dvcDisplay.value = oldHwid;
-                statusMsg.className = 'success';
-                statusMsg.textContent = '✅ Success! App अब Pro mode में चलेगा।';
-                setTimeout(() => _call('closeLicenseModal'), 1500);
-            } catch (e) {
-                console.warn('License re-check failed:', e);
-            }
-        }, 800);
-    } catch (e) {
-        statusMsg.className = 'error';
-        statusMsg.textContent = '❌ Recover failed: ' + e.message;
-    }
-}
+function toggleManualRecovery() {}
+function cancelManualRecovery() {}
+async function applyManualRecovery() {}
 
 // ============================================================
 // ⌨️ SMART TRANSLITERATION
@@ -2889,13 +2813,6 @@ window.AppDebug.securityStatus = () => {
             });
         }
 
-        try {
-            if (typeof getDeviceHardwareFingerprint === 'function') {
-                await getDeviceHardwareFingerprint();
-            }
-        } catch (e) {
-            console.warn('HWID generation failed:', e.message);
-        }
 
         await _call('checkLicenseIntegrity');
 

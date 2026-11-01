@@ -861,16 +861,6 @@ async function openBuyModal() {
     const buyInput = document.getElementById('buyCustomerName');
     if (licInput && buyInput) buyInput.value = licInput.value || '';
 
-    const dvcBuy = document.getElementById('buyDeviceIdDisplay');
-    if (dvcBuy) {
-        try {
-            if (typeof getDeviceHardwareFingerprint === 'function') {
-                dvcBuy.value = await getDeviceHardwareFingerprint();
-            }
-        } catch (e) {
-            dvcBuy.value = 'DVC-XXXX-XXXX';
-        }
-    }
 
     const chk = document.getElementById('paymentConfirmCheck');
     const btn = document.getElementById('btnPaymentDone');
@@ -940,15 +930,6 @@ async function openLicenseModal() {
     const licKey = document.getElementById('licCustomerKey');
     const dvcDisplay = document.getElementById('userDeviceIdDisplay');
 
-    if (dvcDisplay) {
-        try {
-            if (typeof getDeviceHardwareFingerprint === 'function') {
-                dvcDisplay.value = await getDeviceHardwareFingerprint();
-            }
-        } catch (e) {
-            dvcDisplay.value = 'DVC-XXXX-XXXX';
-        }
-    }
 
     let savedName = '';
     let savedKey = '';
@@ -1079,12 +1060,6 @@ async function onPaymentCompleted() {
             btn.style.opacity = '0.8';
         }
 
-        let hwid = 'Unknown';
-        try {
-            if (typeof getDeviceHardwareFingerprint === 'function') {
-                hwid = await getDeviceHardwareFingerprint() || 'Unknown';
-            }
-        } catch (e) {}
 
         const receiptNo = generateReceiptNumber();
         const timestamp = getISTTimestamp();
@@ -1103,7 +1078,7 @@ async function onPaymentCompleted() {
 
         try {
             const all = JSON.parse(localStorage.getItem('hor_receipts') || '[]');
-            all.push({ receiptNo, name, email, mobile, hwid, plan, amount, timestamp });
+            all.push({ receiptNo, name, email, mobile, plan, amount, timestamp });
             if (all.length > 500) all.shift();
             localStorage.setItem('hor_receipts', JSON.stringify(all));
         } catch (e) {}
@@ -1112,7 +1087,7 @@ async function onPaymentCompleted() {
         showWaMessagePreview('pro');
 
         setTimeout(() => {
-            showReceiptModal({ receiptNo, name, email, mobile, hwid, plan, amount, timestamp });
+            showReceiptModal({ receiptNo, name, email, mobile, plan, amount, timestamp });
         }, 600);
 
         if (btn) {
@@ -1164,7 +1139,7 @@ function showReceiptModal(record) {
         rcptNumber: record.receiptNo || '-',
         rcptDate: record.timestamp || '-',
         rcptName: record.name || '-',
-        rcptDevice: record.hwid || '-',
+        rcptDevice: '-',
         rcptEmail: record.email || '-',
         rcptMobile: record.mobile || '-',
         rcptPlan: record.plan || '-',

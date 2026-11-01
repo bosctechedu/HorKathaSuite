@@ -333,7 +333,6 @@
         #manualRecoverySection .mrs-toggle-btn { background: linear-gradient(135deg, #d97706, #f59e0b); color: #fff; border: none; padding: 6px 14px; border-radius: 8px; font-size: 0.72rem; font-weight: 800; cursor: pointer; }
         #manualRecoveryBox { display: none; margin-top: 12px; padding-top: 12px; border-top: 1.5px dashed #fcd34d; }
         #manualRecoveryBox .mrb-desc { font-size: 0.72rem; color: #78350f; margin-bottom: 10px; line-height: 1.5; font-weight: 600; }
-        #oldHwidInput { width: 100%; padding: 12px 14px; font-size: 0.88rem; font-family: monospace; border: 2px solid #fcd34d; border-radius: 10px; background: #fff; color: #0f172a; outline: none; box-sizing: border-box; font-weight: 700; }
         #manualRecoveryBox .mrb-buttons { display: flex; gap: 8px; margin-top: 10px; }
         #manualRecoveryBox .mrb-btn { flex: 1; padding: 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; cursor: pointer; font-family: inherit; }
         #manualRecoveryBox .mrb-cancel { background: #fff; color: #78350f; border: 2px solid #fcd34d; }
@@ -1117,19 +1116,19 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
                     <label class="bm-plan bmr-plan active-plan" id="cardPlan1">
                         <input type="radio" name="licPlan" id="plan1" checked onchange="selectPlan(199, 'P1 — Community (₹199)', 'cardPlan1')">
                         <span class="bmr-plan-icon" style="background:#0284c7;">👤</span>
-                        <span class="bmr-plan-info"><span class="bmr-plan-title">(1) P1 — Community Single PC</span><span class="bmr-plan-sub">1 Device · Individual / Student Use</span><span class="bmr-plan-feat">Basic Export (Word/TXT) + Kruti Dev</span></span>
+                        <span class="bmr-plan-info"><span class="bmr-plan-title">(1) P1 — Community Single PC</span><span class="bmr-plan-sub">1 Login · Individual / Student Use</span><span class="bmr-plan-feat">Basic Export (Word/TXT) + Kruti Dev</span></span>
                         <span class="bmr-plan-price"><span class="bmr-discount">33% OFF</span><span class="bmr-old-price">₹299</span><span class="bmr-new-price">₹199</span></span>
                     </label>
                     <label class="bm-plan bmr-plan" id="cardPlan2">
                         <input type="radio" name="licPlan" id="plan2" onchange="selectPlan(399, 'P2 — Commercial (₹399)', 'cardPlan2')">
                         <span class="bmr-plan-icon" style="background:#f59e0b;">🖨️</span>
-                        <span class="bmr-plan-info"><span class="bmr-plan-title">(2) P2 — Commercial / DTP Cafe ⭐</span><span class="bmr-plan-sub">3 Devices · Commercial Use Allowed</span><span class="bmr-plan-feat">IME Map + Script Converter + 1 Yr Updates</span></span>
+                        <span class="bmr-plan-info"><span class="bmr-plan-title">(2) P2 — Commercial / DTP Cafe ⭐</span><span class="bmr-plan-sub">3 एक साथ Logins · Commercial Use Allowed</span><span class="bmr-plan-feat">IME Map + Script Converter + 1 Yr Updates</span></span>
                         <span class="bmr-plan-price"><span class="bmr-discount">20% OFF</span><span class="bmr-old-price">₹499</span><span class="bmr-new-price">₹399</span></span>
                     </label>
                     <label class="bm-plan bmr-plan" id="cardPlan3" style="border: 2px solid #ec4899; box-shadow: 0 4px 15px rgba(236,72,153,0.15);">
                         <input type="radio" name="licPlan" id="plan3" onchange="selectPlan(999, 'P3 — Ultimate Lifetime (₹999)', 'cardPlan3')">
                         <span class="bmr-plan-icon" style="background:linear-gradient(135deg, #ec4899, #7c3aed);">👑</span>
-                        <span class="bmr-plan-info"><span class="bmr-plan-title">(3) P3 — Ultimate Lifetime 👑</span><span class="bmr-plan-sub">5 Devices · Lifetime Updates</span><span class="bmr-plan-feat">Cloud AI + Typing Test + Everything Unlocked</span></span>
+                        <span class="bmr-plan-info"><span class="bmr-plan-title">(3) P3 — Ultimate Lifetime 👑</span><span class="bmr-plan-sub">5 एक साथ Logins · Lifetime Updates</span><span class="bmr-plan-feat">Cloud AI + Typing Test + Everything Unlocked</span></span>
                         <span class="bmr-plan-price"><span class="bmr-discount" style="background: #ec4899;">BEST VALUE</span><span class="bmr-old-price">₹1499</span><span class="bmr-new-price" style="color: #ec4899;">₹999</span></span>
                     </label>
                 </div>
@@ -1199,15 +1198,6 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
                 <label class="lcn-label" for="licCustomerKey">🔑 License Key</label>
                 <input type="text" id="licCustomerKey" class="lcn-input lcn-input-key" placeholder="HKP-P3-9999-XXXX..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
                 <div class="lcn-help">Format: HKP-P1... (Basic), HKP-P2... (Advanced), HKP-P3... (Ultimate)</div>
-            </div>
-            <div id="manualRecoverySection">
-                <div class="mrs-header"><div class="mrs-title">🔄 Trial Device ID Recovery</div><button type="button" class="mrs-toggle-btn" onclick="toggleManualRecovery()">🔄 Trial Recover</button></div>
-                <div id="manualRecoveryBox">
-                    <div class="mrb-desc"><b>⚠️ सिर्फ़ Trial के लिए</b> — अगर आपकी device का HWID बदल गया है और Trial Key match नहीं कर रही, तो <b>पुरानी Device ID</b> डालें।<br><small style="color:#b45309; display:block; margin-top:6px;">💡 <b>Pro License के लिए इसकी ज़रूरत नहीं</b> — वो Name + Email + Mobile से verified है।</small></div>
-                    <input type="text" id="oldHwidInput" placeholder="Old Device ID (DVC-XXXX-YYYY)">
-                    <div class="mrb-buttons"><button type="button" class="mrb-btn mrb-cancel" onclick="cancelManualRecovery()">✕ Cancel</button><button type="button" class="mrb-btn mrb-apply" onclick="applyManualRecovery()">✓ Recover Trial</button></div>
-                    <div id="recoveryStatusMsg"></div>
-                </div>
             </div>
             <div class="lcn-info-row">
                 <div class="lcn-info-box"><div class="lcn-info-icon">🛡️</div><div class="lcn-info-text"><b>Bank-Grade</b><small>ECDSA P-256</small></div></div>
@@ -1687,6 +1677,7 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
 <script src="js/crypto-utils.js"></script>
 <script src="js/security.js"></script>
 <script src="js/license.js"></script>
+<script src="js/session.js" defer></script>
 <script src="js/audio.js" defer></script>
 <script src="js/tracker.js" defer></script>
 <script src="js/alerts.js" defer></script>
@@ -1989,8 +1980,7 @@ window.handleTrialFlow = async function() {
                     email: email, otp: otp, purpose: 'trialkey',
                     key: ((document.getElementById('trialKeyInput') || {}).value || '').trim().toUpperCase(),
                     name: document.getElementById('trialCustomerName').value.trim(),
-                    mobile: document.getElementById('trialCustomerMobile').value.trim(),
-                    hwid: (function(){ try { return localStorage.getItem('hor_device_hwid') || ''; } catch(e) { return ''; } })()
+                    mobile: document.getElementById('trialCustomerMobile').value.trim()
                 })
             });
             const resData = await response.json().catch(() => ({}));
@@ -1998,6 +1988,7 @@ window.handleTrialFlow = async function() {
             const t = resData.trial;
             if (!t || !t.token || !t.sig) throw new Error('Server से trial token नहीं मिला। थोड़ी देर बाद कोशिश करें।');
             const trialData = {
+                key: t.key || ((document.getElementById('trialKeyInput') || {}).value || '').trim().toUpperCase(),
                 email: t.email, name: t.name, mobile: t.mobile,
                 tier: 'P3_TRIAL', activatedAt: t.activatedAt, expiresAt: t.expiresAt,
                 token: t.token, sig: t.sig

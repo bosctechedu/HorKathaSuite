@@ -275,14 +275,14 @@ const SecurityAlerts = {
                 icon: '🚨',
                 severity: 'HIGH',
                 title: 'Multiple Activations Detected',
-                message: `Same device ने ${data.count || '3+'} बार activate किया है।`,
+                message: `एक ही browser session ने ${data.count || '3+'} बार activate किया है।`,
                 recommendation: 'Customer से WhatsApp पर संपर्क करें'
             },
             'multiple-plans': {
                 icon: '🚨',
                 severity: 'HIGH',
-                title: 'Multiple Plans on Same Device',
-                message: `Same device पर ${data.plans?.join(', ') || 'multiple'} plans activate हुए हैं।`,
+                title: 'Multiple Plans in Same Session',
+                message: `एक ही session में ${data.plans?.join(', ') || 'multiple'} plans activate हुए हैं।`,
                 recommendation: 'License sharing check करें'
             },
             'clock-tamper': {
@@ -297,14 +297,14 @@ const SecurityAlerts = {
                 severity: 'HIGH',
                 title: 'License Key Brute Force Attempt',
                 message: `${data.attempts || '5+'} बार गलत license keys try की गईं।`,
-                recommendation: 'IP/device block करें'
+                recommendation: 'IP block / license revoke करें'
             },
             'trial-abuse': {
                 icon: '⚠️',
                 severity: 'HIGH',
                 title: 'Trial Abuse Detected',
-                message: `Same device ने ${data.count || '2+'} trials लिए हैं।`,
-                recommendation: 'Device को permanent block करें'
+                message: `एक ही browser session ने ${data.count || '2+'} trials लिए हैं।`,
+                recommendation: 'Email/IP जाँचकर license revoke करें'
             },
             'rapid-activations': {
                 icon: '⚡',
@@ -381,7 +381,7 @@ const SecurityAlerts = {
                 "📝 Message": alert.message,
                 "💡 Recommendation": alert.recommendation,
                 "👤 Customer Name": alert.customerName,
-                "📱 Device ID": alert.deviceId,
+                "🔑 Session": alert.deviceId,
                 "📅 Time": alert.localTime,
                 "🔍 Details": JSON.stringify(alert.data, null, 2)
             };
@@ -527,7 +527,7 @@ const SecurityAlerts = {
 📝 ${alert.message}
 
 👤 Customer: ${alert.customerName}
-📱 Device: ${alert.deviceId}
+🔑 Session: ${alert.deviceId}
 💡 Action: ${alert.recommendation}
 
 📅 ${alert.localTime}
@@ -537,7 +537,7 @@ _Sent by Hor Katha Security System_`;
 
     _buildSMSText(alert) {
         return `[HK-${alert.severity}] ${alert.title}
-Device: ${alert.deviceId}
+Session: ${alert.deviceId}
 Customer: ${alert.customerName}
 Time: ${alert.localTime}`;
     },

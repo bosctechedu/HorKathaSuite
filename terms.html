@@ -890,7 +890,7 @@
             <li><a href="#section-2">2. Definitions</a></li>
             <li><a href="#section-3">3. Eligibility</a></li>
             <li><a href="#section-4">4. License Grant</a></li>
-            <li><a href="#section-5">5. Account &amp; Device Binding</a></li>
+            <li><a href="#section-5">5. Account &amp; Login Limits</a></li>
             <li><a href="#section-6">6. User Responsibilities</a></li>
             <li><a href="#section-7">7. Prohibited Uses</a></li>
             <li><a href="#section-8">8. Pricing &amp; Payment</a></li>
@@ -991,8 +991,8 @@
                     <td>Alphanumeric key जो Pro/Trial features unlock करती है</td>
                 </tr>
                 <tr>
-                    <td><strong>"Device ID" / "HWID"</strong></td>
-                    <td>Anonymized hardware fingerprint (DVC-XXXX-XXXX format)</td>
+                    <td><strong>"Active Session"</strong></td>
+                    <td>किसी browser में License Key से किया गया login</td>
                 </tr>
                 <tr>
                     <td><strong>"Trial"</strong></td>
@@ -1063,18 +1063,18 @@
         <div class="plan-card">
             <div class="plan-name">P1 — Community</div>
             <div class="plan-price">₹199</div>
-            <div class="plan-devices">1 Device</div>
+            <div class="plan-devices">1 एक साथ login</div>
             <ul class="plan-features">
                 <li>All 5 Languages</li>
                 <li>All Pro Features</li>
                 <li>Lifetime License</li>
-                <li>Device-Locked</li>
+                <li>Email + Mobile से जुड़ी</li>
             </ul>
         </div>
         <div class="plan-card">
             <div class="plan-name">P2 — Commercial</div>
             <div class="plan-price">₹399</div>
-            <div class="plan-devices">3 Devices</div>
+            <div class="plan-devices">3 एक साथ login</div>
             <ul class="plan-features">
                 <li>Everything in P1</li>
                 <li>Commercial Use Allowed</li>
@@ -1085,7 +1085,7 @@
         <div class="plan-card">
             <div class="plan-name">P3 — Enterprise</div>
             <div class="plan-price">₹699</div>
-            <div class="plan-devices">5 Devices</div>
+            <div class="plan-devices">5 एक साथ login</div>
             <ul class="plan-features">
                 <li>Everything in P2</li>
                 <li>Schools/Colleges/Offices</li>
@@ -1129,32 +1129,24 @@
     <!-- 5. ACCOUNT & DEVICE BINDING -->
     <!-- ═══════════════════════════════════════════ -->
     <h2 id="section-5">
-        <span>5️⃣ Account &amp; Device Binding</span>
+        <span>5️⃣ Account &amp; Login Limits</span>
         <button class="heading-copy" data-target="section-5" title="Copy link" aria-label="Copy link to section">🔗</button>
     </h2>
 
-    <h3>🔐 Device ID Binding</h3>
-    <p>आपकी License Key आपकी <strong>Device ID (HWID)</strong> से bound होती है। यह ID पहली बार activation पर generate होती है और आपके device से link होती है।</p>
+    <h3>🔐 Email और Mobile से जुड़ी License</h3>
+    <p>आपकी License Key खरीदते समय दिए गए <strong>Email और Mobile number</strong> से जुड़ी होती है। हम कोई hardware fingerprint या Device ID नहीं लेते।</p>
 
-    <div class="info">
-        <strong>📱 Device ID क्या है?</strong> यह एक anonymous fingerprint है (जैसे <code>DVC-A1B2-C3D4</code>) जो आपके hardware से generate होता है। इसमें कोई personal data नहीं होता।
-    </div>
+    <h3>💻 एक साथ login की limit</h3>
+    <p>एक Key से एक समय में इतने browsers में login रह सकता है: <strong>P1: 1, P2: 3, P3: 5</strong>, Institute: हर seat 1, Trial: 1। Limit पूरी होने पर नया login करते ही <strong>सबसे पुराना login अपने-आप logout</strong> हो जाता है।</p>
 
-    <h3>🔄 Device Change / Recovery</h3>
-    <p>अगर आपका device बदल जाए (Windows reinstall, hardware change), तो:</p>
-
-    <ol class="steps">
-        <li>License modal खोलें</li>
-        <li><strong>"🔄 Recover करें"</strong> बटन दबाएं</li>
-        <li>पुरानी Device ID डालें</li>
-        <li>License verify हो जाएगी</li>
-    </ol>
+    <h3>🔄 नया Computer / Windows Reinstall</h3>
+    <p>किसी recovery की ज़रूरत नहीं। नए browser में Email/Mobile verify करके वही License Key डालें; पुराना login limit के हिसाब से अपने-आप हट जाएगा।</p>
 
     <div class="warn">
-        <strong>⚠️ Important:</strong> Device change की जानकारी तुरंत <code>support@bosctech.in</code> पर भेजें। Multiple device changes पर manual verification हो सकती है।
+        <strong>⚠️ Important:</strong> बार-बार अलग-अलग जगहों से असामान्य logins दिखने पर हम Key की जाँच कर सकते हैं और sharing साबित होने पर उसे suspend कर सकते हैं।
     </div>
 
-    <!-- ═══════════════════════════════════════════ -->
+<!-- ═══════════════════════════════════════════ -->
     <!-- 6. USER RESPONSIBILITIES -->
     <!-- ═══════════════════════════════════════════ -->
     <h2 id="section-6">
@@ -1196,7 +1188,7 @@
             </thead>
             <tbody>
                 <tr>
-                    <td><strong>License Sharing</strong> — Key को multiple devices पर use करना</td>
+                    <td><strong>License Sharing</strong> — Key किसी दूसरे व्यक्ति को देना या login limit से बचने की कोशिश करना</td>
                     <td>License revoke + Legal action</td>
                 </tr>
                 <tr>
@@ -1256,7 +1248,7 @@
                 <tr>
                     <th>Plan</th>
                     <th>Price (INR)</th>
-                    <th>Devices</th>
+                    <th>एक साथ login</th>
                     <th>Validity</th>
                 </tr>
             </thead>
@@ -1264,7 +1256,7 @@
                 <tr>
                     <td>Trial</td>
                     <td>₹9</td>
-                    <td>1</td>
+                    <td>1 login</td>
                     <td>7 Days</td>
                 </tr>
                 <tr>
@@ -1340,7 +1332,7 @@
         <li>License Key successfully delivered हो चुकी हो</li>
         <li>App 7 दिन से ज्यादा इस्तेमाल हो चुका हो</li>
         <li>User ने खुद कानून का उल्लंघन किया हो (piracy, sharing)</li>
-        <li>Device change के बाद license न मिले (यह recoverable है)</li>
+        <li>नए browser में login करने पर पुराना login logout हो जाए (यह login limit का normal हिस्सा है)</li>
         <li>Trial amount (₹9) — non-refundable</li>
     </ul>
 
@@ -1380,8 +1372,8 @@
                     <td>7 days from activation</td>
                 </tr>
                 <tr>
-                    <td><strong>Devices</strong></td>
-                    <td>1 (Email, Mobile और Device ID से जुड़ी)</td>
+                    <td><strong>एक साथ login</strong></td>
+                    <td>1 (Email और Mobile से जुड़ी)</td>
                 </tr>
                 <tr>
                     <td><strong>Features</strong></td>
@@ -1397,7 +1389,7 @@
                 </tr>
                 <tr>
                     <td><strong>Max Trials</strong></td>
-                    <td>1 प्रति Email / Mobile / Device</td>
+                    <td>1 प्रति Email / Mobile</td>
                 </tr>
                 <tr>
                     <td><strong>Trial Key</strong></td>
@@ -1974,7 +1966,7 @@
     </h2>
 
     <ul>
-        <li>Institute license में 2 से 200 seats होती हैं; हर seat की अलग key होती है जो <strong>एक device</strong> पर चलती है।</li>
+        <li>Institute license में 2 से 200 seats होती हैं; हर seat की अलग key होती है जिससे <strong>एक समय में एक login</strong> हो सकता है।</li>
         <li>Keys केवल उसी संस्था के छात्रों / staff के लिए हैं; बेचना, दोबारा बाँटना या संस्था के बाहर देना मना है।</li>
         <li>Validity: खरीद के समय चुनी गई अवधि (6 महीने, 1 साल या Lifetime)।</li>
         <li>संस्था का नाम, email और mobile हमारे record में रहते हैं (Privacy Policy देखें)।</li>
