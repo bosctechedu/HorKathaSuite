@@ -52,6 +52,20 @@
         'body[data-skin="royal"][data-theme="dark"] .map-badge{border-bottom-color:#a78bfa;}',
         'body[data-skin="royal"][data-theme="dark"] .map-badge span:first-child{color:#e9d5ff;}',
         'body[data-skin="royal"][data-theme="dark"] #numpad-script-tag{color:#d8b4fe!important;}',
+        '/* v39: छोटे labels और भी साफ़ */',
+        '[data-theme="dark"] .key[data-key="LEFT"],[data-theme="dark"] .key[data-key="RIGHT"],[data-theme="dark"] .key[data-key="UP"],[data-theme="dark"] .key[data-key="DOWN"]{color:#ffffff!important;font-size:1rem!important;font-weight:900!important;}',
+        '[data-theme="dark"] .key.key-fkey{opacity:1!important;color:#f0f6fc!important;font-weight:800!important;}',
+        '[data-theme="dark"] .key.key-func{color:#f0f6fc!important;}',
+        '[data-theme="dark"] .counter{color:#f0f6fc!important;font-weight:700!important;}',
+        '[data-theme="dark"] #numpad-script-tag{color:#79c0ff!important;font-weight:800!important;}',
+        '[data-theme="dark"] .key-dia{color:#79c0ff!important;font-weight:900!important;}',
+        '[data-theme="dark"] .map-badge span:first-child{color:#79c0ff!important;}',
+        '[data-theme="dark"] .developer-credit{color:#e6edf3!important;}',
+        '[data-theme="dark"] .status-chip.save-ok,[data-theme="dark"] #draftStatusBadge{color:#7ee787!important;background:rgba(46,160,67,.32)!important;font-weight:800!important;}',
+        '[data-theme="dark"] #draftStatusBadge{padding:1px 6px;border-radius:999px;}',
+        'body[data-skin="royal"][data-theme="dark"] .key.key-fkey,body[data-skin="royal"][data-theme="dark"] .key.key-func,body[data-skin="royal"][data-theme="dark"] .counter{color:#f5f3ff!important;}',
+        'body[data-skin="royal"][data-theme="dark"] #numpad-script-tag,body[data-skin="royal"][data-theme="dark"] .key-dia,body[data-skin="royal"][data-theme="dark"] .map-badge span:first-child{color:#e9d5ff!important;}',
+        'body[data-skin="royal"][data-theme="dark"] .developer-credit{color:#ddd6fe!important;}',
         /* theme बदलते समय एक frame के लिए animations बंद → झटका नहीं */
         'html.hk-theme-switching *,html.hk-theme-switching *::before,html.hk-theme-switching *::after{transition:none!important;animation-duration:0s!important;}'
     ].join('\n');
