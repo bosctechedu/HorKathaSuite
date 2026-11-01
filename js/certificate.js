@@ -507,7 +507,7 @@ const CertificateSystem = {
     },
 
     _resolveBaseUrlForVerify(overrides) {
-        const PRODUCTION_URL = 'https://hor-katha.vercel.app';
+        const PRODUCTION_URL = 'https://horkathasuite.pages.dev';
         const diag = { url: PRODUCTION_URL, source: 'hardcoded-fallback', reason: 'No other source available' };
         try {
             let cfg = (typeof APP_CONFIG !== 'undefined' && APP_CONFIG) ? APP_CONFIG : null;

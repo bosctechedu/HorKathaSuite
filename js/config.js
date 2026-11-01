@@ -389,7 +389,7 @@ function _resolveBaseUrlWithDiagnostics() {
     if (diag.protocol === 'file:' || !diag.hostname || diag.hostname === 'null') {
 
         if (diag.isElectronPackaged) {
-            diag.url = 'https://hor-katha.vercel.app';
+            diag.url = 'https://horkathasuite.pages.dev';
             diag.source = 'electron-packaged';
             diag.reason = 'Electron packaged app (production)';
             return diag;
@@ -410,7 +410,7 @@ function _resolveBaseUrlWithDiagnostics() {
         }
 
         if (diag.nodeEnv === 'production') {
-            diag.url = 'https://hor-katha.vercel.app';
+            diag.url = 'https://horkathasuite.pages.dev';
             diag.source = 'nodeenv-production';
             diag.reason = 'NODE_ENV=production';
             return diag;
@@ -438,7 +438,7 @@ function _resolveBaseUrlWithDiagnostics() {
     // ═══════════════════════════════════════════════════════
     // PRIORITY 6: Ultimate fallback (unknown protocol)
     // ═══════════════════════════════════════════════════════
-    diag.url = 'https://hor-katha.vercel.app';
+    diag.url = 'https://horkathasuite.pages.dev';
     diag.source = 'ultimate-fallback';
     diag.reason = 'Unknown environment — production fallback';
 
