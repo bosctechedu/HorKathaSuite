@@ -469,14 +469,13 @@ const APP_CONFIG = (function buildAppConfig() {
             };
         }
 
-        console.warn('⚠️ [config] License public key not configured or invalid!');
-        console.warn('   → Set LICENSE_PUBLIC_KEY_X and LICENSE_PUBLIC_KEY_Y');
 
         return {
             kty: "EC",
             crv: "P-256",
-            x: "YOUR_X_COORDINATE_HERE",
-            y: "YOUR_Y_COORDINATE_HERE"
+            // ✅ Public key (सार्वजनिक, commit करना सुरक्षित) — keygen 2026-11-01
+            x: "Ewr_G2elN7pQvOqbpu6fhehyTQu9VCnXSWZ8buHVYQY",
+            y: "a05XVSZupZ4FIDT9r3Q1N84_TQGOJujdp5tkLtmvgXg"
         };
     })();
 

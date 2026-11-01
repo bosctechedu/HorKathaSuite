@@ -12,6 +12,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com https://www.gstatic.com https://apis.google.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://api.qrserver.com https://quickchart.io https://www.gstatic.com; connect-src 'self' https://hor-katha-api.bosctechedu.workers.dev https://*.firebaseio.com https://*.firebasedatabase.app https://*.cloudfunctions.net https://*.run.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://formsubmit.co https://api.qrserver.com https://quickchart.io; media-src 'self' blob:; object-src 'none'; worker-src 'self' blob:; manifest-src 'self'; frame-src 'self' blob: https://*.firebaseapp.com; base-uri 'self'; form-action 'self' https://formsubmit.co;">
+    <script>/* 🎨 हर load पर Light theme (v35) */try{localStorage.setItem("hor_katha_theme","light");document.documentElement.setAttribute("data-theme","light");}catch(e){}</script>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="assets/icon.ico">
     <script src="js/config-private.local.js" onerror="(function(){try{console.log('ℹ️ config-private.local.js not present');}catch(e){}})()"></script>
@@ -729,7 +730,7 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
             <button class="tool-btn btn-icon-only priority-1" id="btn-voice-toggle" onmousedown="event.preventDefault()" onclick="toggleVoiceOutput()" title="TTS: ON" aria-label="Toggle TTS">🎧</button>
             <button class="tool-btn btn-icon-only priority-1" id="btn-numpad-toggle" onmousedown="event.preventDefault()" onclick="toggleNumpad()" title="Numpad: OFF" aria-label="Toggle numpad">🔢</button>
             <button class="tool-btn btn-icon-only priority-1" id="btn-zen-mode" onmousedown="event.preventDefault()" onclick="toggleZenMode()" title="Zen Mode: OFF" aria-label="Toggle zen mode">🧘</button>
-            <button class="tool-btn btn-icon-only priority-0" id="btn-theme-toggle" onmousedown="event.preventDefault()" onclick="toggleTheme()" title="Theme: Dark" aria-label="Toggle theme">🌙</button>
+            <button class="tool-btn btn-icon-only priority-0" id="btn-theme-toggle" onmousedown="event.preventDefault()" onclick="toggleTheme()" title="Theme: Light" aria-label="Toggle theme (F8)">☀️</button>
             <button class="tool-btn btn-icon-only priority-0" id="btn-admin-lock" onmousedown="event.preventDefault()" onclick="openAdminLoginModal()" title="Admin Login" aria-label="Admin Login">🔒</button>
         </div>
     </div>
@@ -1592,6 +1593,9 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
 <script src="js/privacy.js" defer></script>
 <script src="js/app.js" defer></script>
 <script src="js/typing-test.js" defer></script>
+<script src="js/finger-guide.js" defer></script>
+<script src="js/lang-guard.js" defer></script>
+<script src="js/theme.js" defer></script>
 <script src="js/qr-offline.js" defer></script>
 <script src="js/certificate.js" defer></script>
 <script src="js/print-generator.js" defer></script>

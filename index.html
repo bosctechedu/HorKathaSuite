@@ -12,6 +12,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com https://www.gstatic.com https://apis.google.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://api.qrserver.com https://quickchart.io https://www.gstatic.com; connect-src 'self' https://hor-katha-api.bosctechedu.workers.dev https://*.firebaseio.com https://*.firebasedatabase.app https://*.cloudfunctions.net https://*.run.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://formsubmit.co https://api.qrserver.com https://quickchart.io; media-src 'self' blob:; object-src 'none'; worker-src 'self' blob:; manifest-src 'self'; frame-src 'self' blob: https://*.firebaseapp.com; base-uri 'self'; form-action 'self' https://formsubmit.co;">
+    <script>/* 🎨 हर load पर Light theme (v35) */try{localStorage.setItem("hor_katha_theme","light");document.documentElement.setAttribute("data-theme","light");}catch(e){}</script>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="assets/icon.ico">
     <script src="js/config-private.local.js" onerror="(function(){try{console.log('ℹ️ config-private.local.js not present');}catch(e){}})()"></script>
@@ -807,7 +808,7 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
             <button class="tool-btn hk-labeled priority-1" id="btn-voice-toggle" onmousedown="event.preventDefault()" onclick="toggleVoiceOutput()" title="TTS: ON" aria-label="Toggle TTS">🎧</button>
             <button class="tool-btn hk-labeled priority-1" id="btn-numpad-toggle" onmousedown="event.preventDefault()" onclick="toggleNumpad()" title="Numpad: OFF" aria-label="Toggle numpad">🔢</button>
             <button class="tool-btn hk-labeled priority-1" id="btn-zen-mode" onmousedown="event.preventDefault()" onclick="toggleZenMode()" title="Zen Mode: OFF" aria-label="Toggle zen mode">🧘</button>
-            <button class="tool-btn hk-labeled priority-0" id="btn-theme-toggle" onmousedown="event.preventDefault()" onclick="toggleTheme()" title="Theme: Dark" aria-label="Toggle theme">🌙</button>
+            <button class="tool-btn hk-labeled priority-0" id="btn-theme-toggle" onmousedown="event.preventDefault()" onclick="toggleTheme()" title="Theme: Light" aria-label="Toggle theme (F8)">☀️</button>
             <button class="tool-btn hk-labeled priority-1" id="btn-easy-read" onmousedown="event.preventDefault()" onclick="hkOpenA11y()" title="Easy Read (F2)" aria-label="Easy Read settings">♿</button>
             <button class="tool-btn hk-labeled priority-1" id="btn-shortcuts" onmousedown="event.preventDefault()" onclick="hkOpenShortcuts()" title="Keyboard Shortcuts (F1)" aria-label="Keyboard shortcuts">⌨️</button>
             <button class="tool-btn hk-labeled priority-1" id="btn-progress" onmousedown="event.preventDefault()" onclick="hkOpenProgress()" title="My Progress" aria-label="My typing progress">📈</button>
@@ -1689,6 +1690,9 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
 <script src="js/privacy.js" defer></script>
 <script src="js/app.js" defer></script>
 <script src="js/typing-test.js" defer></script>
+<script src="js/finger-guide.js" defer></script>
+<script src="js/lang-guard.js" defer></script>
+<script src="js/theme.js" defer></script>
 <script src="js/insights.js" defer></script>
 <script src="js/growth.js" defer></script>
 <script src="js/hkscript.js" defer></script>
@@ -3872,6 +3876,7 @@ function hpConvertAllText() {
             <div class="hk-sc-row"><span>यह सूची खोलें</span><span><kbd class="hk-kbd">F1</kbd></span></div>
             <div class="hk-sc-row"><span>Easy Read settings</span><span><kbd class="hk-kbd">F2</kbd></span></div>
             <div class="hk-sc-row"><span>Zen Mode चालू / बंद</span><span><kbd class="hk-kbd">F9</kbd></span></div>
+            <div class="hk-sc-row"><span>Theme बदलें (Light → Dark → Royal)</span><span><kbd class="hk-kbd">F8</kbd></span></div>
             <div class="hk-sc-row"><span>Focus mode से बाहर / पढ़ना रोकें</span><span><kbd class="hk-kbd">Esc</kbd></span></div>
             <div class="hk-sc-group">Editor</div>
             <div class="hk-sc-row"><span>Undo / Redo</span><span><kbd class="hk-kbd">Ctrl</kbd><kbd class="hk-kbd">Z</kbd> &nbsp;<kbd class="hk-kbd">Ctrl</kbd><kbd class="hk-kbd">Y</kbd></span></div>
