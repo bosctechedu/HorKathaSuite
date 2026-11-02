@@ -1,5 +1,5 @@
 // ============================================================
-// 🖼️ POSTER MAKER — Hoṛ Katha Suite (v40, v43: 🌟 सुविचार Photo Poster)
+// 🖼️ POSTER MAKER — Hoṛ Katha Suite (v40, v43: 🌟 सुविचार Photo Poster, v44: 📐 Mobile/Tab/Desktop size + 💼 Pro templates)
 // BOSC Tech & Edu
 // ============================================================
 // Ol Chiki / हिन्दी / संताली / English में festival badhai,
@@ -20,9 +20,12 @@
     const SITE = 'horkathasuite.pages.dev';
 
     const SIZES = {
-        square: { w: 1080, h: 1080, label: '⬛ Square (Post)' },
-        story:  { w: 1080, h: 1920, label: '📱 Status / Story' },
-        a4:     { w: 1240, h: 1754, label: '📄 A4 (Print)' }
+        story:    { w: 1080, h: 1920, label: '📱 Mobile — Status / Story (9:16)', dev: 'mobile' },
+        tab:      { w: 1536, h: 2048, label: '📲 Tab (3:4)', dev: 'tab' },
+        desktop:  { w: 1920, h: 1080, label: '🖥️ Desktop / YouTube / Banner (16:9)', dev: 'desktop' },
+        square:   { w: 1080, h: 1080, label: '⬛ Square — WhatsApp / FB Post (1:1)', dev: '' },
+        portrait: { w: 1080, h: 1350, label: '📷 Instagram Post (4:5)', dev: '' },
+        a4:       { w: 1240, h: 1754, label: '📄 A4 (Print)', dev: '' }
     };
 
     // ------------------------------------------------------------
@@ -37,62 +40,57 @@
         festival: {
             name: '🎉 त्योहार बधाई',
             palettes: [
-                { bg: ['#7c2d12', '#ea580c'], fg: '#fff7ed', accent: '#fde047', name: 'सोहराय' },
-                { bg: ['#14532d', '#16a34a'], fg: '#f0fdf4', accent: '#facc15', name: 'बाहा (साल)' },
-                { bg: ['#4c1d95', '#a21caf'], fg: '#fdf4ff', accent: '#fbbf24', name: 'Royal' },
-                { bg: ['#0c4a6e', '#0891b2'], fg: '#ecfeff', accent: '#fde68a', name: 'Sky' }
+                { bg: ['#7c2d12', '#ea580c'], fg: '#fff7ed', accent: '#fde047', card: '#fff7ed', name: 'सोहराय' },
+                { bg: ['#14532d', '#16a34a'], fg: '#f0fdf4', accent: '#facc15', card: '#f0fdf4', name: 'बाहा (साल)' },
+                { bg: ['#3b0764', '#a21caf'], fg: '#fdf4ff', accent: '#fbbf24', card: '#fdf4ff', name: 'Royal' },
+                { bg: ['#0c4a6e', '#0891b2'], fg: '#ecfeff', accent: '#fde68a', card: '#ecfeff', name: 'Sky' },
+                { bg: ['#450a0a', '#b91c1c'], fg: '#fef2f2', accent: '#f5c451', card: '#fffbeb', name: 'लाल-सुनहरा' },
+                { bg: ['#0f172a', '#1e3a8a'], fg: '#f8fafc', accent: '#f5c451', card: '#f8fafc', name: 'Navy Gold' }
             ],
-            defaults: {
-                heading: 'सोहराय परब की हार्दिक शुभकामनाएँ',
-                message: 'ᱡᱚᱦᱟᱨ! आपके परिवार में सुख, शांति और खुशहाली बनी रहे।',
-                from: 'BOSC Tech & Edu'
-            }
+            defaults: { sub: 'ᱡᱚᱦᱟᱨ', heading: 'सोहराय परब की हार्दिक शुभकामनाएँ', message: 'आपके परिवार में सुख, शांति और खुशहाली बनी रहे।', from: 'BOSC Tech & Edu', footer: '' }
         },
         notice: {
             name: '📢 सूचना / Notice',
             palettes: [
-                { bg: ['#ffffff', '#f1f5f9'], fg: '#0f172a', accent: '#1d4ed8', name: 'नीला' },
-                { bg: ['#ffffff', '#fef2f2'], fg: '#0f172a', accent: '#b91c1c', name: 'लाल' },
-                { bg: ['#ffffff', '#f0fdf4'], fg: '#0f172a', accent: '#15803d', name: 'हरा' }
+                { bg: ['#1e3a8a', '#2563eb'], fg: '#0f172a', accent: '#1d4ed8', card: '#ffffff', head: '#1e3a8a', name: 'नीला' },
+                { bg: ['#7f1d1d', '#dc2626'], fg: '#0f172a', accent: '#b91c1c', card: '#ffffff', head: '#7f1d1d', name: 'लाल' },
+                { bg: ['#14532d', '#16a34a'], fg: '#0f172a', accent: '#15803d', card: '#ffffff', head: '#14532d', name: 'हरा' },
+                { bg: ['#1f2937', '#475569'], fg: '#111827', accent: '#d97706', card: '#fffdf7', head: '#1f2937', name: 'Graphite' },
+                { bg: ['#4c1d95', '#7c3aed'], fg: '#1e1b4b', accent: '#7c3aed', card: '#ffffff', head: '#4c1d95', name: 'बैंगनी' },
+                { bg: ['#78350f', '#b45309'], fg: '#1c1917', accent: '#b45309', card: '#fffbeb', head: '#78350f', name: 'Kraft' }
             ],
-            defaults: {
-                heading: 'सूचना',
-                message: 'सभी सदस्यों को सूचित किया जाता है कि ग्राम सभा की बैठक रविवार सुबह 10 बजे पंचायत भवन में होगी। सभी की उपस्थिति अनिवार्य है।',
-                from: 'ग्राम प्रधान'
-            }
+            defaults: { sub: 'ग्राम पंचायत ……………', heading: 'सूचना', message: 'सभी सदस्यों को सूचित किया जाता है कि ग्राम सभा की बैठक रविवार सुबह 10 बजे पंचायत भवन में होगी। सभी की उपस्थिति अनिवार्य है।', from: 'ग्राम प्रधान', footer: '' }
         },
         invite: {
             name: '💐 निमंत्रण',
             palettes: [
-                { bg: ['#4a0d1a', '#7f1d1d'], fg: '#fff7ed', accent: '#f5c451', name: 'मैरून-सुनहरा' },
-                { bg: ['#fffbeb', '#fef3c7'], fg: '#422006', accent: '#b45309', name: 'क्रीम' },
-                { bg: ['#052e16', '#14532d'], fg: '#f0fdf4', accent: '#f5c451', name: 'हरा-सुनहरा' }
+                { bg: ['#4a0d1a', '#7f1d1d'], fg: '#fff7ed', accent: '#f5c451', card: '#fffbeb', name: 'मैरून-सुनहरा' },
+                { bg: ['#78350f', '#b45309'], fg: '#fffbeb', accent: '#d4a017', card: '#fffbeb', name: 'क्रीम' },
+                { bg: ['#052e16', '#14532d'], fg: '#f0fdf4', accent: '#f5c451', card: '#fefce8', name: 'हरा-सुनहरा' },
+                { bg: ['#1e1b4b', '#3730a3'], fg: '#eef2ff', accent: '#e9c46a', card: '#fdfaf3', name: 'Indigo' },
+                { bg: ['#831843', '#be185d'], fg: '#fdf2f8', accent: '#fcd34d', card: '#fff1f2', name: 'Rani Pink' },
+                { bg: ['#134e4a', '#0f766e'], fg: '#f0fdfa', accent: '#fbbf24', card: '#f0fdfa', name: 'Teal' }
             ],
-            defaults: {
-                heading: 'शुभ विवाह',
-                message: 'आप सपरिवार सादर आमंत्रित हैं।\nस्थान: ……………\nदिनांक: ……………',
-                from: 'निवेदक: ……………'
-            }
+            defaults: { sub: 'हार्दिक निमंत्रण', heading: 'शुभ विवाह', message: 'आप सपरिवार सादर आमंत्रित हैं।\nस्थान: ……………\nदिनांक: ……………', from: 'निवेदक: ……………', footer: '' }
         },
         quote: {
             name: '💬 विचार / Quote',
             palettes: [
-                { bg: ['#0f172a', '#1e293b'], fg: '#f8fafc', accent: '#38bdf8', name: 'Night' },
-                { bg: ['#1c1917', '#44403c'], fg: '#fafaf9', accent: '#f59e0b', name: 'Earth' },
-                { bg: ['#fdf2f8', '#fce7f3'], fg: '#500724', accent: '#db2777', name: 'Rose' }
+                { bg: ['#0f172a', '#1e293b'], fg: '#f8fafc', accent: '#38bdf8', card: '#f8fafc', head: '#f8fafc', name: 'Night' },
+                { bg: ['#1c1917', '#44403c'], fg: '#fafaf9', accent: '#f59e0b', card: '#fafaf9', head: '#fafaf9', name: 'Earth' },
+                { bg: ['#9d174d', '#db2777'], fg: '#fdf2f8', accent: '#fbcfe8', card: '#fdf2f8', head: '#ffffff', name: 'Rose' },
+                { bg: ['#064e3b', '#047857'], fg: '#ecfdf5', accent: '#fcd34d', card: '#ecfdf5', head: '#ffffff', name: 'Forest' },
+                { bg: ['#312e81', '#6d28d9'], fg: '#f5f3ff', accent: '#facc15', card: '#f5f3ff', head: '#ffffff', name: 'Violet' },
+                { bg: ['#7c2d12', '#c2410c'], fg: '#fff7ed', accent: '#fde68a', card: '#fff7ed', head: '#ffffff', name: 'Sunset' }
             ],
-            defaults: {
-                heading: 'आज का विचार',
-                message: 'अपनी भाषा में लिखना, अपनी पहचान को ज़िंदा रखना है।',
-                from: 'Hoṛ Katha'
-            }
+            defaults: { sub: '', heading: 'आज का विचार', message: 'अपनी भाषा में लिखना, अपनी पहचान को ज़िंदा रखना है।', from: 'Hoṛ Katha', footer: '' }
         }
     };
 
     const S = {
         tpl: 'suvichar', pal: 0, lang: 'app', exporting: false, size: 'square', scale: 100,
         heading: '', message: '', from: '', date: '',
-        edited: { heading: false, message: false, from: false }
+        edited: { heading: false, message: false, from: false, sub: false, footer: false }
     };
 
     // ------------------------------------------------------------
@@ -746,6 +744,7 @@
         }
         // photo + name
         const hasPhoto = !!S.sv.photo || !S.exporting;
+        if (W / H > 1.2) { svDrawWide(ctx, st, C, W, H, fh, hasPhoto); return; }
         const side = st.side === 0 ? 'right' : 'left';
         const ps = Math.round(W * (tall ? 0.34 : 0.28));
         const m = Math.round(W * 0.02);
@@ -770,6 +769,29 @@
         svQuote(ctx, st, C, W, H, qTop, Math.max(qTop + W * 0.2, Math.min(qBottom, qTop + H * (tall ? 0.5 : 0.42))), k * (tall ? 1.1 : 1));
     }
 
+    // Desktop (चौड़ा) layout: एक तरफ़ फोटो + नाम, दूसरी तरफ़ badge + सुविचार
+    function svDrawWide(ctx, st, C, W, H, fh, hasPhoto) {
+        const side = st.side === 0 ? 'right' : 'left';
+        const m = Math.round(H * 0.035), bottomY = H - fh - m;
+        const ps = Math.round(H * 0.6);
+        const px0 = side === 'right' ? W - m * 2 - ps : m * 2;
+        const nh = Math.round(H * ((S.sv.sub || '').trim() ? 0.13 : 0.11));
+        const ny = bottomY - nh;
+        const colW = hasPhoto ? W - ps - m * 5 : W;
+        const qx = hasPhoto ? (side === 'right' ? m : ps + m * 4) : 0;
+        let bx0, bx1;
+        if (hasPhoto) { if (side === 'right') { bx0 = qx + colW * 0.12; bx1 = px0 + ps * 0.5; } else { bx0 = px0 + ps * 0.5; bx1 = qx + colW * 0.88; } }
+        else { bx0 = W * 0.2; bx1 = W * 0.8; }
+        svNameBox(ctx, st, C, W, bx0, bx1, ny, nh, side, hasPhoto, ps * 0.5);
+        if (hasPhoto) svPhoto(ctx, st, C, px0, bottomY - ps - nh * 0.25, ps);
+        const k = S.scale / 100;
+        ctx.save(); ctx.translate(qx, 0);
+        const after = svBadge(ctx, st, C, colW, Math.round(H * 0.07), Math.round(H * 0.1));
+        const qTop = after + H * 0.04;
+        svQuote(ctx, st, C, colW, H, qTop, Math.max(qTop + H * 0.25, ny - H * 0.05), k * 1.15);
+        ctx.restore();
+    }
+
     // ------------------------------------------------------------
     // 🖌️ DRAW
     // ------------------------------------------------------------
@@ -779,102 +801,415 @@
         canvas.width = W; canvas.height = H;
         const ctx = canvas.getContext('2d');
         if (S.tpl === 'suvichar') { svDraw(ctx, W, H); return; }
-        const T = TEMPLATES[S.tpl];
-        const P = T.palettes[S.pal] || T.palettes[0];
-        const tall = H / W > 1.3 ? 1.25 : 1; // Story/A4 में बड़ा text
-        const k = S.scale / 100 * tall;
-        const pad = Math.round(W * 0.09);
-        const innerW = W - pad * 2;
-        const fromLine = [S.from, S.date].filter(Boolean).join('  •  ');
+        proDraw(ctx, W, H);
+    }
 
-        bgGradient(ctx, W, H, P.bg);
+    // ============================================================
+    // 💼 PRO TEMPLATES (v44): festival / notice / invite / quote
+    //   हर template के 3 professional design, font, logo, background,
+    //   हर रंग का picker, ऊपर/नीचे की पंक्ति — हर size (Mobile/Tab/Desktop) पर
+    // ============================================================
+    const PRO_DESIGNS = {
+        festival: ['🎨 सोहराय पारंपरिक', '🌸 मंडल / रंगोली', '🪪 Modern Card'],
+        notice:   ['🏛️ Official Letterhead', '📢 Bold Alert', '📌 Notice Board'],
+        invite:   ['👑 Royal Frame', '🚪 मेहराब (Arch)', '🌼 Floral Minimal'],
+        quote:    ['📰 Editorial', '◧ Split Panel', '🖍️ Highlight']
+    };
+    const PRO_FONT_DEF = { festival: [2, 0], notice: [8, 0], invite: [1, 0], quote: [9, 0] };
+    const PRO_COLOR_KEYS = [['bg1', 'Background 1'], ['bg2', 'Background 2'], ['head', 'शीर्षक'], ['fg', 'Text'], ['acc', 'Accent / सजावट'], ['card', 'Card / पट्टी']];
+    function proDefaults() { return { design: { festival: 0, notice: 0, invite: 0, quote: 0 }, hf: {}, mf: {}, colors: {}, logo: null, logoUrl: '', bg: null, bgUrl: '', ov: 45 }; }
+    S.pro = proDefaults();
+    S.sub = ''; S.footer = '';
+
+    function proP() {
+        const T = TEMPLATES[S.tpl], B = T.palettes[S.pal] || T.palettes[0], c = (S.pro.colors[S.tpl] || {});
+        const P = { bg: [c.bg1 || B.bg[0], c.bg2 || B.bg[1]], fg: c.fg || B.fg, acc: c.acc || B.accent, head: c.head || B.head || B.accent, card: c.card || B.card || '#ffffff' };
+        return P;
+    }
+    function proFont(which) {
+        const d = PRO_FONT_DEF[S.tpl] || [0, 0];
+        const v = which === 'h' ? S.pro.hf[S.tpl] : S.pro.mf[S.tpl];
+        return typeof v === 'number' ? v : (which === 'h' ? d[0] : d[1]);
+    }
+    // font-आधारित fit
+    function fitF(ctx, text, maxW, maxH, startPx, fi, lhK, minPx, weight) {
+        let px = Math.round(startPx), lines = [];
+        lhK = lhK || 1.32; minPx = minPx || 14;
+        const fnt = p => weight ? (weight + ' ' + p + 'px ' + FONT) : fontStr(fi, p);
+        while (px >= minPx) {
+            ctx.font = fnt(px);
+            lines = wrap(ctx, text, maxW);
+            if (lines.length * px * lhK <= maxH && lines.every(l => ctx.measureText(l).width <= maxW)) break;
+            px -= 2;
+        }
+        px = Math.max(px, minPx);
+        return { px, lines: String(text || '').trim() ? lines : [], lh: px * lhK, fnt, h: (String(text || '').trim() ? lines.length : 0) * px * lhK };
+    }
+    function drawF(ctx, b, x, y, align, color, o) {
+        o = o || {};
+        ctx.save(); ctx.font = b.fnt(b.px); ctx.textAlign = align; ctx.textBaseline = 'middle'; ctx.lineJoin = 'round';
+        b.lines.forEach((l, i) => {
+            const yy = y + i * b.lh + b.lh / 2;
+            if (o.shadow) { ctx.shadowColor = o.shadow; ctx.shadowBlur = b.px * 0.25; ctx.shadowOffsetY = b.px * 0.06; }
+            if (o.stroke) { ctx.lineWidth = b.px * (o.sw || 0.1); ctx.strokeStyle = o.stroke; ctx.strokeText(l, x, yy); }
+            ctx.fillStyle = color; ctx.fillText(l, x, yy);
+            ctx.shadowColor = 'transparent';
+        });
+        ctx.restore();
+        return y + b.h;
+    }
+    function proBg(ctx, W, H, P, mode) {
+        if (S.pro.bg) {
+            ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); drawCover(ctx, S.pro.bg, 0, 0, W, H, 1, 0, 0);
+            if (S.pro.ov > 0) { ctx.fillStyle = hexA(P.bg[0], S.pro.ov / 100); ctx.fillRect(0, 0, W, H); }
+            return;
+        }
+        let g;
+        if (mode === 'radial') { g = ctx.createRadialGradient(W / 2, H * 0.45, 0, W / 2, H * 0.45, Math.hypot(W, H) * 0.6); g.addColorStop(0, P.bg[1]); g.addColorStop(1, P.bg[0]); }
+        else if (mode === 'v') { g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, P.bg[0]); g.addColorStop(1, P.bg[1]); }
+        else { g = ctx.createLinearGradient(0, 0, W, H); g.addColorStop(0, P.bg[0]); g.addColorStop(1, P.bg[1]); }
+        ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    }
+    function proLogo(ctx, cx, cy, s, plate) {
+        if (!S.pro.logo) return false;
+        ctx.save();
+        if (plate) { ctx.shadowColor = 'rgba(0,0,0,.25)'; ctx.shadowBlur = s * 0.12; ctx.fillStyle = plate; ctx.beginPath(); ctx.arc(cx, cy, s / 2, 0, Math.PI * 2); ctx.fill(); ctx.shadowColor = 'transparent'; }
+        const i = S.pro.logo, sc = Math.min(s * 0.78 / i.width, s * 0.78 / i.height);
+        const w = i.width * sc, h = i.height * sc;
+        if (plate) { ctx.beginPath(); ctx.arc(cx, cy, s * 0.46, 0, Math.PI * 2); ctx.clip(); }
+        ctx.drawImage(i, cx - w / 2, cy - h / 2, w, h);
+        ctx.restore();
+        return true;
+    }
+    // नीचे की पट्टी: footer + watermark — ऊँचाई लौटाता है
+    function proFooter(ctx, W, H, U, bgCol, txtCol) {
+        const footer = (S.footer || '').trim(), wm = !isWatermarkFree();
+        if (!footer && !wm) return 0;
+        const fh = Math.round(U * 0.068);
+        if (bgCol) { ctx.fillStyle = bgCol; ctx.fillRect(0, H - fh, W, fh); }
+        ctx.save(); ctx.textBaseline = 'middle'; ctx.fillStyle = txtCol;
+        const side = Math.max(U * 0.04, W * 0.03);
+        if (footer) {
+            let p = Math.round(fh * 0.46); ctx.font = '700 ' + p + 'px ' + FONT; ctx.textAlign = wm ? 'left' : 'center';
+            const mw = wm ? W * 0.55 : W * 0.92; while (ctx.measureText(footer).width > mw && p > 10) { p--; ctx.font = '700 ' + p + 'px ' + FONT; }
+            ctx.fillText(footer, wm ? side : W / 2, H - fh / 2);
+        }
+        if (wm) { ctx.font = '700 ' + Math.round(fh * 0.3) + 'px ' + FONT; ctx.textAlign = 'right'; ctx.globalAlpha = 0.85; ctx.fillText('Made with Hoṛ Katha Suite · ' + SITE, W - side, H - fh / 2); }
+        ctx.restore();
+        return fh;
+    }
+    function diamondDivider(ctx, cx, y, w, col, lw) {
+        ctx.save(); ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = lw;
+        ctx.beginPath(); ctx.moveTo(cx - w / 2, y); ctx.lineTo(cx - lw * 4, y); ctx.moveTo(cx + lw * 4, y); ctx.lineTo(cx + w / 2, y); ctx.stroke();
+        poly(ctx, cx, y, lw * 3, 4, 0); ctx.fill();
+        [-1, 1].forEach(d => { poly(ctx, cx + d * w / 2, y, lw * 1.6, 4, 0); ctx.fill(); });
+        ctx.restore();
+    }
+    function mandala(ctx, cx, cy, R, col, alpha, rings) {
+        ctx.save(); ctx.globalAlpha = alpha; ctx.strokeStyle = col; ctx.fillStyle = col;
+        rings = rings || 5;
+        for (let r = 1; r <= rings; r++) {
+            const rad = R * r / rings, n = 6 + r * 4, pl = R / rings * 0.9;
+            ctx.lineWidth = Math.max(1.5, R * 0.006);
+            ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.stroke();
+            for (let i = 0; i < n; i++) {
+                const a = i * Math.PI * 2 / n + r * 0.3;
+                const x = cx + Math.cos(a) * rad, y = cy + Math.sin(a) * rad;
+                ctx.save(); ctx.translate(x, y); ctx.rotate(a);
+                ctx.beginPath(); ctx.moveTo(0, 0); ctx.quadraticCurveTo(pl * 0.35, pl * 0.28, pl * 0.7, 0); ctx.quadraticCurveTo(pl * 0.35, -pl * 0.28, 0, 0);
+                if (r % 2) ctx.fill(); else ctx.stroke();
+                ctx.restore();
+            }
+        }
+        ctx.beginPath(); ctx.arc(cx, cy, R / rings * 0.5, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+    }
+    function flower(ctx, cx, cy, r, petal, center, n) {
+        n = n || 6; ctx.save(); ctx.fillStyle = petal;
+        for (let i = 0; i < n; i++) { const a = i * Math.PI * 2 / n; ctx.beginPath(); ctx.ellipse(cx + Math.cos(a) * r * 0.55, cy + Math.sin(a) * r * 0.55, r * 0.5, r * 0.28, a, 0, Math.PI * 2); ctx.fill(); }
+        ctx.fillStyle = center; ctx.beginPath(); ctx.arc(cx, cy, r * 0.25, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+    }
+    function leaf(ctx, x, y, len, ang, col) {
+        ctx.save(); ctx.translate(x, y); ctx.rotate(ang); ctx.fillStyle = col;
+        ctx.beginPath(); ctx.moveTo(0, 0); ctx.quadraticCurveTo(len * 0.5, -len * 0.3, len, 0); ctx.quadraticCurveTo(len * 0.5, len * 0.3, 0, 0); ctx.fill(); ctx.restore();
+    }
+
+    // स्तंभ (column) की चौड़ाई: Desktop पर बीच में सीमित
+    function proCol(W, H, frac) { const U = Math.min(W, H); return Math.min(W * (frac || 0.84), Math.max(U * 0.84, H * 1.35)); }
+
+    // सामान्य stack: sub → heading → divider → message → from  (ऊपर-नीचे बीच में)
+    function proStack(ctx, o) {
+        const { W, cx, top, bottom, colW, P, k, align } = o;
+        const U = o.U, hfi = proFont('h'), mfi = proFont('m');
+        svNeedFont(hfi, S.heading); if (mfi) svNeedFont(mfi, S.message);
+        const fromLine = [S.from, S.date].filter(Boolean).join('  •  ');
+        const avail = bottom - top;
+        const sb = fitF(ctx, S.sub, colW, avail * 0.1, U * 0.04 * k, 0, 1.3, 12, '700');
+        const hb = fitF(ctx, S.heading, colW, avail * (o.hFrac || 0.34), U * (o.hSize || 0.1) * k, hfi, 1.22, 18);
+        const mb = fitF(ctx, S.message, colW, avail * (o.mFrac || 0.4), U * (o.mSize || 0.05) * k, mfi, 1.42, 14, mfi ? null : '500');
+        const fb = fitF(ctx, fromLine, colW, avail * 0.12, U * 0.04 * k, 0, 1.3, 12, '700');
+        const gap = U * 0.035, div = o.divider ? U * 0.05 : 0;
+        const total = (sb.h ? sb.h + gap * 0.6 : 0) + hb.h + (hb.h ? gap * 0.6 + div : 0) + mb.h + (fb.h ? gap * 1.2 + fb.h + (o.fromPill ? U * 0.03 : 0) : 0);
+        let y = top + Math.max(0, (avail - total) / 2);
+        const x = align === 'left' ? cx - colW / 2 : (align === 'right' ? cx + colW / 2 : cx);
+        if (sb.h) { y = drawF(ctx, sb, x, y, align, o.subCol || P.acc) + gap * 0.6; }
+        if (hb.h) { y = drawF(ctx, hb, x, y, align, P.head, o.hOpt) + gap * 0.6; }
+        if (div) { o.divider(y + div * 0.35); y += div; }
+        if (mb.h) { y = drawF(ctx, mb, x, y, align, P.fg, o.mOpt); }
+        if (fb.h) {
+            y += gap * 1.2;
+            if (o.fromPill) {
+                ctx.save(); ctx.font = fb.fnt(fb.px);
+                const tw = Math.max(...fb.lines.map(l => ctx.measureText(l).width)), pw = tw + fb.px * 1.6, ph = fb.h + fb.px * 0.7;
+                const px0 = align === 'left' ? x : (align === 'right' ? x - pw : x - pw / 2);
+                ctx.fillStyle = o.fromPill; rr(ctx, px0, y, pw, ph, ph / 2); ctx.fill(); ctx.restore();
+                drawF(ctx, fb, align === 'left' ? x + fb.px * 0.8 : (align === 'right' ? x - fb.px * 0.8 : x), y + fb.px * 0.35, align, o.fromCol || P.fg);
+            } else drawF(ctx, fb, x, y, align, o.fromCol || P.acc);
+        }
+    }
+
+    function proDraw(ctx, W, H) {
+        const P = proP(), U = Math.min(W, H), k = S.scale / 100 * Math.min(1.4, Math.sqrt(Math.max(W, H) / U));
+        const d = S.pro.design[S.tpl] || 0, wide = W / H > 1.25;
+        const cx = W / 2, colW = proCol(W, H);
 
         if (S.tpl === 'festival') {
-            dots(ctx, W, H, P.accent, 40, 11);
-            const band = Math.round(H * 0.06);
-            sohraiBand(ctx, W, 0, band, P.accent, P.bg[0]);
-            ctx.save(); ctx.translate(0, H); ctx.scale(1, -1);
-            sohraiBand(ctx, W, 0, band, P.accent, P.bg[0]); ctx.restore();
-            const top = band + H * 0.08, bottom = H - band - H * 0.06;
-            const hb = fitBlock(ctx, S.heading, innerW, (bottom - top) * 0.38, Math.round(W * 0.085 * k), '700');
-            const mb = fitBlock(ctx, S.message, innerW, (bottom - top) * 0.38, Math.round(W * 0.05 * k), '400');
-            const fb = fitBlock(ctx, fromLine, innerW, H * 0.08, Math.round(W * 0.038 * k), '700');
-            const gap = H * 0.04;
-            const total = hb.lines.length * hb.px * 1.35 + gap + mb.lines.length * mb.px * 1.35 + gap * 1.5 + (fromLine ? fb.px * 1.35 : 0);
-            let y = top + Math.max(0, (bottom - top - total) / 2);
-            y = drawLines(ctx, hb, W / 2, y, 'center', P.accent, '700') + gap;
-            y = drawLines(ctx, mb, W / 2, y, 'center', P.fg, '400') + gap * 0.6;
-            ctx.save(); ctx.strokeStyle = P.accent; ctx.lineWidth = Math.max(3, W * 0.004);
-            ctx.beginPath(); ctx.moveTo(W / 2 - W * 0.12, y); ctx.lineTo(W / 2 + W * 0.12, y); ctx.stroke(); ctx.restore();
-            y += gap * 0.9;
-            if (fromLine) drawLines(ctx, fb, W / 2, y, 'center', P.fg, '700');
-            watermark(ctx, W, H - band, false);
+            if (d === 0) {
+                proBg(ctx, W, H, P, 'radial');
+                if (!S.pro.bg) mandala(ctx, cx, H * 0.48, U * 0.46, P.acc, 0.09, 6);
+                dots(ctx, W, H, P.acc, 30, 11);
+                const band = Math.round(U * 0.06);
+                sohraiBand(ctx, W, 0, band, P.acc, P.bg[0]);
+                ctx.save(); ctx.translate(0, H); ctx.scale(1, -1); sohraiBand(ctx, W, 0, band, P.acc, P.bg[0]); ctx.restore();
+                const fh = proFooter(ctx, W, H - band, U, null, P.fg);
+                let top = band + U * 0.06;
+                if (proLogo(ctx, cx, top + U * 0.07, U * 0.14, '#ffffff')) top += U * 0.16;
+                proStack(ctx, { W, U, cx, top, bottom: H - band - fh - U * 0.04, colW, P, k, align: 'center', hSize: 0.1,
+                    hOpt: { shadow: 'rgba(0,0,0,.35)' }, divider: y => diamondDivider(ctx, cx, y, Math.min(colW * 0.5, U * 0.4), P.acc, Math.max(2, U * 0.004)),
+                    fromPill: P.acc, fromCol: P.bg[0] });
+            } else if (d === 1) {
+                proBg(ctx, W, H, P, 'radial');
+                const R = U * 0.42;
+                mandala(ctx, 0, 0, R, P.acc, 0.35, 5); mandala(ctx, W, H, R, P.acc, 0.35, 5);
+                if (wide) { mandala(ctx, W, 0, R * 0.6, P.acc, 0.2, 4); mandala(ctx, 0, H, R * 0.6, P.acc, 0.2, 4); }
+                const m = U * 0.035;
+                ctx.save(); ctx.strokeStyle = P.acc; ctx.lineWidth = Math.max(3, U * 0.005); ctx.strokeRect(m, m, W - m * 2, H - m * 2);
+                ctx.lineWidth = Math.max(1.5, U * 0.002); ctx.strokeRect(m * 1.6, m * 1.6, W - m * 3.2, H - m * 3.2); ctx.restore();
+                const fh = proFooter(ctx, W, H - m * 1.6, U, null, P.fg);
+                let top = U * 0.12;
+                if (proLogo(ctx, cx, top + U * 0.02, U * 0.13, '#ffffff')) top += U * 0.12;
+                proStack(ctx, { W, U, cx, top, bottom: H - U * 0.12 - fh, colW: colW * 0.86, P, k, align: 'center', hSize: 0.11,
+                    hOpt: { shadow: 'rgba(0,0,0,.4)' }, divider: y => { flower(ctx, cx, y, U * 0.025, P.acc, P.bg[0], 8); ctx.save(); ctx.strokeStyle = P.acc; ctx.lineWidth = Math.max(2, U * 0.003); ctx.beginPath(); ctx.moveTo(cx - U * 0.22, y); ctx.lineTo(cx - U * 0.04, y); ctx.moveTo(cx + U * 0.04, y); ctx.lineTo(cx + U * 0.22, y); ctx.stroke(); ctx.restore(); } });
+            } else {
+                proBg(ctx, W, H, P, 'lin');
+                if (!S.pro.bg) { // confetti
+                    let s = 5; const rnd = () => { s = (s * 9301 + 49297) % 233280; return s / 233280; };
+                    ctx.save(); for (let i = 0; i < 70; i++) { ctx.globalAlpha = 0.35 + rnd() * 0.4; ctx.fillStyle = i % 3 ? P.acc : P.card; ctx.save(); ctx.translate(rnd() * W, rnd() * H); ctx.rotate(rnd() * 6); ctx.fillRect(0, 0, U * 0.018, U * 0.007); ctx.restore(); } ctx.restore();
+                }
+                const fh = proFooter(ctx, W, H, U, null, P.fg);
+                const cw = Math.min(W * 0.86, colW * 1.02), chh = (H - fh) * (wide ? 0.78 : 0.72), cx0 = cx - cw / 2, cy0 = (H - fh - chh) / 2;
+                ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = U * 0.05; ctx.shadowOffsetY = U * 0.015;
+                ctx.fillStyle = P.card; rr(ctx, cx0, cy0, cw, chh, U * 0.04); ctx.fill(); ctx.restore();
+                ctx.save(); rr(ctx, cx0, cy0, cw, chh, U * 0.04); ctx.clip(); ctx.fillStyle = P.acc; ctx.fillRect(cx0, cy0, cw, U * 0.025); sohraiBand(ctx, W, cy0 + chh - U * 0.035, U * 0.035, P.acc, P.card); ctx.restore();
+                const dark = isLight(P.card) ? '#1f2937' : '#f8fafc';
+                const P2 = Object.assign({}, P, { fg: (S.pro.colors[S.tpl] || {}).fg || dark, head: (S.pro.colors[S.tpl] || {}).head || shade(P.bg[0], 0) });
+                let top = cy0 + U * 0.06;
+                if (proLogo(ctx, cx, top + U * 0.05, U * 0.11, P.card)) top += U * 0.11;
+                proStack(ctx, { W, U, cx, top, bottom: cy0 + chh - U * 0.07, colW: cw * 0.84, P: P2, k, align: 'center', hSize: 0.095,
+                    divider: y => diamondDivider(ctx, cx, y, cw * 0.4, P.acc, Math.max(2, U * 0.0035)), fromPill: P.bg[0], fromCol: '#ffffff', subCol: isLight(P.card) ? shade(P.acc, -0.45) : P.acc });
+            }
         }
 
         else if (S.tpl === 'notice') {
-            const head = Math.round(H * 0.16);
-            ctx.fillStyle = P.accent; ctx.fillRect(0, 0, W, head);
-            ctx.fillStyle = P.accent; ctx.globalAlpha = 0.15; ctx.fillRect(0, head, W, Math.round(H * 0.012)); ctx.globalAlpha = 1;
-            const hb = fitBlock(ctx, S.heading, innerW, head * 0.8, Math.round(W * 0.08 * k), '700');
-            drawLines(ctx, hb, W / 2, (head - hb.lines.length * hb.px * 1.35) / 2 + hb.px * 0.1, 'center', '#ffffff', '700');
-            const top = head + H * 0.07, footH = H * 0.16, bottom = H - footH;
-            const mb = fitBlock(ctx, S.message, innerW, bottom - top, Math.round(W * 0.052 * k), '400');
-            drawLines(ctx, mb, pad, top, 'left', P.fg, '400');
-            ctx.strokeStyle = P.accent; ctx.lineWidth = Math.max(2, W * 0.003);
-            ctx.beginPath(); ctx.moveTo(pad, bottom); ctx.lineTo(W - pad, bottom); ctx.stroke();
-            if (S.date) {
-                const db = fitBlock(ctx, 'दिनांक: ' + S.date, innerW / 2, footH * 0.5, Math.round(W * 0.034 * k), '400');
-                drawLines(ctx, db, pad, bottom + footH * 0.22, 'left', P.fg, '400');
+            const fromBlock = (x, y, w, col, line) => { // हस्ताक्षर
+                const fb = fitF(ctx, S.from, w, U * 0.12, U * 0.04 * k, 0, 1.3, 12, '700');
+                if (!fb.h) return;
+                ctx.save(); ctx.strokeStyle = line; ctx.lineWidth = Math.max(2, U * 0.003); ctx.beginPath(); ctx.moveTo(x - w, y); ctx.lineTo(x, y); ctx.stroke(); ctx.restore();
+                drawF(ctx, fb, x - w / 2, y + U * 0.012, 'center', col);
+            };
+            const mfi = proFont('m'), hfi = proFont('h'); svNeedFont(hfi, S.heading); if (mfi) svNeedFont(mfi, S.message);
+            if (d === 0) {
+                proBg(ctx, W, H, Object.assign({}, P, { bg: [P.card, P.card] }), 'v');
+                const head = Math.round(U * 0.17);
+                const g = ctx.createLinearGradient(0, 0, W, 0); g.addColorStop(0, P.bg[0]); g.addColorStop(1, P.bg[1]);
+                ctx.fillStyle = g; ctx.fillRect(0, 0, W, head); ctx.fillStyle = P.acc; ctx.fillRect(0, head, W, Math.max(4, U * 0.008));
+                const side = Math.max(U * 0.06, (W - proCol(W, H, 0.9)) / 2);
+                let tx = side;
+                if (proLogo(ctx, side + U * 0.055, head / 2, U * 0.11, '#ffffff')) tx = side + U * 0.14;
+                const org = (S.sub || '').trim();
+                if (org) { const ob = fitF(ctx, org, W - tx - side, head * 0.75, U * 0.055 * k, 0, 1.2, 12, '800'); drawF(ctx, ob, tx, (head - ob.h) / 2, 'left', '#ffffff'); }
+                const fh = proFooter(ctx, W, H, U, P.bg[0], '#ffffff');
+                const iw = W - side * 2;
+                let y = head + U * 0.06;
+                const hb = fitF(ctx, S.heading, iw * 0.8, U * 0.12, U * 0.075 * k, hfi, 1.2, 16);
+                ctx.save(); ctx.font = hb.fnt(hb.px); const hw = Math.max(0, ...hb.lines.map(l => ctx.measureText(l).width)); ctx.restore();
+                if (hb.h) { ctx.fillStyle = hexA(P.acc, 0.12); rr(ctx, cx - hw / 2 - U * 0.04, y - U * 0.01, hw + U * 0.08, hb.h + U * 0.02, U * 0.02); ctx.fill(); y = drawF(ctx, hb, cx, y, 'center', P.head); ctx.fillStyle = P.acc; ctx.fillRect(cx - hw * 0.3, y + U * 0.012, hw * 0.6, Math.max(3, U * 0.006)); y += U * 0.04; }
+                if (S.date) { const db = fitF(ctx, 'दिनांक: ' + S.date, iw * 0.5, U * 0.06, U * 0.032 * k, 0, 1.3, 11, '600'); drawF(ctx, db, W - side, y, 'right', P.fg); y += db.h + U * 0.02; }
+                const sigH = U * 0.14, bottom = H - fh - sigH - U * 0.03;
+                const mb = fitF(ctx, S.message, iw, bottom - y, U * 0.056 * k, mfi, 1.5, 14, mfi ? null : '500');
+                ctx.save(); ctx.fillStyle = P.acc; ctx.fillRect(side - U * 0.025, y + U * 0.01, Math.max(4, U * 0.007), mb.h - U * 0.02); ctx.restore();
+                drawF(ctx, mb, side, y, 'left', P.fg);
+                fromBlock(W - side, H - fh - sigH * 0.55, Math.min(iw * 0.45, U * 0.45), P.fg, P.fg);
+            } else if (d === 1) {
+                proBg(ctx, W, H, Object.assign({}, P, { bg: [P.card, shade(P.card, -0.04)] }), 'v');
+                const bar = Math.round(U * 0.05);
+                ctx.fillStyle = P.acc; ctx.fillRect(0, 0, bar, H);
+                ctx.save(); ctx.globalAlpha = 0.07; ctx.fillStyle = P.acc; ctx.beginPath(); ctx.arc(W, 0, U * 0.5, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+                const fh = proFooter(ctx, W, H, U, P.bg[0], '#ffffff');
+                const side = Math.max(bar + U * 0.07, (W - proCol(W, H, 0.86)) / 2), iw = W - side - Math.max(U * 0.07, (W - proCol(W, H, 0.86)) / 2);
+                let y = U * 0.08;
+                const ic = U * 0.075;
+                ctx.save(); ctx.fillStyle = P.acc; ctx.beginPath(); ctx.arc(side + ic / 2, y + ic / 2, ic / 2, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+                if (!proLogo(ctx, side + ic / 2, y + ic / 2, ic, null)) { ctx.save(); ctx.font = Math.round(ic * 0.5) + 'px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('📢', side + ic / 2, y + ic / 2 + ic * 0.03); ctx.restore(); }
+                const org = (S.sub || '').trim();
+                if (org) { const ob = fitF(ctx, org, iw - ic - U * 0.03, ic, U * 0.035 * k, 0, 1.25, 11, '800'); drawF(ctx, ob, side + ic + U * 0.03, y + (ic - ob.h) / 2, 'left', P.acc); }
+                y += ic + U * 0.04;
+                const hb = fitF(ctx, S.heading, iw, U * 0.22, U * 0.12 * k, hfi, 1.15, 18);
+                y = drawF(ctx, hb, side, y, 'left', P.head) + U * 0.02;
+                ctx.fillStyle = P.acc; ctx.fillRect(side, y, U * 0.12, Math.max(4, U * 0.008)); y += U * 0.05;
+                const footY = H - fh - U * 0.16;
+                const mb = fitF(ctx, S.message, iw, footY - y - U * 0.03, U * 0.056 * k, mfi, 1.5, 14, mfi ? null : '500');
+                drawF(ctx, mb, side, y, 'left', P.fg);
+                ctx.save(); ctx.strokeStyle = hexA(P.fg, 0.25); ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(side, footY); ctx.lineTo(side + iw, footY); ctx.stroke(); ctx.restore();
+                const lab = (t, v, x, al) => { if (!v) return; const lb = fitF(ctx, t, iw / 2, U * 0.04, U * 0.026, 0, 1.2, 10, '700'); const vb = fitF(ctx, v, iw / 2 - U * 0.02, U * 0.08, U * 0.04 * k, 0, 1.25, 11, '800'); drawF(ctx, lb, x, footY + U * 0.03, al, P.acc); drawF(ctx, vb, x, footY + U * 0.03 + lb.h, al, P.fg); };
+                lab('दिनांक', S.date, side, 'left'); lab('जारीकर्ता', S.from, side + iw, 'right');
+            } else {
+                proBg(ctx, W, H, P, 'lin');
+                if (!S.pro.bg) { ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,.08)'; ctx.lineWidth = 1; const st = U * 0.05; for (let x = 0; x < W; x += st) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); } for (let y2 = 0; y2 < H; y2 += st) { ctx.beginPath(); ctx.moveTo(0, y2); ctx.lineTo(W, y2); ctx.stroke(); } ctx.restore(); }
+                const fh = proFooter(ctx, W, H, U, null, isLight(P.bg[0]) ? '#0f172a' : '#ffffff');
+                const cw = Math.min(W * 0.88, proCol(W, H, 0.88)), chh = (H - fh) * 0.84, x0 = cx - cw / 2, y0 = (H - fh - chh) / 2 + U * 0.015;
+                ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = U * 0.04; ctx.shadowOffsetY = U * 0.015; ctx.fillStyle = P.card; ctx.translate(cx, y0 + chh / 2); ctx.rotate(-0.008); rr(ctx, -cw / 2, -chh / 2, cw, chh, U * 0.012); ctx.fill(); ctx.restore();
+                ctx.fillStyle = P.acc; ctx.fillRect(x0, y0, cw, U * 0.022);
+                // pin
+                ctx.save(); ctx.fillStyle = shade(P.acc, -0.2); ctx.shadowColor = 'rgba(0,0,0,.4)'; ctx.shadowBlur = U * 0.01; ctx.beginPath(); ctx.arc(cx, y0 + U * 0.01, U * 0.022, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+                const dark = isLight(P.card) ? '#0f172a' : '#f8fafc', c = S.pro.colors[S.tpl] || {};
+                const P2 = Object.assign({}, P, { fg: c.fg || dark, head: c.head || P.acc });
+                let top = y0 + U * 0.07;
+                if (proLogo(ctx, cx, top + U * 0.045, U * 0.09, null)) top += U * 0.1;
+                proStack(ctx, { W, U, cx, top, bottom: y0 + chh - U * 0.05, colW: cw * 0.86, P: P2, k, align: 'center', hSize: 0.09, mFrac: 0.46,
+                    divider: y => { ctx.save(); ctx.strokeStyle = P.acc; ctx.setLineDash([U * 0.012, U * 0.01]); ctx.lineWidth = Math.max(2, U * 0.003); ctx.beginPath(); ctx.moveTo(cx - cw * 0.3, y); ctx.lineTo(cx + cw * 0.3, y); ctx.stroke(); ctx.restore(); }, fromCol: P.acc });
             }
-            if (S.from) {
-                const fb = fitBlock(ctx, S.from, innerW / 2, footH * 0.5, Math.round(W * 0.038 * k), '700');
-                drawLines(ctx, fb, W - pad, bottom + footH * 0.22, 'right', P.fg, '700');
-            }
-            watermark(ctx, W, H, true);
         }
 
         else if (S.tpl === 'invite') {
-            const m1 = W * 0.04, m2 = W * 0.06;
-            ctx.strokeStyle = P.accent;
-            ctx.lineWidth = Math.max(4, W * 0.006); ctx.strokeRect(m1, m1, W - m1 * 2, H - m1 * 2);
-            ctx.lineWidth = Math.max(2, W * 0.002); ctx.strokeRect(m2, m2, W - m2 * 2, H - m2 * 2);
-            const r = W * 0.07;
-            [[m2, m2, 0], [W - m2, m2, Math.PI / 2], [W - m2, H - m2, Math.PI], [m2, H - m2, Math.PI * 1.5]].forEach(c => {
-                ctx.beginPath(); ctx.arc(c[0], c[1], r, c[2], c[2] + Math.PI / 2); ctx.stroke();
-                ctx.beginPath(); ctx.arc(c[0], c[1], r * 0.6, c[2], c[2] + Math.PI / 2); ctx.stroke();
-            });
-            const top = H * 0.14, bottom = H * 0.86, iw = W - m2 * 2 - W * 0.12;
-            const hb = fitBlock(ctx, S.heading, iw, (bottom - top) * 0.3, Math.round(W * 0.09 * k), '700');
-            const mb = fitBlock(ctx, S.message, iw, (bottom - top) * 0.45, Math.round(W * 0.045 * k), '400');
-            const fb = fitBlock(ctx, fromLine, iw, H * 0.1, Math.round(W * 0.038 * k), '700');
-            const gap = H * 0.045;
-            const total = hb.lines.length * hb.px * 1.35 + gap * 2 + mb.lines.length * mb.px * 1.35 + gap + (fromLine ? fb.lines.length * fb.px * 1.35 : 0);
-            let y = top + Math.max(0, (bottom - top - total) / 2);
-            y = drawLines(ctx, hb, W / 2, y, 'center', P.accent, '700') + gap * 0.5;
-            ctx.fillStyle = P.accent;
-            [-1, 0, 1].forEach(i => { ctx.beginPath(); ctx.arc(W / 2 + i * W * 0.035, y + gap * 0.4, W * 0.007, 0, Math.PI * 2); ctx.fill(); });
-            y += gap * 1.5;
-            y = drawLines(ctx, mb, W / 2, y, 'center', P.fg, '400') + gap;
-            if (fromLine) drawLines(ctx, fb, W / 2, y, 'center', P.accent, '700');
-            watermark(ctx, W - m2 - W * 0.02, H - m2 - W * 0.015, P.bg[0] === '#fffbeb');
+            if (d === 0) {
+                proBg(ctx, W, H, P, 'radial');
+                const m1 = U * 0.035, m2 = U * 0.055;
+                ctx.save(); ctx.strokeStyle = P.acc;
+                ctx.lineWidth = Math.max(4, U * 0.007); ctx.strokeRect(m1, m1, W - m1 * 2, H - m1 * 2);
+                ctx.lineWidth = Math.max(2, U * 0.0025); ctx.strokeRect(m2, m2, W - m2 * 2, H - m2 * 2);
+                const r = U * 0.075;
+                [[m2, m2, 0], [W - m2, m2, Math.PI / 2], [W - m2, H - m2, Math.PI], [m2, H - m2, Math.PI * 1.5]].forEach(c => {
+                    ctx.beginPath(); ctx.arc(c[0], c[1], r, c[2], c[2] + Math.PI / 2); ctx.stroke();
+                    ctx.beginPath(); ctx.arc(c[0], c[1], r * 0.62, c[2], c[2] + Math.PI / 2); ctx.stroke();
+                    ctx.fillStyle = P.acc; poly(ctx, c[0], c[1], U * 0.014, 4, 0); ctx.fill();
+                });
+                [[cx, m1], [cx, H - m1], [m1, H / 2], [W - m1, H / 2]].forEach(p => { ctx.fillStyle = P.acc; poly(ctx, p[0], p[1], U * 0.016, 4, 0); ctx.fill(); });
+                ctx.restore();
+                const fh = proFooter(ctx, W, H - m2, U, null, P.fg);
+                let top = U * 0.11;
+                if (!proLogo(ctx, cx, top + U * 0.05, U * 0.12, '#ffffff')) mandala(ctx, cx, top + U * 0.05, U * 0.06, P.acc, 0.9, 3);
+                top += U * 0.13;
+                proStack(ctx, { W, U, cx, top, bottom: H - U * 0.1 - fh, colW: colW * 0.8, P, k, align: 'center', hSize: 0.11, mFrac: 0.4,
+                    hOpt: { shadow: 'rgba(0,0,0,.3)' }, divider: y => { ctx.save(); ctx.fillStyle = P.acc; [-1, 0, 1].forEach(i => { ctx.beginPath(); ctx.arc(cx + i * U * 0.035, y, U * (i ? 0.006 : 0.009), 0, Math.PI * 2); ctx.fill(); }); ctx.restore(); diamondDivider(ctx, cx, y, U * 0.5, P.acc, Math.max(1.5, U * 0.0025)); } });
+            } else if (d === 1) {
+                proBg(ctx, W, H, P, 'v');
+                // तोरण
+                const n = Math.max(9, Math.round(W / (U * 0.07)));
+                ctx.save(); ctx.strokeStyle = P.acc; ctx.lineWidth = Math.max(2, U * 0.003); ctx.beginPath(); ctx.moveTo(0, U * 0.02); ctx.lineTo(W, U * 0.02); ctx.stroke();
+                for (let i = 0; i < n; i++) { const x = (i + 0.5) * W / n; leaf(ctx, x, U * 0.02, U * 0.07, Math.PI / 2, i % 2 ? '#16a34a' : P.acc); flower(ctx, x, U * 0.02, U * 0.018, '#f97316', '#fde047', 6); }
+                ctx.restore();
+                const aw = Math.min(W * 0.8, proCol(W, H, 0.8)), ax = cx - aw / 2, ay = U * 0.14, ab = H - U * 0.07;
+                const archPath2 = () => { ctx.beginPath(); const rad = Math.min(aw / 2, (ab - ay) * 0.45); ctx.moveTo(ax, ab); ctx.lineTo(ax, ay + rad); ctx.quadraticCurveTo(ax, ay, cx, ay); ctx.quadraticCurveTo(ax + aw, ay, ax + aw, ay + rad); ctx.lineTo(ax + aw, ab); ctx.closePath(); };
+                ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.3)'; ctx.shadowBlur = U * 0.04; ctx.fillStyle = hexA(P.card, 0.94); archPath2(); ctx.fill(); ctx.restore();
+                ctx.save(); ctx.strokeStyle = P.acc; ctx.lineWidth = Math.max(3, U * 0.006); archPath2(); ctx.stroke(); ctx.restore();
+                const dark = isLight(P.card) ? shade(P.bg[0], -0.1) : '#f8fafc', c = S.pro.colors[S.tpl] || {};
+                const P2 = Object.assign({}, P, { fg: c.fg || dark, head: c.head || P.bg[0] });
+                const fh = proFooter(ctx, W, H, U, null, P.fg);
+                let top = ay + U * 0.09;
+                if (proLogo(ctx, cx, top + U * 0.04, U * 0.1, null)) top += U * 0.1;
+                proStack(ctx, { W, U, cx, top, bottom: ab - U * 0.06 - fh * 0.5, colW: aw * 0.8, P: P2, k, align: 'center', hSize: 0.1, mFrac: 0.4,
+                    divider: y => { flower(ctx, cx, y, U * 0.022, P.acc, P2.head, 8); [-1, 1].forEach(dd => leaf(ctx, cx + dd * U * 0.03, y, U * 0.08, dd > 0 ? 0 : Math.PI, P.acc)); }, subCol: isLight(P.card) ? shade(P.acc, -0.45) : P.acc, fromCol: isLight(P.card) ? shade(P.acc, -0.45) : P.acc });
+            } else {
+                proBg(ctx, W, H, Object.assign({}, P, { bg: [P.card, shade(P.card, -0.03)] }), 'v');
+                const cl = (x, y, s, flip) => { // फूल-गुच्छा
+                    for (let i = 0; i < 5; i++) leaf(ctx, x, y, s * 1.1, (flip ? Math.PI : 0) + (i - 2) * 0.35 + (flip ? 0.6 : -0.6) + Math.PI / 2 * (flip ? 1 : 0), hexA(P.acc, 0.55));
+                    flower(ctx, x, y, s * 0.5, P.bg[0], P.acc, 7); flower(ctx, x + (flip ? -1 : 1) * s * 0.55, y + (flip ? -1 : 1) * s * 0.3, s * 0.32, hexA(P.bg[0], 0.75), P.acc, 6); flower(ctx, x + (flip ? -1 : 1) * s * 0.2, y + (flip ? -1 : 1) * s * 0.65, s * 0.28, P.acc, '#fff', 6);
+                };
+                cl(U * 0.08, U * 0.08, U * 0.2, false); cl(W - U * 0.08, H - U * 0.08, U * 0.2, true);
+                ctx.save(); ctx.strokeStyle = hexA(P.acc, 0.6); ctx.lineWidth = Math.max(1.5, U * 0.002); const m = U * 0.05; ctx.strokeRect(m, m, W - m * 2, H - m * 2); ctx.restore();
+                const dark = isLight(P.card) ? shade(P.bg[0], -0.15) : '#f8fafc', c = S.pro.colors[S.tpl] || {};
+                const P2 = Object.assign({}, P, { fg: c.fg || dark, head: c.head || P.bg[0] });
+                const fh = proFooter(ctx, W, H - U * 0.05, U, null, P2.fg);
+                let top = U * 0.16;
+                if (proLogo(ctx, cx, top, U * 0.1, null)) top += U * 0.08;
+                proStack(ctx, { W, U, cx, top, bottom: H - U * 0.14 - fh, colW: colW * 0.74, P: P2, k, align: 'center', hSize: 0.1, mFrac: 0.42,
+                    divider: y => { ctx.save(); ctx.strokeStyle = P.acc; ctx.lineWidth = Math.max(1.5, U * 0.002); ctx.beginPath(); ctx.moveTo(cx - U * 0.18, y); ctx.lineTo(cx + U * 0.18, y); ctx.stroke(); ctx.restore(); flower(ctx, cx, y, U * 0.018, P.acc, P2.head, 6); }, subCol: isLight(P.card) ? shade(P.acc, -0.45) : P.acc, fromCol: isLight(P.card) ? shade(P.acc, -0.45) : P.acc });
+            }
         }
 
         else { // quote
-            dots(ctx, W, H, P.accent, 18, 3);
-            const qpx = Math.round(W * 0.3);
-            ctx.save(); ctx.font = '700 ' + qpx + 'px Georgia, serif'; ctx.fillStyle = P.accent; ctx.globalAlpha = 0.35;
-            ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText('“', pad * 0.6, H * 0.05); ctx.restore();
-            const top = H * 0.2, bottom = H * 0.86;
-            const hb = fitBlock(ctx, S.heading, innerW, H * 0.1, Math.round(W * 0.04 * k), '700');
-            const mb = fitBlock(ctx, S.message, innerW, (bottom - top) * 0.6, Math.round(W * 0.07 * k), '700');
-            const fb = fitBlock(ctx, fromLine ? '— ' + fromLine : '', innerW, H * 0.08, Math.round(W * 0.038 * k), '400');
-            const gap = H * 0.04;
-            const total = (S.heading ? hb.lines.length * hb.px * 1.35 + gap : 0) + mb.lines.length * mb.px * 1.35 + gap + (fromLine ? fb.px * 1.35 : 0);
-            let y = top + Math.max(0, (bottom - top - total) / 2);
-            if (S.heading) y = drawLines(ctx, hb, W / 2, y, 'center', P.accent, '700') + gap;
-            y = drawLines(ctx, mb, W / 2, y, 'center', P.fg, '700') + gap;
-            if (fromLine) drawLines(ctx, fb, W / 2, y, 'center', P.accent, '400');
-            watermark(ctx, W, H, P.bg[0] === '#fdf2f8');
+            const fromLine = [S.from, S.date].filter(Boolean).join('  •  ');
+            const hfi = proFont('h'); svNeedFont(hfi, S.message);
+            const qMark = (x, y, s, col, a) => { ctx.save(); ctx.globalAlpha = a; ctx.fillStyle = col; ctx.font = '700 ' + Math.round(s) + 'px Georgia, serif'; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText('“', x, y); ctx.restore(); };
+            if (d === 0) {
+                proBg(ctx, W, H, P, 'lin'); dots(ctx, W, H, P.acc, 18, 3);
+                const fh = proFooter(ctx, W, H, U, null, P.fg);
+                const side = (W - colW) / 2;
+                qMark(side - U * 0.02, U * 0.04, U * 0.32, P.acc, 0.35);
+                let top = U * 0.2;
+                proLogo(ctx, W - side - U * 0.05, U * 0.1, U * 0.1, '#ffffff');
+                const sb = fitF(ctx, (S.sub || S.heading || '').trim(), colW, U * 0.08, U * 0.04 * k, 0, 1.3, 12, '800');
+                const mb = fitF(ctx, S.message, colW, (H - fh - top - U * 0.25), U * 0.085 * k, hfi, 1.3, 16);
+                const fb = fitF(ctx, fromLine ? '— ' + fromLine : '', colW, U * 0.08, U * 0.04 * k, 0, 1.3, 12, '700');
+                const total = sb.h + U * 0.03 + mb.h + U * 0.05 + fb.h;
+                let y = top + Math.max(0, (H - fh - U * 0.1 - top - total) / 2);
+                if (sb.h) { y = drawF(ctx, sb, side, y, 'left', P.acc) + U * 0.01; ctx.fillStyle = P.acc; ctx.fillRect(side, y, U * 0.1, Math.max(3, U * 0.006)); y += U * 0.03; }
+                y = drawF(ctx, mb, side, y, 'left', P.head === P.acc ? P.fg : P.head) + U * 0.05;
+                if (fb.h) drawF(ctx, fb, side, y, 'left', P.acc);
+            } else if (d === 1) {
+                proBg(ctx, W, H, Object.assign({}, P, { bg: [P.card, shade(P.card, -0.05)] }), 'v');
+                const portrait = !wide;
+                const pw = portrait ? W : W * 0.36, ph = portrait ? H * 0.3 : H;
+                const g = ctx.createLinearGradient(0, 0, pw, ph); g.addColorStop(0, P.bg[0]); g.addColorStop(1, P.bg[1]);
+                ctx.fillStyle = g; ctx.fillRect(0, 0, pw, ph);
+                if (S.pro.bg) { ctx.save(); ctx.beginPath(); ctx.rect(0, 0, pw, ph); ctx.clip(); drawCover(ctx, S.pro.bg, 0, 0, pw, ph, 1, 0, 0); ctx.fillStyle = hexA(P.bg[0], S.pro.ov / 100); ctx.fillRect(0, 0, pw, ph); ctx.restore(); }
+                dots(ctx, pw, ph, P.acc, 14, 9);
+                const pcx = pw / 2, pcy = ph / 2;
+                qMark(pcx - U * 0.09, pcy - U * 0.2, U * 0.3, P.acc, 0.9);
+                const hl = (S.sub || S.heading || '').trim();
+                proLogo(ctx, pw - U * 0.09, U * 0.09, U * 0.1, '#ffffff');
+                if (hl) { const hb = fitF(ctx, hl, pw * 0.8, ph * 0.18, U * 0.045 * k, 0, 1.25, 12, '800'); drawF(ctx, hb, pcx, portrait ? ph * 0.86 - hb.h : pcy + U * 0.13, 'center', '#ffffff'); }
+                const dark = isLight(P.card) ? '#111827' : '#f8fafc', c = S.pro.colors[S.tpl] || {};
+                const ink = c.fg || dark;
+                const rx0 = portrait ? W * 0.09 : pw + W * 0.06, rw = portrait ? W * 0.82 : W - pw - W * 0.12;
+                const ry0 = portrait ? ph + U * 0.07 : U * 0.1;
+                const fh = proFooter(ctx, W, H, U, null, ink);
+                const avail = H - fh - ry0 - U * 0.08;
+                const mb = fitF(ctx, S.message, rw, avail * 0.78, U * 0.08 * k, hfi, 1.32, 16);
+                const fb = fitF(ctx, fromLine, rw, avail * 0.15, U * 0.04 * k, 0, 1.3, 12, '700');
+                let y = ry0 + Math.max(0, (avail - mb.h - fb.h - U * 0.06) / 2);
+                y = drawF(ctx, mb, rx0, y, 'left', c.head || ink) + U * 0.03;
+                if (fb.h) { ctx.fillStyle = P.acc; ctx.fillRect(rx0, y, U * 0.08, Math.max(3, U * 0.006)); drawF(ctx, fb, rx0, y + U * 0.02, 'left', P.bg[0]); }
+            } else {
+                proBg(ctx, W, H, P, 'radial');
+                const fh = proFooter(ctx, W, H, U, null, P.fg);
+                let top = U * 0.1;
+                if (proLogo(ctx, cx, top + U * 0.04, U * 0.1, '#ffffff')) top += U * 0.12;
+                const hl = (S.sub || S.heading || '').trim();
+                let y = top;
+                if (hl) { const hb = fitF(ctx, hl, colW, U * 0.08, U * 0.04 * k, 0, 1.3, 12, '800'); ctx.save(); ctx.font = hb.fnt(hb.px); const tw = Math.max(...hb.lines.map(l => ctx.measureText(l).width)); ctx.strokeStyle = P.acc; ctx.lineWidth = Math.max(2, U * 0.003); rr(ctx, cx - tw / 2 - hb.px, y - hb.px * 0.3, tw + hb.px * 2, hb.h + hb.px * 0.6, (hb.h + hb.px * 0.6) / 2); ctx.stroke(); ctx.restore(); y = drawF(ctx, hb, cx, y, 'center', P.acc) + U * 0.05; }
+                const fb = fitF(ctx, fromLine, colW, U * 0.08, U * 0.04 * k, 0, 1.3, 12, '700');
+                const avail = H - fh - U * 0.1 - y - (fb.h ? fb.h + U * 0.07 : 0);
+                const mb = fitF(ctx, S.message, colW * 0.92, avail, U * 0.085 * k, hfi, 1.55, 16);
+                let my = y + Math.max(0, (avail - mb.h) / 2);
+                ctx.save(); ctx.font = mb.fnt(mb.px);
+                mb.lines.forEach((l, i) => { const lw = ctx.measureText(l).width, yy = my + i * mb.lh; ctx.fillStyle = hexA(P.acc, 0.85); ctx.beginPath(); ctx.moveTo(cx - lw / 2 - mb.px * 0.3, yy + mb.lh * 0.2); ctx.lineTo(cx + lw / 2 + mb.px * 0.3, yy + mb.lh * 0.14); ctx.lineTo(cx + lw / 2 + mb.px * 0.25, yy + mb.lh * 0.86); ctx.lineTo(cx - lw / 2 - mb.px * 0.25, yy + mb.lh * 0.82); ctx.closePath(); ctx.fill(); });
+                ctx.restore();
+                const c = S.pro.colors[S.tpl] || {};
+                drawF(ctx, mb, cx, my, 'center', c.head || (isLight(P.acc) ? '#111827' : '#ffffff'));
+                if (fb.h) { const fy = my + mb.h + U * 0.05; ctx.save(); ctx.font = fb.fnt(fb.px); const tw = Math.max(...fb.lines.map(l => ctx.measureText(l).width)); ctx.fillStyle = P.card; rr(ctx, cx - tw / 2 - fb.px, fy, tw + fb.px * 2, fb.h + fb.px * 0.6, (fb.h + fb.px * 0.6) / 2); ctx.fill(); ctx.restore(); drawF(ctx, fb, cx, fy + fb.px * 0.3, 'center', isLight(P.card) ? '#111827' : '#ffffff'); }
+            }
         }
     }
 
@@ -902,7 +1237,18 @@
 #hkPosterModal .hkp-btn{flex:1;padding:9px 10px;border-radius:9px;border:0;font-weight:800;cursor:pointer;color:#fff;background:var(--primary,#2563eb);font-size:13px;}
 #hkPosterModal .hkp-btn.alt{background:#16a34a;} #hkPosterModal .hkp-btn.ghost{background:transparent;color:var(--text-main,#111);border:1px solid var(--border-color,#ccc);}
 #hkPosterModal .hkp-note{font-size:11px;color:var(--text-muted,#555);line-height:1.4;}
-@media (max-width:760px){#hkPosterModal .hkp-body{flex-direction:column;}#hkPosterModal .hkp-side{width:auto;flex:0 0 auto;max-height:52%;border-right:0;border-bottom:1px solid var(--border-color,#ddd);}}
+#hkPosterModal .hkp-dev{position:relative;display:flex;align-items:center;justify-content:center;max-width:100%;max-height:100%;box-sizing:border-box;}
+#hkPosterModal .hkp-dev canvas{max-height:calc(min(720px,94vh) - 110px);}
+#hkPosterModal .hkp-dev.dev-mobile{padding:12px 9px;background:#0b0b0f;border-radius:30px;box-shadow:0 10px 34px rgba(0,0,0,.4),inset 0 0 0 2px #2a2a33;}
+#hkPosterModal .hkp-dev.dev-mobile::before{content:'';position:absolute;top:4px;left:50%;transform:translateX(-50%);width:54px;height:5px;border-radius:9px;background:#2a2a33;}
+#hkPosterModal .hkp-dev.dev-mobile canvas{border-radius:18px;max-height:calc(min(720px,94vh) - 140px);}
+#hkPosterModal .hkp-dev.dev-tab{padding:16px;background:#1f2430;border-radius:24px;box-shadow:0 10px 34px rgba(0,0,0,.4),inset 0 0 0 2px #394050;}
+#hkPosterModal .hkp-dev.dev-tab canvas{border-radius:10px;max-height:calc(min(720px,94vh) - 150px);}
+#hkPosterModal .hkp-dev.dev-desktop{padding:10px 10px 18px;background:#0f1115;border-radius:12px 12px 6px 6px;margin-bottom:38px;box-shadow:0 10px 34px rgba(0,0,0,.4);}
+#hkPosterModal .hkp-dev.dev-desktop::after{content:'';position:absolute;bottom:-34px;left:50%;transform:translateX(-50%);width:26%;height:34px;background:linear-gradient(#9ca3af,#6b7280);clip-path:polygon(22% 0,78% 0,100% 100%,0 100%);}
+#hkPosterModal .hkp-dev.dev-desktop canvas{border-radius:3px;max-height:calc(min(720px,94vh) - 170px);}
+#hkPosterModal .hkp-dev:not(.dev-mobile):not(.dev-tab):not(.dev-desktop) canvas{max-height:calc(min(720px,94vh) - 60px);}
+@media (max-width:760px){#hkPosterModal .hkp-body{flex-direction:column;}#hkPosterModal .hkp-side{width:auto;flex:0 0 auto;max-height:52%;border-right:0;border-bottom:1px solid var(--border-color,#ddd);}#hkPosterModal .hkp-dev canvas,#hkPosterModal .hkp-dev.dev-mobile canvas,#hkPosterModal .hkp-dev.dev-tab canvas,#hkPosterModal .hkp-dev.dev-desktop canvas,#hkPosterModal .hkp-dev:not(.dev-mobile):not(.dev-tab):not(.dev-desktop) canvas{max-height:36vh;}}
 `;
 
     let modal, canvas, raf = 0;
@@ -1147,6 +1493,84 @@
         if (no) no.textContent = v.styleId < 0 ? '· आज का (' + (dayOfYear(new Date()) + 1) + '/365)' : '· Random #' + v.styleId;
     }
 
+
+    // ------------------------------------------------------------
+    // 💼 PRO panel — design, font, logo, background, रंग (save इसी device में)
+    // ------------------------------------------------------------
+    const PRO_STORE = 'hk_poster_pro_v1';
+    let proLoaded = false, proSaveT = 0;
+    function proSave() {
+        clearTimeout(proSaveT);
+        proSaveT = setTimeout(() => {
+            const p = S.pro;
+            const o = { design: p.design, hf: p.hf, mf: p.mf, colors: p.colors, ov: p.ov, size: S.size, tpl: S.tpl, logoUrl: p.logoUrl, bgUrl: p.bgUrl };
+            try { localStorage.setItem(PRO_STORE, JSON.stringify(o)); }
+            catch (e) { try { o.bgUrl = ''; localStorage.setItem(PRO_STORE, JSON.stringify(o)); toast('Background बहुत बड़ी है — याद नहीं रखी गई (poster में लगी है)।', 'warning'); } catch (e2) {} }
+        }, 400);
+    }
+    async function proLoad() {
+        if (proLoaded) return; proLoaded = true;
+        let o = null; try { o = JSON.parse(localStorage.getItem(PRO_STORE) || 'null'); } catch (e) {}
+        if (!o) return;
+        const p = S.pro;
+        ['design', 'hf', 'mf', 'colors'].forEach(k => { if (o[k] && typeof o[k] === 'object') p[k] = Object.assign(p[k], o[k]); });
+        if (typeof o.ov === 'number') p.ov = o.ov;
+        if (o.size && SIZES[o.size]) S.size = o.size;
+        if (o.tpl && TEMPLATES[o.tpl]) S.tpl = o.tpl;
+        p.logoUrl = o.logoUrl || ''; p.bgUrl = o.bgUrl || '';
+        p.logo = await loadImg(p.logoUrl); p.bg = await loadImg(p.bgUrl);
+    }
+    function proBind() {
+        const q = s => modal.querySelector(s);
+        const fonts = SV_FONTS.map(f => f.n);
+        svFillSelect(q('#proHf'), fonts); svFillSelect(q('#proMf'), fonts);
+        q('#proDesign').onchange = () => { S.pro.design[S.tpl] = +q('#proDesign').value; proSave(); schedule(); };
+        q('#proNext').onclick = () => { const n = (PRO_DESIGNS[S.tpl] || []).length || 1; S.pro.design[S.tpl] = ((S.pro.design[S.tpl] || 0) + 1) % n; proSync(); proSave(); schedule(); };
+        q('#proHf').onchange = () => { S.pro.hf[S.tpl] = +q('#proHf').value; proSave(); schedule(); };
+        q('#proMf').onchange = () => { S.pro.mf[S.tpl] = +q('#proMf').value; proSave(); schedule(); };
+        const pick = (btn, file, key, max, qq) => {
+            q(btn).onclick = () => q(file).click();
+            q(file).onchange = async () => {
+                const f = q(file).files && q(file).files[0]; q(file).value = '';
+                if (!f) return;
+                try {
+                    const url = key === 'logo' ? await fileToPng(f, max) : await fileToDataUrl(f, max, qq);
+                    S.pro[key + 'Url'] = url; S.pro[key] = await loadImg(url);
+                    proSave(); schedule();
+                } catch (e) { toast('यह फोटो नहीं खुली — कोई दूसरी चुनें।', 'warning'); }
+            };
+        };
+        pick('#proLogoBtn', '#proLogoFile', 'logo', 512);
+        pick('#proBgBtn', '#proBgFile', 'bg', 1920, 0.8);
+        q('#proLogoDel').onclick = () => { S.pro.logo = null; S.pro.logoUrl = ''; proSave(); schedule(); };
+        q('#proBgDel').onclick = () => { S.pro.bg = null; S.pro.bgUrl = ''; proSave(); schedule(); };
+        q('#proOv').addEventListener('input', () => { S.pro.ov = +q('#proOv').value; q('#proOvV').textContent = S.pro.ov + '%'; proSave(); schedule(); });
+        const cw = q('#proColors');
+        PRO_COLOR_KEYS.forEach(c => cw.appendChild(el('label', null, '<input type="color" data-pc="' + c[0] + '"> ' + c[1])));
+        modal.querySelectorAll('[data-pc]').forEach(inp => inp.addEventListener('input', () => {
+            const t = S.tpl; S.pro.colors[t] = S.pro.colors[t] || {}; S.pro.colors[t][inp.getAttribute('data-pc')] = inp.value; proSave(); schedule();
+        }));
+        q('#proResetC').onclick = () => { S.pro.colors[S.tpl] = {}; proSync(); proSave(); schedule(); };
+    }
+    // logo: PNG रखें (transparent पृष्ठभूमि बची रहे)
+    function fileToPng(file, maxSide) {
+        return new Promise((res, rej) => {
+            const fr = new FileReader();
+            fr.onload = () => { const img = new Image(); img.onload = () => { const sc = Math.min(1, maxSide / Math.max(img.width, img.height)); const c = document.createElement('canvas'); c.width = Math.round(img.width * sc); c.height = Math.round(img.height * sc); c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); res(c.toDataURL('image/png')); }; img.onerror = rej; img.src = fr.result; };
+            fr.onerror = rej; fr.readAsDataURL(file);
+        });
+    }
+    function proSync() {
+        if (!modal || S.tpl === 'suvichar' || !PRO_DESIGNS[S.tpl]) return;
+        const q = s => modal.querySelector(s);
+        svFillSelect(q('#proDesign'), PRO_DESIGNS[S.tpl]);
+        q('#proDesign').value = String(S.pro.design[S.tpl] || 0);
+        q('#proHf').value = String(proFont('h')); q('#proMf').value = String(proFont('m'));
+        q('#proOv').value = S.pro.ov; q('#proOvV').textContent = S.pro.ov + '%';
+        const P = proP(), map = { bg1: P.bg[0], bg2: P.bg[1], head: P.head, fg: P.fg, acc: P.acc, card: P.card };
+        modal.querySelectorAll('[data-pc]').forEach(inp => { const v = map[inp.getAttribute('data-pc')]; if (/^#[0-9a-f]{6}$/i.test(v)) inp.value = v; });
+    }
+
     function el(tag, attrs, html) {
         const e = document.createElement(tag);
         if (attrs) Object.keys(attrs).forEach(a => e.setAttribute(a, attrs[a]));
@@ -1161,9 +1585,9 @@
 
     function applyDefaults(force) {
         const d = TEMPLATES[S.tpl].defaults;
-        ['heading', 'message', 'from'].forEach(f => {
+        ['sub', 'heading', 'message', 'from', 'footer'].forEach(f => {
             if (force || !S.edited[f]) {
-                S[f] = d[f];
+                S[f] = d[f] || '';
                 const inp = modal.querySelector('[data-f="' + f + '"]');
                 if (inp) inp.value = d[f];
             }
@@ -1172,23 +1596,24 @@
 
     function renderChips() {
         const tplRow = modal.querySelector('#hkpTpl'), palRow = modal.querySelector('#hkpPal'), sizeRow = modal.querySelector('#hkpSize');
-        tplRow.innerHTML = ''; palRow.innerHTML = ''; sizeRow.innerHTML = '';
+        tplRow.innerHTML = ''; palRow.innerHTML = '';
         Object.keys(TEMPLATES).forEach(key => {
             const b = el('button', { type: 'button', class: 'hkp-chip' + (S.tpl === key ? ' on' : '') }, TEMPLATES[key].name);
-            b.onclick = () => { S.tpl = key; S.pal = 0; applyDefaults(false); renderChips(); schedule(); };
+            b.onclick = () => { S.tpl = key; S.pal = 0; applyDefaults(false); proSave(); renderChips(); schedule(); };
             tplRow.appendChild(b);
         });
         TEMPLATES[S.tpl].palettes.forEach((p, i) => {
             const b = el('button', { type: 'button', class: 'hkp-sw' + (S.pal === i ? ' on' : ''), title: p.name, 'aria-label': p.name });
             b.style.background = 'linear-gradient(135deg,' + p.bg[0] + ',' + p.bg[1] + ' 60%,' + p.accent + ')';
-            b.onclick = () => { S.pal = i; renderChips(); schedule(); };
+            b.onclick = () => { S.pal = i; if (S.pro) { S.pro.colors[S.tpl] = {}; proSave(); } renderChips(); schedule(); };
             palRow.appendChild(b);
         });
-        Object.keys(SIZES).forEach(key => {
-            const b = el('button', { type: 'button', class: 'hkp-chip' + (S.size === key ? ' on' : '') }, SIZES[key].label);
-            b.onclick = () => { S.size = key; renderChips(); schedule(); };
-            sizeRow.appendChild(b);
-        });
+        if (!SIZES[S.size]) S.size = 'square';
+        sizeRow.innerHTML = Object.keys(SIZES).map(k2 => '<option value="' + k2 + '">' + SIZES[k2].label + ' — ' + SIZES[k2].w + '×' + SIZES[k2].h + '</option>').join('');
+        sizeRow.value = S.size;
+        const dev = modal.querySelector('#hkpDev');
+        if (dev) dev.className = 'hkp-dev' + (SIZES[S.size].dev ? ' dev-' + SIZES[S.size].dev : '');
+        proSync();
         const isSv = S.tpl === 'suvichar';
         const gen = modal.querySelector('#hkpGeneric'), svp = modal.querySelector('#hkpSv'), palW = modal.querySelector('#hkpPalWrap');
         if (gen) gen.style.display = isSv ? 'none' : 'flex';
@@ -1212,14 +1637,35 @@
     <div class="hkp-side">
       <div><label>Template</label><div class="hkp-row" id="hkpTpl"></div></div>
       <div id="hkpPalWrap"><label>रंग</label><div class="hkp-row" id="hkpPal"></div></div>
-      <div><label>Size</label><div class="hkp-row" id="hkpSize"></div></div>
+      <div><label>📐 Size / Preview (Mobile · Tab · Desktop)</label><select id="hkpSize"></select></div>
       <div><label>⌨️ Typing भाषा (poster के सब box)</label><select id="hkpLang"></select></div>
       <div id="hkpGeneric" style="display:flex;flex-direction:column;gap:9px;">
+      <div class="hkp-sec">💼 Professional Design</div>
+      <div class="hkp-svgrid">
+        <div><label>Design</label><select id="proDesign"></select></div>
+        <div><label>शीर्षक font</label><select id="proHf"></select></div>
+        <div><label>संदेश font</label><select id="proMf"></select></div>
+        <div><label>&nbsp;</label><button type="button" class="hkp-chip" id="proNext" style="width:100%;">🎲 अगला Design</button></div>
+      </div>
+      <div class="hkp-sec">✍️ Text</div>
+      <div><label>ऊपर की पंक्ति (संस्था / उप-शीर्षक)</label><input type="text" data-f="sub" placeholder="जैसे ग्राम पंचायत पोड़ैयाहाट"></div>
       <div><label>शीर्षक (Heading)</label><input type="text" data-f="heading"></div>
       <div><label>संदेश (Message)</label><textarea data-f="message"></textarea>
         <div class="hkp-row" style="margin-top:5px;"><button type="button" class="hkp-chip" id="hkpFromEditor">📝 Editor से Text लें</button></div></div>
       <div><label>नाम / संस्था</label><input type="text" data-f="from"></div>
       <div><label>तारीख (वैकल्पिक)</label><input type="text" data-f="date" placeholder="जैसे 15/11/2026"></div>
+      <div><label>नीचे की पंक्ति (संपर्क / पता, वैकल्पिक)</label><input type="text" data-f="footer" placeholder="जैसे 📞 98xxxxxx · पोड़ैयाहाट"></div>
+      <div class="hkp-sec">🏷️ Logo</div>
+      <div class="hkp-row"><button type="button" class="hkp-btn" id="proLogoBtn">🏷️ Logo लगाएँ</button><button type="button" class="hkp-btn ghost" id="proLogoDel">🗑️ हटाएँ</button></div>
+      <input type="file" accept="image/*" id="proLogoFile" style="display:none">
+      <div class="hkp-sec">🖼️ Background</div>
+      <div class="hkp-row"><button type="button" class="hkp-btn" id="proBgBtn">🖼️ अपनी Background</button><button type="button" class="hkp-btn ghost" id="proBgDel">↩️ Built-in</button></div>
+      <input type="file" accept="image/*" id="proBgFile" style="display:none">
+      <div><label>परत (Overlay): <span id="proOvV">45%</span></label><input type="range" min="0" max="85" step="5" value="45" id="proOv" style="width:100%;"></div>
+      <div class="hkp-sec">🌈 रंग (हर चीज़)</div>
+      <div class="hkp-svcolors" id="proColors"></div>
+      <div class="hkp-row"><button type="button" class="hkp-chip" id="proResetC">♻️ रंग reset</button></div>
+      <div class="hkp-note">ऊपर के रंग-गोले से तैयार रंग-set चुनें, या यहाँ हर हिस्से का रंग खुद चुनें। Logo, background, design और रंग इसी device में याद रहते हैं।</div>
       </div>
       ${SV_PANEL}
       <div><label>Text का आकार: <span id="hkpScaleV">100%</span></label><input type="range" min="70" max="130" step="5" value="100" id="hkpScale" style="width:100%;"></div>
@@ -1227,7 +1673,7 @@
       <div class="hkp-note" id="hkpWm"></div>
       <div class="hkp-row"><button type="button" class="hkp-btn" id="hkpDl">⬇️ PNG</button><button type="button" class="hkp-btn alt" id="hkpShare">📲 Share</button><button type="button" class="hkp-btn ghost" id="hkpPrint">🖨️ Print</button></div>
     </div>
-    <div class="hkp-prev"><canvas id="hkpCanvas" aria-label="Poster preview"></canvas></div>
+    <div class="hkp-prev"><div class="hkp-dev" id="hkpDev"><canvas id="hkpCanvas" aria-label="Poster preview"></canvas></div></div>
   </div>
 </div>`;
         document.body.appendChild(modal);
@@ -1239,6 +1685,9 @@
             inp.addEventListener('input', () => { const f = inp.getAttribute('data-f'); S[f] = inp.value; if (f in S.edited) S.edited[f] = true; schedule(); });
         });
         svBind();
+        proBind();
+        const szSel = modal.querySelector('#hkpSize');
+        szSel.onchange = () => { S.size = szSel.value; proSave(); renderChips(); schedule(); };
         // App के global key handlers इन fields में typing न रोकें + चुनी हुई भाषा में typing
         modal.querySelectorAll('input[type=text],textarea').forEach(inp => {
             inp.addEventListener('keydown', e => { if (e.key !== 'Escape') e.stopPropagation(); svTypeKey(e); });
@@ -1321,6 +1770,7 @@
     async function open() {
         svEnsureFontsCss();
         await svLoad();
+        await proLoad();
         build();
         if (!S.sv.quote) S.sv.quote = svDailyQuote();
         if (!S.heading && !S.message) applyDefaults(true);
