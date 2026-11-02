@@ -1,5 +1,5 @@
 // ============================================================
-// 🖼️ POSTER MAKER — Hoṛ Katha Suite (v40, v43: 🌟 सुविचार Photo Poster, v44: 📐 Mobile/Tab/Desktop size + 💼 Pro templates)
+// 🖼️ POSTER MAKER — Hoṛ Katha Suite (v40, v43: 🌟 सुविचार Photo Poster, v44: 📐 Mobile/Tab/Desktop size + 💼 Pro templates, v45: 100+ विकल्प, फोटो drag, layer बटन)
 // BOSC Tech & Edu
 // ============================================================
 // Ol Chiki / हिन्दी / संताली / English में festival badhai,
@@ -227,6 +227,10 @@
         { f: 'Sarpanch', w: '700', n: 'Sarpanch (चौड़ा)' }
     ];
     const SV_NAME_FONTS = [6, 5, 11, 4, 14, 8, 0, 15];
+    // v45: 100+ fonts (Google Fonts, Devanagari) — केवल चुनने पर download होते हैं
+    [['Hind', '700', 'Hind Bold'], ['Hind', '400', 'Hind'], ['Poppins', '700', 'Poppins Bold'], ['Poppins', '400', 'Poppins'], ['Karma', '700', 'Karma'], ['Sahitya', '700', 'Sahitya'], ['Sura', '700', 'Sura'], ['Halant', '700', 'Halant'], ['Arya', '700', 'Arya'], ['Biryani', '800', 'Biryani Heavy'], ['Biryani', '400', 'Biryani'], ['Glegoo', '700', 'Glegoo'], ['Inknut Antiqua', '700', 'Inknut Antiqua'], ['Jaldi', '700', 'Jaldi'], ['Kadwa', '700', 'Kadwa'], ['Kurale', '400', 'Kurale'], ['Modak', '400', 'Modak (बहुत मोटा)'], ['Pragati Narrow', '700', 'Pragati Narrow'], ['Rhodium Libre', '400', 'Rhodium Libre'], ['Sarala', '700', 'Sarala'], ['Sumana', '700', 'Sumana'], ['Vesper Libre', '700', 'Vesper Libre'], ['Yantramanav', '700', 'Yantramanav'], ['Yantramanav', '900', 'Yantramanav Black'], ['Gotu', '400', 'Gotu'], ['Cambay', '700', 'Cambay'], ['Asar', '400', 'Asar'], ['Amiko', '700', 'Amiko'], ['Khula', '800', 'Khula'], ['Martel Sans', '800', 'Martel Sans'], ['Palanquin', '700', 'Palanquin'], ['Tillana', '700', 'Tillana'], ['Noto Serif Devanagari', '700', 'Noto Serif Bold'], ['Noto Serif Devanagari', '400', 'Noto Serif'], ['Dekko', '400', 'Dekko (हस्तलिखित)'], ['Anek Devanagari', '700', 'Anek'], ['Tiro Devanagari Sanskrit', '400', 'Tiro Sanskrit'], ['Tiro Devanagari Marathi', '400', 'Tiro Marathi'], ['Akshar', '700', 'Akshar'], ['Gajraj One', '400', 'Gajraj (भारी)'], ['Jaini', '400', 'Jaini'], ['Jaini Purva', '400', 'Jaini Purva'], ['Mukta', '400', 'Mukta'], ['Baloo 2', '500', 'Baloo हल्का'], ['Kalam', '400', 'Kalam हल्का'], ['Teko', '400', 'Teko हल्का'], ['Rajdhani', '500', 'Rajdhani हल्का'], ['Khand', '500', 'Khand हल्का'], ['Laila', '500', 'Laila हल्का'], ['Eczar', '500', 'Eczar हल्का'], ['Martel', '400', 'Martel हल्का'], ['Amita', '400', 'Amita हल्का'], ['Palanquin Dark', '400', 'Palanquin Dark हल्का']].forEach(a => SV_FONTS.push({ f: a[0], w: a[1], n: a[2] }));
+    const SV_FONT_CSS2 = 'https://fonts.googleapis.com/css2?family=Hind:wght@400;700&family=Poppins:wght@400;700&family=Karma:wght@700&family=Sahitya:wght@700&family=Sura:wght@700&family=Halant:wght@700&family=Arya:wght@700&family=Biryani:wght@400;800&family=Glegoo:wght@700&family=Inknut+Antiqua:wght@700&family=Jaldi:wght@700&family=Kadwa:wght@700&family=Kurale:wght@400&family=Modak:wght@400&family=Pragati+Narrow:wght@700&family=Rhodium+Libre:wght@400&family=Sarala:wght@700&family=Sumana:wght@700&family=Vesper+Libre:wght@700&family=Yantramanav:wght@700;900&family=Gotu:wght@400&family=Cambay:wght@700&family=Asar:wght@400&family=Amiko:wght@700&family=Khula:wght@800&family=Martel+Sans:wght@800&family=Palanquin:wght@700&family=Tillana:wght@700&family=Noto+Serif+Devanagari:wght@400;700&family=Dekko:wght@400&family=Anek+Devanagari:wght@700&family=Tiro+Devanagari+Sanskrit:wght@400&family=Tiro+Devanagari+Marathi:wght@400&family=Akshar:wght@700&family=Gajraj+One:wght@400&family=Jaini:wght@400&family=Jaini+Purva:wght@400&family=Mukta:wght@400&family=Baloo+2:wght@500&family=Kalam:wght@400&family=Teko:wght@400&family=Rajdhani:wght@500&family=Khand:wght@500&family=Laila:wght@500&family=Eczar:wght@500&family=Martel:wght@400&family=Amita:wght@400&family=Palanquin+Dark:wght@400&display=swap';
+    const SV_NAME_FONTS_X = SV_NAME_FONTS.concat(SV_FONTS.map((f, i) => i).filter(i => SV_NAME_FONTS.indexOf(i) < 0));
     const SV_FONT_CSS = 'https://fonts.googleapis.com/css2?family=Rozha+One&family=Yatra+One&family=Kalam:wght@700&family=Khand:wght@700&family=Teko:wght@600&family=Baloo+2:wght@800&family=Amita:wght@700&family=Martel:wght@800&family=Tiro+Devanagari+Hindi&family=Eczar:wght@700&family=Rajdhani:wght@700&family=Laila:wght@700&family=Palanquin+Dark:wght@700&family=Mukta:wght@800&family=Sarpanch:wght@700&display=swap';
 
     const SV_SHAPES = ['⚪ गोल', '⬛ चौकोर', '▢ गोल-कोने', '⬡ षट्कोण', '🛑 अष्टकोण', '◆ हीरा', '❤️ दिल', '🚪 मेहराब', '🛡️ ढाल', '🍃 पत्ती', '☁️ बादल-आकार', '⭐ सितारा'];
@@ -257,6 +261,56 @@
         ['box', 'Name box'], ['boxT', 'Name text'], ['border', 'Photo border'], ['sky0', 'Background 1'], ['sky1', 'Background 2'],
         ['gr', 'Background 3'], ['foot', 'नीचे पट्टी'], ['footT', 'नीचे text'], ['overlay', 'परत (Overlay)']
     ];
+
+    // ---- v45: हर drop-down में 100+ विकल्प (मूल style + बदलाव). मूल क्रम वही, इसलिए रोज़ का style नहीं बदला ----
+    const SV_RING_W = [['', 1], ['पतली', 0.6], ['मोटी', 1.6], ['बहुत मोटी', 2.3]];
+    const SV_RING_C = ['', 'accent रंग', 'badge रंग'];
+    const SV_RING_E = ['', 'चमक', 'बाहरी रेखा'];
+    const SV_VAR = {
+        shape: ['', '↻ झुका', '↺ झुका', 'मोटा border', 'पतला border', 'चमक', 'बिना परछाईं', 'बड़ा', 'छोटा'],
+        ring: Array.from({ length: 36 }, (x, v) => [SV_RING_W[v % 4][0], SV_RING_C[Math.floor(v / 4) % 3], SV_RING_E[Math.floor(v / 12)]].filter(Boolean).join(' · ')),
+        badge: ['', 'छोटा', 'बड़ा', '↻ झुका', '↺ झुका', 'उलटा रंग', 'हल्का रंग', 'गहरा रंग', 'बाएँ', 'दाएँ', 'बड़ा + झुका'],
+        name: ['', 'ऊँचा', 'पतला', 'उलटा रंग', 'हल्का रंग', 'गहरा रंग', 'पारदर्शी', 'ऊपर रेखा', 'नीचे रेखा', 'किनारी', 'ऊँचा + किनारी'],
+        font: ['', 'बड़ा', 'छोटा'],
+        nfont: ['', 'बड़ा', 'छोटा'],
+        fx: ['', 'रंग उलटे', 'बाएँ', 'दाएँ', '+ परछाईं', '+ चमक', '+ मोटी रेखा', 'रंग उलटे + परछाईं', 'बाएँ + परछाईं'],
+        scene: Array.from({ length: 11 }, (x, v) => v ? 'डिज़ाइन ' + (v + 1) : ''),
+        pal: Array.from({ length: 9 }, (x, v) => v ? 'रंग ' + (v + 1) : '')
+    };
+    function svBaseLabels() {
+        return { shape: SV_SHAPES, ring: SV_RINGS, badge: SV_BADGES, name: SV_NAMEBOX, font: SV_FONTS.map(f => f.n), fx: SV_FX,
+            nfont: SV_NAME_FONTS_X.map(i => SV_FONTS[i].n), scene: SV_SCENES, pal: SV_PALS.map(p => p.n) };
+    }
+    function svBaseN(k) { return svBaseLabels()[k].length; }
+    function svLists() {
+        const B = svBaseLabels(), out = {};
+        Object.keys(B).forEach(k => { const L = []; SV_VAR[k].forEach(v => B[k].forEach(b => L.push(v ? b + ' · ' + v : b))); out[k] = L; });
+        const side = ['➡️ दाएँ (अपने-आप)', '⬅️ बाएँ (अपने-आप)'];
+        for (let r = 0; r < 11; r++) for (let c = 0; c < 10; c++) { const p = svSidePos(2 + r * 10 + c); side.push('📍 बाएँ से ' + Math.round(p.x * 100) + '% · ऊपर से ' + Math.round(p.y * 100) + '%'); }
+        out.side = side;
+        return out;
+    }
+    function svSidePos(v) { const p = v - 2, c = p % 10, r = Math.floor(p / 10); return { x: +(0.1 + c * 0.8 / 9).toFixed(3), y: +(0.1 + r * 0.08).toFixed(3) }; }
+    // hex रंग helpers (hex ही लौटाते हैं)
+    function hx2rgb(h) { h = String(h).replace('#', ''); if (h.length === 3) h = h.split('').map(c => c + c).join(''); return [0, 2, 4].map(i => parseInt(h.substr(i, 2), 16) || 0); }
+    function rgb2hx(r) { return '#' + r.map(v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0')).join(''); }
+    function mixHex(hex, t) { const c = hx2rgb(hex); return rgb2hx(c.map(v => t >= 0 ? v + (255 - v) * t : v * (1 + t))); }
+    function hueHex(hex, deg) {
+        let [r, g, b] = hx2rgb(hex).map(v => v / 255);
+        const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2, d = mx - mn;
+        let h = 0, s = 0;
+        if (d) { s = d / (1 - Math.abs(2 * l - 1)); h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; h *= 60; }
+        h = (h + deg + 360) % 360;
+        const C2 = (1 - Math.abs(2 * l - 1)) * s, X = C2 * (1 - Math.abs((h / 60) % 2 - 1)), m = l - C2 / 2;
+        const seg = [[C2, X, 0], [X, C2, 0], [0, C2, X], [0, X, C2], [X, 0, C2], [C2, 0, X]][Math.floor(h / 60) % 6];
+        return rgb2hx(seg.map(v => (v + m) * 255));
+    }
+    function svPal(i, v) {
+        const p = SV_PALS[i]; if (!v) return p;
+        const d = v * 40, o = { n: p.n };
+        Object.keys(p).forEach(k => { if (k === 'n') return; o[k] = Array.isArray(p[k]) ? p[k].map(c => hueHex(c, d)) : hueHex(p[k], d); });
+        return o;
+    }
 
     const SV_QUOTES = [
         'उस ज्ञान का कोई लाभ नहीं जो समाज के हित में ना हो',
@@ -367,7 +421,8 @@
             photo: null, photoUrl: '', pz: 1, px: 0, py: 0,
             bg: null, bgUrl: '', ov: 0,
             styleId: -1, over: {}, colors: {}, keepColors: false, qpos: 'top',
-            used: [], quoteIdx: -1, usedQ: []
+            used: [], quoteIdx: -1, usedQ: [],
+            pos: null, psz: 1, photoFront: false, bgFront: false, bfa: 0.35
         };
     }
     S.sv = svDefaults();
@@ -386,13 +441,19 @@
         SV_DIMS.forEach((d, i) => { o[d[0]] = (raw[i] + acc) % d[1]; acc += raw[i] * (i + 3) + 1; });
         return o;
     }
-    function svStyle() {
+    function svStyleRaw() {
         const st = svDecode(S.sv.styleId < 0 ? svStyleId(todayStyleSeed()) : S.sv.styleId);
         Object.keys(S.sv.over).forEach(k => { if (S.sv.over[k] != null) st[k] = S.sv.over[k]; });
         return st;
     }
+    function svStyle() {
+        const raw = svStyleRaw(), st = Object.assign({}, raw);
+        Object.keys(SV_VAR).forEach(k => { const n = svBaseN(k), v = Math.max(0, raw[k] | 0); st[k] = v % n; st[k + 'V'] = Math.floor(v / n) % SV_VAR[k].length; });
+        if (S.sv.pos) st.side = S.sv.pos.x < 0.5 ? 1 : 0; else if (raw.side > 1) st.side = svSidePos(raw.side).x < 0.5 ? 1 : 0;
+        return st;
+    }
     function svColors(st) {
-        const p = SV_PALS[st.pal];
+        const p = svPal(st.pal, st.palV || 0);
         const c = { badge: p.badge, badgeT: p.badgeT, ink1: p.ink1, ink2: p.ink2, outline: isLight(p.ink1) ? '#0f172a' : '#ffffff',
             box: p.box, boxT: p.boxT, border: p.border, sky0: p.sky[0], sky1: p.sky[1], gr: p.gr, foot: p.foot, footT: p.footT, overlay: '#000000', acc: p.acc };
         Object.keys(S.sv.colors).forEach(k => { if (S.sv.colors[k]) c[k] = S.sv.colors[k]; });
@@ -423,6 +484,8 @@
         if (document.getElementById('hkpSvFonts')) return;
         const l = document.createElement('link'); l.id = 'hkpSvFonts'; l.rel = 'stylesheet'; l.href = SV_FONT_CSS;
         document.head.appendChild(l);
+        const l2 = document.createElement('link'); l2.id = 'hkpSvFonts2'; l2.rel = 'stylesheet'; l2.href = SV_FONT_CSS2;
+        document.head.appendChild(l2);
     }
     function svNeedFont(fi, sample) {
         const F = SV_FONTS[fi]; if (!F || fi === 0) return;
@@ -545,8 +608,20 @@
         }
     }
     function svPhoto(ctx, st, C, x, y, s) {
-        const lw = Math.max(4, s * 0.035);
-        ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = s * 0.06; ctx.shadowOffsetY = s * 0.02;
+        const v = st.shapeV || 0, rv = st.ringV || 0;
+        if (v === 7) { x -= s * 0.075; y -= s * 0.075; s *= 1.15; } else if (v === 8) { x += s * 0.075; y += s * 0.075; s *= 0.85; }
+        S._pr = { x, y, s };
+        const rc = [C.border, C.acc, C.badge][Math.floor(rv / 4) % 3], re = Math.floor(rv / 12);
+        const lw = Math.max(v === 4 ? 2 : 4, s * 0.035 * (v === 3 ? 1.8 : v === 4 ? 0.5 : 1) * SV_RING_W[rv % 4][1]);
+        ctx.save();
+        if (v === 1 || v === 2) { ctx.translate(x + s / 2, y + s / 2); ctx.rotate(v === 1 ? 0.2 : -0.2); ctx.translate(-x - s / 2, -y - s / 2); }
+        svPhotoBody(ctx, st, C, x, y, s, lw, rc, re, v);
+        ctx.restore();
+    }
+    function svPhotoBody(ctx, st, C, x, y, s, lw, rc, re, v) {
+        ctx.save();
+        if (v === 5) { ctx.shadowColor = C.acc; ctx.shadowBlur = s * 0.14; }
+        else if (v !== 6) { ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = s * 0.06; ctx.shadowOffsetY = s * 0.02; }
         shapePath(ctx, st.shape, x, y, s); ctx.fillStyle = C.border; ctx.fill(); ctx.restore();
         ctx.save(); shapePath(ctx, st.shape, x, y, s); ctx.clip();
         if (S.sv.photo) { ctx.fillStyle = '#e5e7eb'; ctx.fillRect(x, y, s, s); drawCover(ctx, S.sv.photo, x, y, s, s, S.sv.pz, S.sv.px, S.sv.py); }
@@ -558,10 +633,13 @@
             ctx.fillText('📷 फोटो', x + s / 2, y + s * 0.12);
         }
         ctx.restore();
-        ctx.save(); ctx.strokeStyle = C.border; ctx.lineWidth = lw;
+        ctx.save(); ctx.strokeStyle = rc; ctx.lineWidth = lw;
+        if (re === 1) { ctx.shadowColor = rc === '#ffffff' ? C.acc : rc; ctx.shadowBlur = lw * 3; }
         if (st.ring === 2) ctx.setLineDash([lw * 1.6, lw * 1.1]);
         shapePath(ctx, st.shape, x + lw / 2, y + lw / 2, s - lw); ctx.stroke();
+        ctx.shadowColor = 'transparent';
         if (st.ring === 1) { ctx.lineWidth = lw * 0.45; ctx.strokeStyle = C.box; shapePath(ctx, st.shape, x + lw * 1.4, y + lw * 1.4, s - lw * 2.8); ctx.stroke(); }
+        if (re === 2) { ctx.setLineDash([]); ctx.lineWidth = Math.max(2, lw * 0.4); ctx.strokeStyle = rc; shapePath(ctx, st.shape, x - lw * 1.1, y - lw * 1.1, s + lw * 2.2); ctx.stroke(); }
         ctx.restore();
     }
 
@@ -569,14 +647,27 @@
     function svBadge(ctx, st, C, W, y, bh) {
         const text = S.sv.badgeText || '';
         if (!text.trim()) return y;
-        const fi = SV_NAME_FONTS[(st.nfont + 3) % SV_NAME_FONTS.length];
+        const bv = st.badgeV || 0;
+        if (bv === 1) bh *= 0.8; else if (bv === 2 || bv === 10) bh *= 1.25;
+        if (bv === 5) C = Object.assign({}, C, { badge: C.badgeT, badgeT: C.badge });
+        else if (bv === 6) C = Object.assign({}, C, { badge: mixHex(C.badge, 0.35) });
+        else if (bv === 7) C = Object.assign({}, C, { badge: mixHex(C.badge, -0.35) });
+        const tilt = bv === 3 ? 0.07 : bv === 4 ? -0.07 : bv === 10 ? -0.06 : 0;
+        ctx.save();
+        if (tilt) { ctx.translate(W / 2, y + bh / 2); ctx.rotate(tilt); ctx.translate(-W / 2, -y - bh / 2); }
+        const r = svBadgeIn(ctx, st, C, W, y, bh, text, bv);
+        ctx.restore();
+        return r;
+    }
+    function svBadgeIn(ctx, st, C, W, y, bh, text, bv) {
+        const fi = SV_NAME_FONTS_X[(st.nfont + 3) % SV_NAME_FONTS_X.length];
         svNeedFont(fi, text);
         let px = Math.round(bh * 0.62);
         ctx.font = fontStr(fi, px);
         while (ctx.measureText(text).width > W * 0.7 && px > 14) { px -= 2; ctx.font = fontStr(fi, px); }
         const tw = ctx.measureText(text).width, padX = bh * 0.55;
         if (st.badge === 0) y += bh * 0.55; else if (st.badge === 3 || st.badge === 6) y += bh * 0.45;
-        const bw = tw + padX * 2, x = (W - bw) / 2, cx = W / 2, cy = y + bh / 2;
+        const bw = tw + padX * 2, x = bv === 8 ? W * 0.07 + bh * 0.4 : bv === 9 ? W * 0.93 - bw - bh * 0.4 : (W - bw) / 2, cx = x + bw / 2, cy = y + bh / 2;
         let bot = y + bh;
         ctx.save();
         ctx.fillStyle = C.badge; ctx.strokeStyle = C.badge;
@@ -625,6 +716,10 @@
         const text = (S.sv.quote || '').trim();
         if (!text) return;
         const fi = st.font; svNeedFont(fi, text);
+        k *= [1, 1.12, 0.86][st.fontV || 0];
+        const qv = st.fxV || 0, al = (qv === 2 || qv === 8) ? 'left' : qv === 3 ? 'right' : 'center';
+        const qShadow = qv === 4 || qv === 7 || qv === 8, qGlow = qv === 5, qThick = qv === 6;
+        if (qv === 1 || qv === 7) C = Object.assign({}, C, { ink1: C.ink2, ink2: C.ink1, outline: isLight(C.ink2) ? '#0f172a' : '#ffffff' });
         const padX = W * 0.07, maxW = W - padX * 2, maxH = bottom - top;
         let px = Math.round(W * 0.1 * k), lines = [];
         const lhK = st.fx === 4 || st.fx === 7 ? 1.5 : 1.3;
@@ -649,12 +744,13 @@
             if (st.fx === 9 && i === lines.length - 1 && lines.length > 1) lpx = Math.round(px * 1.12);
             ctx.font = fontStr(fi, lpx);
             const lw = ctx.measureText(line).width;
+            const lcx = al === 'left' ? padX + lw / 2 : al === 'right' ? W - padX - lw / 2 : cx;
             const lineBox = i % 2 ? C.ink2 : (isLight(C.ink1) ? C.badge : C.ink1);
-            if (st.fx === 4) { ctx.fillStyle = lineBox; rr(ctx, cx - lw / 2 - lpx * 0.3, y - lh * 0.45, lw + lpx * 0.6, lh * 0.9, lpx * 0.15); ctx.fill(); }
-            if (st.fx === 10) { ctx.fillStyle = C.ink2; ctx.fillRect(cx - lw / 2, y + lpx * 0.55, lw, Math.max(3, lpx * 0.08)); }
+            if (st.fx === 4) { ctx.fillStyle = lineBox; rr(ctx, lcx - lw / 2 - lpx * 0.3, y - lh * 0.45, lw + lpx * 0.6, lh * 0.9, lpx * 0.15); ctx.fill(); }
+            if (st.fx === 10) { ctx.fillStyle = C.ink2; ctx.fillRect(lcx - lw / 2, y + lpx * 0.55, lw, Math.max(3, lpx * 0.08)); }
             const words = line.split(' ');
             const sp = ctx.measureText(' ').width;
-            let x = cx - lw / 2;
+            let x = lcx - lw / 2;
             ctx.textAlign = 'left';
             words.forEach((w, wi) => {
                 const ww = ctx.measureText(w).width;
@@ -671,6 +767,9 @@
                 if (st.fx === 6) { ctx.fillStyle = C.ink2; for (let d = 1; d <= 4; d++) ctx.fillText(w, x + d * lpx * 0.018, y + d * lpx * 0.018); ctx.lineWidth = lpx * 0.06; ctx.strokeStyle = C.outline; ctx.strokeText(w, x, y); }
                 if (st.fx === 8) { ctx.shadowColor = isLight(C.ink1) ? C.ink2 : '#ffffff'; ctx.shadowBlur = lpx * 0.5; for (let g = 0; g < 2; g++) { ctx.fillStyle = fill; ctx.fillText(w, x, y); } }
                 if (st.fx === 3) { ctx.lineWidth = lpx * 0.1; ctx.strokeStyle = C.outline; ctx.strokeText(w, x, y); }
+                if (qThick) { ctx.lineWidth = lpx * 0.2; ctx.strokeStyle = C.outline; ctx.strokeText(w, x, y); }
+                if (qShadow && st.fx !== 8) { ctx.shadowColor = 'rgba(0,0,0,.5)'; ctx.shadowBlur = lpx * 0.22; ctx.shadowOffsetX = lpx * 0.05; ctx.shadowOffsetY = lpx * 0.08; }
+                if (qGlow && st.fx !== 8) { ctx.shadowColor = isLight(C.ink1) ? C.ink2 : '#ffffff'; ctx.shadowBlur = lpx * 0.45; ctx.fillStyle = fill; ctx.fillText(w, x, y); }
                 ctx.fillStyle = fill; ctx.fillText(w, x, y);
                 ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
                 x += ww + sp; wordIdx++;
@@ -685,8 +784,14 @@
         cut = hasPhoto ? (cut || 0) : 0;
         const name = (S.sv.name || '').trim(), sub = (S.sv.sub || '').trim();
         if (!name && !sub) return;
+        const nv = st.nameV || 0;
+        if (nv === 1 || nv === 10) { y -= h * 0.18; h *= 1.18; } else if (nv === 2) { y += h * 0.15; h *= 0.85; }
+        if (nv === 3) C = Object.assign({}, C, { box: C.boxT, boxT: C.box });
+        else if (nv === 4) C = Object.assign({}, C, { box: mixHex(C.box, 0.3) });
+        else if (nv === 5) C = Object.assign({}, C, { box: mixHex(C.box, -0.35) });
         const w = x1 - x0, outerLeft = photoSide === 'right' || !hasPhoto;
         ctx.save(); ctx.fillStyle = C.box;
+        if (nv === 6) ctx.globalAlpha = 0.72;
         const sh = () => { ctx.shadowColor = 'rgba(0,0,0,.25)'; ctx.shadowBlur = h * 0.2; ctx.shadowOffsetY = h * 0.06; };
         switch (st.name) {
             case 0: ctx.fillRect(x0, y, w, h); break;
@@ -700,9 +805,13 @@
             case 8: { sh(); rr(ctx, x0, y, w, h, h * 0.18); ctx.fill(); ctx.shadowColor = 'transparent'; ctx.strokeStyle = C.acc; ctx.lineWidth = Math.max(3, h * 0.05); rr(ctx, x0 + h * 0.08, y + h * 0.08, w - h * 0.16, h - h * 0.16, h * 0.12); ctx.stroke(); break; }
             default: { sh(); const t = h * 0.5; ctx.beginPath(); if (outerLeft) { ctx.moveTo(x0, y); ctx.lineTo(x1 - t, y); ctx.lineTo(x1, y + h / 2); ctx.lineTo(x1 - t, y + h); ctx.lineTo(x0, y + h); } else { ctx.moveTo(x0 + t, y); ctx.lineTo(x1, y); ctx.lineTo(x1, y + h); ctx.lineTo(x0 + t, y + h); ctx.lineTo(x0, y + h / 2); } ctx.closePath(); ctx.fill(); }
         }
+        ctx.globalAlpha = 1; ctx.shadowColor = 'transparent';
+        if (nv === 7) { ctx.fillStyle = C.acc; ctx.fillRect(x0, y, w, Math.max(3, h * 0.07)); }
+        if (nv === 8) { ctx.fillStyle = C.acc; ctx.fillRect(x0, y + h - Math.max(3, h * 0.07), w, Math.max(3, h * 0.07)); }
+        if (nv === 9 || nv === 10) { ctx.strokeStyle = C.acc; ctx.lineWidth = Math.max(3, h * 0.05); ctx.strokeRect(x0 + h * 0.04, y + h * 0.04, w - h * 0.08, h - h * 0.08); }
         ctx.restore();
         // text
-        const fi = SV_NAME_FONTS[st.nfont]; svNeedFont(fi, name + sub);
+        const fi = SV_NAME_FONTS_X[st.nfont]; svNeedFont(fi, name + sub);
         const pad = h * 0.45;
         const tx0 = x0 + pad + (photoSide === 'left' ? cut : 0), tx1 = x1 - pad - (photoSide === 'right' ? cut : 0);
         const align = hasPhoto ? (photoSide === 'right' ? 'right' : 'left') : 'center';
@@ -710,7 +819,7 @@
         const maxW = tx1 - tx0;
         ctx.save(); ctx.textAlign = align; ctx.textBaseline = 'middle';
         ctx.fillStyle = st.name === 5 ? C.box : C.boxT;
-        let npx = Math.round(h * (sub ? 0.46 : 0.56));
+        let npx = Math.round(h * (sub ? 0.46 : 0.56) * [1, 1.12, 0.86][st.nfontV || 0]);
         ctx.font = fontStr(fi, npx); while (ctx.measureText(name).width > maxW && npx > 12) { npx -= 2; ctx.font = fontStr(fi, npx); }
         const ny = sub ? y + h * 0.38 : y + h * 0.53;
         if (st.name === 5) { ctx.lineWidth = npx * 0.14; ctx.strokeStyle = '#ffffff'; ctx.lineJoin = 'round'; ctx.strokeText(name, tx, ny); }
@@ -723,12 +832,30 @@
         ctx.restore();
     }
 
+    function svSceneV(ctx, W, H, st, C) {
+        const v = st.sceneV || 0, seed = (S.sv.styleId < 0 ? svStyleId(todayStyleSeed()) : S.sv.styleId) % 100000 + st.scene * 7 + v * 1013;
+        ctx.save();
+        if (v % 2) { ctx.translate(W, 0); ctx.scale(-1, 1); }
+        svScene(ctx, W, H, st.scene, C, seed);
+        ctx.restore();
+    }
+    // background को text के आगे (पारदर्शी) — नीचे की पट्टी/watermark ढके नहीं
+    function svFront(ctx, W, H, fh, bgLayer) {
+        if (!S.sv.bgFront) return;
+        ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, H - fh); ctx.clip();
+        ctx.globalAlpha = Math.max(0.05, Math.min(1, S.sv.bfa == null ? 0.35 : S.sv.bfa));
+        bgLayer(); ctx.restore();
+    }
     function svDraw(ctx, W, H) {
         const st = svStyle(), C = svColors(st);
         const tall = H / W > 1.3;
         // background
+        const bgLayer = () => {
         if (S.sv.bg) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); drawCover(ctx, S.sv.bg, 0, 0, W, H, 1, 0, 0); }
-        else svScene(ctx, W, H, st.scene, C, (S.sv.styleId < 0 ? svStyleId(todayStyleSeed()) : S.sv.styleId) % 100000 + st.scene * 7);
+        else svSceneV(ctx, W, H, st, C);
+        };
+        if (S.sv.bgFront) { const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, C.sky0); g.addColorStop(1, C.sky1); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
+        else bgLayer();
         if (S.sv.ov > 0) { ctx.fillStyle = hexA(C.overlay, S.sv.ov / 100); ctx.fillRect(0, 0, W, H); }
         // footer
         const footer = (S.sv.footer || '').trim();
@@ -744,37 +871,46 @@
         }
         // photo + name
         const hasPhoto = !!S.sv.photo || !S.exporting;
-        if (W / H > 1.2) { svDrawWide(ctx, st, C, W, H, fh, hasPhoto); return; }
+        if (W / H > 1.2) { svDrawWide(ctx, st, C, W, H, fh, hasPhoto); svFront(ctx, W, H, fh, bgLayer); return; }
         const side = st.side === 0 ? 'right' : 'left';
-        const ps = Math.round(W * (tall ? 0.34 : 0.28));
+        const ps0 = Math.round(W * (tall ? 0.34 : 0.28)), ps = Math.round(ps0 * (S.sv.psz || 1));
         const m = Math.round(W * 0.02);
         const bottomY = H - fh - m;
         const nh = Math.round(W * ((S.sv.sub || '').trim() ? 0.105 : 0.09));
         const ny = bottomY - nh - (st.name === 5 ? 0 : ps * 0.0);
-        let px0 = side === 'right' ? W - m - ps : m;
+        let px0 = side === 'right' ? W - m - ps : m, py0 = bottomY - ps;
+        const pos = svPosNow();
+        if (pos) { px0 = pos.x * W - ps / 2; py0 = pos.y * H - ps / 2; }
+        const boxPhoto = hasPhoto && (!pos || (py0 + ps > ny && py0 < ny + nh));
         let bx0, bx1;
-        if (hasPhoto) { if (side === 'right') { bx0 = m * 0.5; bx1 = px0 + ps * 0.5; } else { bx0 = px0 + ps * 0.5; bx1 = W - m * 0.5; } }
+        if (boxPhoto) { if (side === 'right') { bx0 = m * 0.5; bx1 = px0 + ps * 0.5; } else { bx0 = px0 + ps * 0.5; bx1 = W - m * 0.5; } }
         else { bx0 = W * 0.08; bx1 = W * 0.92; }
-        svNameBox(ctx, st, C, W, bx0, bx1, ny, nh, side, hasPhoto, ps * 0.5);
-        if (hasPhoto) {
-            // name box को text area photo से बाहर रखें
-            svPhoto(ctx, st, C, px0, bottomY - ps, ps);
-        }
+        svNameBox(ctx, st, C, W, bx0, bx1, ny, nh, side, boxPhoto, ps * 0.5);
+        if (hasPhoto && !S.sv.photoFront) svPhoto(ctx, st, C, px0, py0, ps);
         // badge + quote
         const k = S.scale / 100;
         const by = Math.round(H * (tall ? 0.07 : 0.055));
         const after = svBadge(ctx, st, C, W, by, Math.round(W * 0.085));
         const qTop = after + W * 0.035;
-        const qBottom = hasPhoto ? (bottomY - ps - W * 0.03) : (ny - W * 0.04);
+        const qBottom = hasPhoto && !pos ? (bottomY - ps - W * 0.03) : (ny - W * 0.04);
         svQuote(ctx, st, C, W, H, qTop, Math.max(qTop + W * 0.2, Math.min(qBottom, qTop + H * (tall ? 0.5 : 0.42))), k * (tall ? 1.1 : 1));
+        if (hasPhoto && S.sv.photoFront) svPhoto(ctx, st, C, px0, py0, ps);
+        svFront(ctx, W, H, fh, bgLayer);
+    }
+    function svPosNow() {
+        if (S.sv.pos) return S.sv.pos;
+        const raw = svStyleRaw();
+        return raw.side > 1 ? svSidePos(raw.side) : null;
     }
 
     // Desktop (चौड़ा) layout: एक तरफ़ फोटो + नाम, दूसरी तरफ़ badge + सुविचार
     function svDrawWide(ctx, st, C, W, H, fh, hasPhoto) {
         const side = st.side === 0 ? 'right' : 'left';
         const m = Math.round(H * 0.035), bottomY = H - fh - m;
-        const ps = Math.round(H * 0.6);
-        const px0 = side === 'right' ? W - m * 2 - ps : m * 2;
+        const ps = Math.round(H * 0.6 * (S.sv.psz || 1));
+        let px0 = side === 'right' ? W - m * 2 - ps : m * 2, py0 = bottomY - ps - Math.round(H * ((S.sv.sub || '').trim() ? 0.13 : 0.11)) * 0.25;
+        const pos = svPosNow();
+        if (pos) { px0 = pos.x * W - ps / 2; py0 = pos.y * H - ps / 2; }
         const nh = Math.round(H * ((S.sv.sub || '').trim() ? 0.13 : 0.11));
         const ny = bottomY - nh;
         const colW = hasPhoto ? W - ps - m * 5 : W;
@@ -783,13 +919,14 @@
         if (hasPhoto) { if (side === 'right') { bx0 = qx + colW * 0.12; bx1 = px0 + ps * 0.5; } else { bx0 = px0 + ps * 0.5; bx1 = qx + colW * 0.88; } }
         else { bx0 = W * 0.2; bx1 = W * 0.8; }
         svNameBox(ctx, st, C, W, bx0, bx1, ny, nh, side, hasPhoto, ps * 0.5);
-        if (hasPhoto) svPhoto(ctx, st, C, px0, bottomY - ps - nh * 0.25, ps);
+        if (hasPhoto && !S.sv.photoFront) svPhoto(ctx, st, C, px0, py0, ps);
         const k = S.scale / 100;
         ctx.save(); ctx.translate(qx, 0);
         const after = svBadge(ctx, st, C, colW, Math.round(H * 0.07), Math.round(H * 0.1));
         const qTop = after + H * 0.04;
         svQuote(ctx, st, C, colW, H, qTop, Math.max(qTop + H * 0.25, ny - H * 0.05), k * 1.15);
         ctx.restore();
+        if (hasPhoto && S.sv.photoFront) svPhoto(ctx, st, C, px0, py0, ps);
     }
 
     // ------------------------------------------------------------
@@ -1265,7 +1402,8 @@
             const v = S.sv;
             const o = { badgeText: v.badgeText, name: v.name, sub: v.sub, footer: v.footer, pz: v.pz, px: v.px, py: v.py, ov: v.ov,
                 colors: v.colors, keepColors: v.keepColors, qpos: v.qpos, used: v.used.slice(-365), usedQ: v.usedQ.slice(-SV_QUOTES.length),
-                lang: S.lang || 'app', day: todayKey(), styleId: v.styleId, over: v.over, photoUrl: v.photoUrl, bgUrl: v.bgUrl };
+                lang: S.lang || 'app', day: todayKey(), styleId: v.styleId, over: v.over, photoUrl: v.photoUrl, bgUrl: v.bgUrl,
+                pos: v.pos, psz: v.psz, photoFront: v.photoFront, bgFront: v.bgFront, bfa: v.bfa };
             try { localStorage.setItem(SV_STORE, JSON.stringify(o)); }
             catch (e) { try { o.bgUrl = ''; localStorage.setItem(SV_STORE, JSON.stringify(o)); toast('Background बहुत बड़ी है — याद नहीं रखी गई (poster में लगी है)।', 'warning'); } catch (e2) {} }
         }, 400);
@@ -1277,7 +1415,9 @@
         if (!o) return;
         const v = S.sv;
         ['badgeText', 'name', 'sub', 'footer', 'qpos'].forEach(k => { if (typeof o[k] === 'string') v[k] = o[k]; });
-        ['pz', 'px', 'py', 'ov'].forEach(k => { if (typeof o[k] === 'number') v[k] = o[k]; });
+        ['pz', 'px', 'py', 'ov', 'psz', 'bfa'].forEach(k => { if (typeof o[k] === 'number') v[k] = o[k]; });
+        if (o.pos && typeof o.pos.x === 'number' && typeof o.pos.y === 'number') v.pos = { x: o.pos.x, y: o.pos.y };
+        v.photoFront = !!o.photoFront; v.bgFront = !!o.bgFront;
         if (o.colors && typeof o.colors === 'object') v.colors = o.colors;
         v.keepColors = !!o.keepColors;
         if (Array.isArray(o.used)) v.used = o.used;
@@ -1381,10 +1521,15 @@
   <input type="file" accept="image/*" id="svPhotoFile" style="display:none">
   <div><label>Zoom</label><input type="range" min="100" max="300" step="5" data-r="pz" style="width:100%;"></div>
   <div class="hkp-svgrid"><div><label>← →</label><input type="range" min="-100" max="100" step="2" data-r="px" style="width:100%;"></div><div><label>↑ ↓</label><input type="range" min="-100" max="100" step="2" data-r="py" style="width:100%;"></div></div>
+  <div><label>📏 फोटो का size: <span id="svPszV">100%</span></label><input type="range" min="50" max="180" step="5" data-r="psz" style="width:100%;"></div>
+  <div class="hkp-note">✋ Preview में फोटो को पकड़कर (drag करके) कहीं भी रखें। "Photo की तरफ़" में 110 तैयार जगहें भी हैं।</div>
+  <div class="hkp-row"><button type="button" class="hkp-chip" id="svPosReset">↺ फोटो अपनी जगह</button><button type="button" class="hkp-chip" id="svPhotoLayer">📷 फोटो: text के पीछे</button></div>
   <div class="hkp-sec">🖼️ Background</div>
   <div class="hkp-row"><button type="button" class="hkp-btn" id="svBgBtn">🖼️ अपनी Background</button><button type="button" class="hkp-btn ghost" id="svBgDel">↩️ Built-in</button></div>
   <input type="file" accept="image/*" id="svBgFile" style="display:none">
   <div><label>परत (Overlay): <span id="svOvV">0%</span></label><input type="range" min="0" max="75" step="5" data-r="ov" style="width:100%;"></div>
+  <div class="hkp-row"><button type="button" class="hkp-btn ghost" id="svBgLayer">🔁 Background: text के पीछे</button></div>
+  <div id="svBfaRow" style="display:none;"><label>आगे वाली Background की गहराई: <span id="svBfaV">35%</span></label><input type="range" min="10" max="100" step="5" data-r="bfa" style="width:100%;"></div>
   <div class="hkp-sec">🌈 रंग (हर चीज़)</div>
   <div class="hkp-svcolors" id="svColors"></div>
   <label style="font-weight:700;display:flex;gap:6px;align-items:center;"><input type="checkbox" id="svKeep"> नया Style आने पर भी मेरे रंग रखें</label>
@@ -1403,13 +1548,13 @@
     function svBind() {
         const q = s => modal.querySelector(s);
         const st0 = el('style', { id: 'hkPosterSvCss' }); st0.textContent = SV_CSS; document.head.appendChild(st0);
-        const lists = { shape: SV_SHAPES, ring: SV_RINGS, badge: SV_BADGES, name: SV_NAMEBOX, font: SV_FONTS.map(f => f.n), fx: SV_FX,
-            nfont: SV_NAME_FONTS.map(i => SV_FONTS[i].n), scene: SV_SCENES, pal: SV_PALS.map(p => p.n), side: ['➡️ दाएँ', '⬅️ बाएँ'] };
+        const lists = svLists();
         modal.querySelectorAll('[data-o]').forEach(sel => {
             const k = sel.getAttribute('data-o'); svFillSelect(sel, lists[k]);
             sel.addEventListener('change', () => {
                 S.sv.over[k] = +sel.value;
                 if (k === 'pal' && !S.sv.keepColors) S.sv.colors = {};
+                if (k === 'side') S.sv.pos = +sel.value > 1 ? svSidePos(+sel.value) : null;
                 svSync(); svSave(); schedule();
             });
         });
@@ -1427,6 +1572,8 @@
                 const k = r.getAttribute('data-r'), v = +r.value;
                 S.sv[k] = k === 'pz' ? v / 100 : (k === 'ov' ? v : v / 100);
                 if (k === 'ov') q('#svOvV').textContent = v + '%';
+                if (k === 'psz') q('#svPszV').textContent = v + '%';
+                if (k === 'bfa') q('#svBfaV').textContent = v + '%';
                 svSave(); schedule();
             });
         });
@@ -1475,18 +1622,50 @@
         });
         modal.querySelectorAll('[data-c]').forEach(inp => inp.addEventListener('input', () => { S.sv.colors[inp.getAttribute('data-c')] = inp.value; if (inp.getAttribute('data-c') === 'overlay' && !S.sv.ov) { S.sv.ov = 30; svSync(); } svSave(); schedule(); }));
         q('#svKeep').onchange = () => { S.sv.keepColors = q('#svKeep').checked; svSave(); };
+        q('#svPosReset').onclick = () => { S.sv.pos = null; S.sv.psz = 1; if (S.sv.over.side > 1) delete S.sv.over.side; svSync(); svSave(); schedule(); };
+        q('#svPhotoLayer').onclick = () => { S.sv.photoFront = !S.sv.photoFront; svSync(); svSave(); schedule(); };
+        q('#svBgLayer').onclick = () => { S.sv.bgFront = !S.sv.bgFront; svSync(); svSave(); schedule(); };
+        svDragBind();
         q('#svResetC').onclick = () => { S.sv.colors = {}; svSync(); svSave(); schedule(); };
+    }
+    // ✋ फोटो drag (mouse + touch)
+    function svDragBind() {
+        const cv = modal.querySelector('#hkpCanvas'); if (!cv || cv._svDrag) return; cv._svDrag = true;
+        let drag = null;
+        const pt = e => { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width * cv.width, y: (e.clientY - r.top) / r.height * cv.height }; };
+        const onPhoto = p => { const b = S._pr; return S.tpl === 'suvichar' && b && p.x >= b.x && p.x <= b.x + b.s && p.y >= b.y && p.y <= b.y + b.s; };
+        cv.addEventListener('pointerdown', e => {
+            const p = pt(e); if (!onPhoto(p)) return;
+            const b = S._pr; drag = { dx: p.x - (b.x + b.s / 2), dy: p.y - (b.y + b.s / 2) };
+            try { cv.setPointerCapture(e.pointerId); } catch (x) {}
+            cv.style.cursor = 'grabbing'; e.preventDefault();
+        });
+        cv.addEventListener('pointermove', e => {
+            const p = pt(e);
+            if (!drag) { cv.style.cursor = onPhoto(p) ? 'grab' : ''; return; }
+            S.sv.pos = { x: Math.max(0, Math.min(1, (p.x - drag.dx) / cv.width)), y: Math.max(0, Math.min(1, (p.y - drag.dy) / cv.height)) };
+            schedule(); e.preventDefault();
+        });
+        const end = () => { if (!drag) return; drag = null; cv.style.cursor = 'grab'; svSave(); };
+        cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
+        cv.style.touchAction = 'none';
     }
     function svSync() {
         if (!modal) return;
         const st = svStyle(), C = svColors(st), v = S.sv;
-        modal.querySelectorAll('[data-o]').forEach(sel => { sel.value = String(st[sel.getAttribute('data-o')]); });
+        const raw = svStyleRaw();
+        modal.querySelectorAll('[data-o]').forEach(sel => { sel.value = String(raw[sel.getAttribute('data-o')]); });
         modal.querySelectorAll('[data-sv]').forEach(inp => { const k = inp.getAttribute('data-sv'); if (document.activeElement !== inp) inp.value = v[k] || ''; });
         modal.querySelectorAll('[data-c]').forEach(inp => { const c = C[inp.getAttribute('data-c')]; if (/^#[0-9a-f]{6}$/i.test(c)) inp.value = c; });
         const pr = modal.querySelector('[data-r="pz"]'); if (pr) pr.value = Math.round(v.pz * 100);
         const xr = modal.querySelector('[data-r="px"]'); if (xr) xr.value = Math.round(v.px * 100);
         const yr = modal.querySelector('[data-r="py"]'); if (yr) yr.value = Math.round(v.py * 100);
         const or = modal.querySelector('[data-r="ov"]'); if (or) { or.value = v.ov; modal.querySelector('#svOvV').textContent = v.ov + '%'; }
+        const zr = modal.querySelector('[data-r="psz"]'); if (zr) { zr.value = Math.round((v.psz || 1) * 100); modal.querySelector('#svPszV').textContent = zr.value + '%'; }
+        const fr = modal.querySelector('[data-r="bfa"]'); if (fr) { fr.value = Math.round((v.bfa == null ? 0.35 : v.bfa) * 100); modal.querySelector('#svBfaV').textContent = fr.value + '%'; }
+        const pl = modal.querySelector('#svPhotoLayer'); if (pl) { pl.textContent = v.photoFront ? '📷 फोटो: text के आगे' : '📷 फोटो: text के पीछे'; pl.classList.toggle('on', !!v.photoFront); }
+        const bl = modal.querySelector('#svBgLayer'); if (bl) { bl.textContent = v.bgFront ? '🔁 Background: text के आगे' : '🔁 Background: text के पीछे'; bl.classList.toggle('on', !!v.bgFront); }
+        const br = modal.querySelector('#svBfaRow'); if (br) br.style.display = v.bgFront ? '' : 'none';
         modal.querySelectorAll('[data-qpos]').forEach(b => b.classList.toggle('on', b.getAttribute('data-qpos') === v.qpos));
         const kp = modal.querySelector('#svKeep'); if (kp) kp.checked = !!v.keepColors;
         const no = modal.querySelector('#svStyleNo');

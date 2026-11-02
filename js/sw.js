@@ -16,7 +16,7 @@
 //    • Any JS logic (even if not cached)
 //    • Any HTML/CSS in this project
 //    Without bumping, users will keep old cached versions!
-const SW_VERSION = '32';
+const SW_VERSION = '45';
 
 const CACHE_NAME = `hor-katha-v374-cache-v${SW_VERSION}`;
 const CACHE_PREFIX = 'hor-katha-v374-cache-';
@@ -115,7 +115,11 @@ const ASSETS_TO_CACHE = [
     './js/privacy.js',
     './js/app.js',
     './js/typing-test.js',
-    './js/finger-guide.js',        // ✋ Finger Guide (v32)
+    './js/finger-guide.js',        // ✋ Finger Guide (v34)
+    './js/lang-guard.js',          // 🛡️ भाषा के अनुसार typing (v34)
+    './js/theme.js',               // 🎨 Light / Dark / Royal (v35)
+    './js/poster.js',              // 🖼️ Poster Maker (v40)
+    './js/classroom.js',           // 🏫 Class + Teacher Dashboard (v42)
     './js/insights.js',
     './js/growth.js',
     './js/hkscript.js',
