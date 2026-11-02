@@ -38,7 +38,7 @@
             defaults: { heading: '', message: '', from: '' }
         },
         festival: {
-            name: '🎉 त्योहार बधाई',
+            name: '🪔 त्योहार शुभकामना Pro',
             palettes: [
                 { bg: ['#7c2d12', '#ea580c'], fg: '#fff7ed', accent: '#fde047', card: '#fff7ed', name: 'सोहराय' },
                 { bg: ['#14532d', '#16a34a'], fg: '#f0fdf4', accent: '#facc15', card: '#f0fdf4', name: 'बाहा (साल)' },
@@ -274,7 +274,7 @@
         font: ['', 'बड़ा', 'छोटा'],
         nfont: ['', 'बड़ा', 'छोटा'],
         fx: ['', 'रंग उलटे', 'बाएँ', 'दाएँ', '+ परछाईं', '+ चमक', '+ मोटी रेखा', 'रंग उलटे + परछाईं', 'बाएँ + परछाईं'],
-        scene: Array.from({ length: 11 }, (x, v) => v ? 'डिज़ाइन ' + (v + 1) : ''),
+        scene: Array.from({ length: 37 }, (x, v) => v ? 'डिज़ाइन ' + (v + 1) : ''),
         pal: Array.from({ length: 9 }, (x, v) => v ? 'रंग ' + (v + 1) : '')
     };
     function svBaseLabels() {
@@ -501,7 +501,10 @@
     function svScene(ctx, W, H, sc, C, seed) {
         const R = rng(seed);
         const lin = (a, b, x0, y0, x1, y1) => { const g = ctx.createLinearGradient(x0, y0, x1, y1); g.addColorStop(0, a); g.addColorStop(1, b); return g; };
-        ctx.fillStyle = lin(C.sky0, C.sky1, 0, 0, 0, H); ctx.fillRect(0, 0, W, H);
+        const gm = SV_GMODE; SV_GMODE = 0;
+        if (gm === 2) { const g = ctx.createRadialGradient(W / 2, H * 0.4, 0, W / 2, H * 0.4, Math.hypot(W, H) * 0.6); g.addColorStop(0, C.sky1); g.addColorStop(1, C.sky0); ctx.fillStyle = g; }
+        else ctx.fillStyle = gm === 1 ? lin(C.sky0, C.sky1, 0, 0, W, H) : lin(C.sky0, C.sky1, 0, 0, 0, H);
+        ctx.fillRect(0, 0, W, H);
         const cloud = (x, y, s, a) => {
             ctx.save(); ctx.globalAlpha = a; ctx.fillStyle = '#ffffff';
             [[0, 0, 1], [0.8, -0.25, 0.8], [1.6, 0, 0.9], [0.8, 0.2, 0.9], [-0.7, 0.15, 0.7]].forEach(b => { ctx.beginPath(); ctx.arc(x + b[0] * s, y + b[1] * s, b[2] * s, 0, Math.PI * 2); ctx.fill(); });
@@ -832,10 +835,12 @@
         ctx.restore();
     }
 
+    let SV_GMODE = 0;
     function svSceneV(ctx, W, H, st, C) {
         const v = st.sceneV || 0, seed = (S.sv.styleId < 0 ? svStyleId(todayStyleSeed()) : S.sv.styleId) % 100000 + st.scene * 7 + v * 1013;
         ctx.save();
         if (v % 2) { ctx.translate(W, 0); ctx.scale(-1, 1); }
+        SV_GMODE = Math.floor(v / 2) % 3;
         svScene(ctx, W, H, st.scene, C, seed);
         ctx.restore();
     }
@@ -946,8 +951,122 @@
     //   हर template के 3 professional design, font, logo, background,
     //   हर रंग का picker, ऊपर/नीचे की पंक्ति — हर size (Mobile/Tab/Desktop) पर
     // ============================================================
+    // ---- 🪔 त्योहार शुभकामना Pro (v46): 6 layout × 6 सजावट × 3 background = 108 style ----
+    const FEST_L = ['🏵️ Classic', '🕌 मेहराब Card', '🪔 दीया Emblem', '◧ Split', '🖼️ नक्काशी Border', '🎗️ Ribbon'];
+    const FEST_O = ['मंडल कोने', 'लटकते दीये', 'गेंदा तोरण', 'सोहराय पट्टी', 'रंगोली', 'आतिशबाज़ी'];
+    const FEST_B = ['चमक', 'बिंदी जाल', 'किरणें'];
+    function FEST_NAMES() { const a = []; for (let b = 0; b < 3; b++) for (let o = 0; o < 6; o++) for (let l = 0; l < 6; l++) a.push((a.length + 1) + '. ' + FEST_L[l] + ' · ' + FEST_O[o] + ' · ' + FEST_B[b]); return a; }
+    function festDiya(ctx, x, y, s, acc) { // y = कटोरे का ऊपरी किनारा
+        ctx.save();
+        const gl = ctx.createRadialGradient(x, y - s * 0.35, 0, x, y - s * 0.35, s * 1.1); gl.addColorStop(0, 'rgba(255,214,102,.55)'); gl.addColorStop(1, 'rgba(255,214,102,0)');
+        ctx.fillStyle = gl; ctx.beginPath(); ctx.arc(x, y - s * 0.35, s * 1.1, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = mixHex(acc, -0.45); ctx.beginPath(); ctx.ellipse(x, y, s * 0.6, s * 0.34, 0, 0, Math.PI); ctx.fill();
+        ctx.fillStyle = acc; ctx.beginPath(); ctx.ellipse(x, y, s * 0.6, s * 0.1, 0, 0, Math.PI * 2); ctx.fill();
+        const fg = ctx.createLinearGradient(0, y - s * 0.75, 0, y); fg.addColorStop(0, '#fff7cc'); fg.addColorStop(0.5, '#ffb703'); fg.addColorStop(1, '#f97316');
+        ctx.fillStyle = fg; ctx.beginPath(); ctx.moveTo(x, y - s * 0.78); ctx.bezierCurveTo(x + s * 0.24, y - s * 0.4, x + s * 0.16, y - s * 0.06, x, y - s * 0.04); ctx.bezierCurveTo(x - s * 0.16, y - s * 0.06, x - s * 0.24, y - s * 0.4, x, y - s * 0.78); ctx.fill();
+        ctx.restore();
+    }
+    function festSpark(ctx, x, y, r, col) { ctx.save(); ctx.fillStyle = col; ctx.beginPath(); for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4, rad = i % 2 ? r * 0.28 : r; ctx.lineTo(x + Math.cos(a) * rad, y + Math.sin(a) * rad); } ctx.closePath(); ctx.fill(); ctx.restore(); }
+    function festBurst(ctx, x, y, r, cols) {
+        ctx.save(); ctx.lineCap = 'round';
+        for (let i = 0; i < 24; i++) { const a = i * Math.PI / 12, c = cols[i % cols.length]; ctx.strokeStyle = c; ctx.lineWidth = Math.max(2, r * 0.03); ctx.beginPath(); ctx.moveTo(x + Math.cos(a) * r * 0.25, y + Math.sin(a) * r * 0.25); ctx.lineTo(x + Math.cos(a) * r, y + Math.sin(a) * r); ctx.stroke(); ctx.fillStyle = c; ctx.beginPath(); ctx.arc(x + Math.cos(a) * r * 1.08, y + Math.sin(a) * r * 1.08, r * 0.035, 0, Math.PI * 2); ctx.fill(); }
+        ctx.restore();
+    }
+    function festMarigold(ctx, x, y, r, c1, c2) { ctx.save(); for (let i = 0; i < 3; i++) { ctx.fillStyle = i % 2 ? c2 : c1; ctx.beginPath(); ctx.arc(x, y, r * (1 - i * 0.28), 0, Math.PI * 2); ctx.fill(); } ctx.restore(); }
+    function festArch(ctx, x, y, w, h) { const r = w / 2; ctx.beginPath(); ctx.moveTo(x, y + h); ctx.lineTo(x, y + r); ctx.arc(x + r, y + r, r, Math.PI, 0); ctx.lineTo(x + w, y + h); ctx.closePath(); }
+    function festDraw(ctx, W, H, P, U, k, d, wide, cx, colW) {
+        const L = d % 6, O = Math.floor(d / 6) % 6, B = Math.floor(d / 36) % 3;
+        const user = S.pro.colors.festival || {};
+        // background
+        proBg(ctx, W, H, P, B === 1 ? 'lin' : 'radial');
+        if (!S.pro.bg) {
+            if (B === 1) { ctx.save(); ctx.fillStyle = hexA(P.acc, 0.12); const g = U * 0.045; for (let yy = g / 2; yy < H; yy += g) for (let xx = ((yy / g) % 2 ? g : g / 2); xx < W; xx += g) { ctx.beginPath(); ctx.arc(xx, yy, U * 0.004, 0, Math.PI * 2); ctx.fill(); } ctx.restore(); }
+            if (B === 2) { ctx.save(); ctx.fillStyle = hexA(P.acc, 0.07); const ox = W / 2, oy = H * 0.42; for (let i = 0; i < 24; i++) { const a = i * Math.PI / 12; ctx.beginPath(); ctx.moveTo(ox, oy); ctx.arc(ox, oy, Math.hypot(W, H), a, a + Math.PI / 24); ctx.closePath(); ctx.fill(); } ctx.restore(); }
+            if (B === 0) { const g = ctx.createRadialGradient(W / 2, H * 0.4, 0, W / 2, H * 0.4, U * 0.6); g.addColorStop(0, hexA(P.acc, 0.18)); g.addColorStop(1, hexA(P.acc, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
+        }
+        // सजावट
+        let topR = U * 0.05, botR = 0;
+        const flameCols = [P.acc, '#ffffff', mixHex(P.acc, 0.4), '#fb7185'];
+        if (O === 0) { mandala(ctx, 0, 0, U * 0.36, P.acc, 0.32, 5); mandala(ctx, W, H, U * 0.36, P.acc, 0.32, 5); mandala(ctx, W, 0, U * 0.2, P.acc, 0.18, 3); mandala(ctx, 0, H, U * 0.2, P.acc, 0.18, 3); topR = U * 0.08; }
+        else if (O === 1) {
+            const n = Math.max(5, Math.round(W / (U * 0.17))), sp = W / n;
+            ctx.save(); ctx.strokeStyle = P.acc; ctx.lineWidth = Math.max(2, U * 0.004); ctx.beginPath(); ctx.moveTo(0, U * 0.02); for (let i = 0; i < n; i++) ctx.quadraticCurveTo(sp * i + sp / 2, U * 0.07, sp * (i + 1), U * 0.02); ctx.stroke();
+            for (let i = 0; i < n; i++) { const x = sp * i + sp / 2, len = U * (0.06 + (i % 3) * 0.035); ctx.lineWidth = Math.max(1.5, U * 0.0025); ctx.beginPath(); ctx.moveTo(x, U * 0.045); ctx.lineTo(x, U * 0.045 + len); ctx.stroke(); festDiya(ctx, x, U * 0.07 + len, U * 0.045, P.acc); }
+            ctx.restore(); topR = U * 0.24;
+        } else if (O === 2) {
+            const n = Math.max(4, Math.round(W / (U * 0.25))), sp = W / n, r = U * 0.022, c1 = '#f59e0b', c2 = '#f97316';
+            for (let i = 0; i < n; i++) { for (let j = 0; j <= 10; j++) { const t = j / 10, x = sp * i + sp * t, y = U * 0.015 + Math.sin(t * Math.PI) * U * 0.07; festMarigold(ctx, x, y, r, j % 2 ? c1 : c2, j % 2 ? c2 : '#fde047'); }
+                for (let j = 0; j < 4; j++) festMarigold(ctx, sp * i, U * 0.03 + j * r * 1.7, r * 0.9, j % 2 ? c1 : c2, '#fde047');
+                leaf(ctx, sp * i + sp / 2, U * 0.09, U * 0.05, Math.PI / 2 - 0.4, '#15803d'); leaf(ctx, sp * i + sp / 2, U * 0.09, U * 0.05, Math.PI / 2 + 0.4, '#166534'); }
+            topR = U * 0.15;
+        } else if (O === 3) { const b = Math.round(U * 0.055); dots(ctx, W, H, P.acc, 26, 7); sohraiBand(ctx, W, 0, b, P.acc, P.bg[0]); ctx.save(); ctx.translate(0, H); ctx.scale(1, -1); sohraiBand(ctx, W, 0, b, P.acc, P.bg[0]); ctx.restore(); topR = b + U * 0.04; botR = b; }
+        else if (O === 4) { mandala(ctx, W / 2, H * 0.47, U * 0.48, P.acc, 0.1, 6); [[U * 0.07, U * 0.07], [W - U * 0.07, U * 0.07], [U * 0.07, H - U * 0.07], [W - U * 0.07, H - U * 0.07]].forEach(p => flower(ctx, p[0], p[1], U * 0.045, P.acc, P.bg[0], 8)); topR = U * 0.12; }
+        else { let s = 17; const rnd = () => { s = (s * 9301 + 49297) % 233280; return s / 233280; }; const nb = wide ? 5 : 3; for (let i = 0; i < nb; i++) festBurst(ctx, W * (0.1 + 0.8 * i / Math.max(1, nb - 1)) + (rnd() - 0.5) * U * 0.05, U * (0.09 + rnd() * 0.06), U * (0.06 + rnd() * 0.04), flameCols); for (let i = 0; i < 40; i++) festSpark(ctx, rnd() * W, rnd() * H, U * (0.004 + rnd() * 0.01), i % 2 ? P.acc : '#ffffff'); topR = U * 0.2; }
+        const fh = proFooter(ctx, W, H - botR, U, null, P.fg);
+        let top = topR + U * 0.02, bottom = H - botR - fh - U * 0.05;
+        const divider = y => diamondDivider(ctx, cx, y, Math.min(colW * 0.5, U * 0.4), P.acc, Math.max(2, U * 0.004));
+        const darkOn = c => isLight(c) ? '#1f2937' : '#f8fafc';
+        if (L === 0) {
+            if (proLogo(ctx, cx, top + U * 0.06, U * 0.12, '#ffffff')) top += U * 0.14;
+            proStack(ctx, { W, U, cx, top, bottom, colW, P, k, align: 'center', hSize: 0.1, hOpt: { shadow: 'rgba(0,0,0,.35)' }, divider, fromPill: P.acc, fromCol: P.bg[0] });
+        } else if (L === 1) {
+            const aw = Math.min(colW * 0.95, W * 0.86, (bottom - top) * (wide ? 1.05 : 2)), ah = bottom - top, ax = cx - aw / 2;
+            ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = U * 0.05; ctx.fillStyle = hexA(P.card, 0.95); festArch(ctx, ax, top, aw, ah); ctx.fill(); ctx.restore();
+            ctx.save(); ctx.strokeStyle = P.acc; ctx.lineWidth = Math.max(3, U * 0.006); festArch(ctx, ax + U * 0.018, top + U * 0.018, aw - U * 0.036, ah - U * 0.036); ctx.stroke(); ctx.restore();
+            const P2 = Object.assign({}, P, { fg: user.fg || darkOn(P.card), head: user.head || mixHex(P.bg[0], 0) });
+            let t2 = top + Math.min(aw * 0.28, ah * 0.16);
+            if (proLogo(ctx, cx, top + aw * 0.2, U * 0.11, P.card)) t2 += U * 0.05;
+            proStack(ctx, { W, U, cx, top: t2, bottom: top + ah - U * 0.06, colW: aw * 0.8, P: P2, k, align: 'center', hSize: 0.09, divider, fromPill: P.bg[0], fromCol: '#ffffff', subCol: isLight(P.card) ? mixHex(P.acc, -0.45) : P.acc });
+        } else if (L === 2) {
+            const er = U * (wide ? 0.1 : 0.085), ey = top + er + U * 0.01;
+            ctx.save(); const g = ctx.createRadialGradient(cx, ey, 0, cx, ey, er * 1.6); g.addColorStop(0, hexA(P.acc, 0.5)); g.addColorStop(1, hexA(P.acc, 0)); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, ey, er * 1.6, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = P.bg[0]; ctx.strokeStyle = P.acc; ctx.lineWidth = Math.max(3, U * 0.006); ctx.beginPath(); ctx.arc(cx, ey, er, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); ctx.restore();
+            if (!proLogo(ctx, cx, ey, er * 1.7, null)) festDiya(ctx, cx, ey + er * 0.3, er * 0.75, P.acc);
+            proStack(ctx, { W, U, cx, top: ey + er + U * 0.04, bottom, colW, P, k, align: 'center', hSize: 0.1, hOpt: { shadow: 'rgba(0,0,0,.35)' }, divider, fromPill: P.acc, fromCol: P.bg[0] });
+        } else if (L === 3) {
+            const pc = mixHex(P.bg[0], -0.25);
+            if (wide) {
+                const pw = W * 0.4; ctx.save(); ctx.fillStyle = hexA(pc, 0.85); ctx.fillRect(0, 0, pw, H - fh - botR); ctx.beginPath(); ctx.rect(0, 0, pw, H); ctx.clip(); mandala(ctx, pw / 2, H * 0.45, U * 0.42, P.acc, 0.35, 5); ctx.restore();
+                ctx.fillStyle = P.acc; ctx.fillRect(pw, 0, Math.max(4, U * 0.008), H - fh - botR);
+                if (!proLogo(ctx, pw / 2, H * 0.45, U * 0.26, '#ffffff')) festDiya(ctx, pw / 2, H * 0.5, U * 0.16, P.acc);
+                const cw2 = W - pw - U * 0.16; proStack(ctx, { W, U, cx: pw + U * 0.08 + cw2 / 2, top, bottom, colW: cw2, P, k, align: 'left', hSize: 0.1, hOpt: { shadow: 'rgba(0,0,0,.3)' }, fromPill: P.acc, fromCol: P.bg[0] });
+            } else {
+                const ph = H * 0.3; ctx.save(); ctx.fillStyle = hexA(pc, 0.85); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(W, 0); ctx.lineTo(W, ph); ctx.quadraticCurveTo(W / 2, ph + U * 0.12, 0, ph); ctx.closePath(); ctx.fill(); ctx.clip(); mandala(ctx, W / 2, ph * 0.5, U * 0.4, P.acc, 0.3, 5); ctx.restore();
+                if (!proLogo(ctx, cx, ph * 0.55, U * 0.2, '#ffffff')) festDiya(ctx, cx, ph * 0.66, U * 0.13, P.acc);
+                proStack(ctx, { W, U, cx, top: Math.max(top, ph + U * 0.09), bottom, colW, P, k, align: 'center', hSize: 0.1, hOpt: { shadow: 'rgba(0,0,0,.3)' }, divider, fromPill: P.acc, fromCol: P.bg[0] });
+            }
+        } else if (L === 4) {
+            const m = U * 0.06, x0 = m, y0 = Math.max(m, topR - U * 0.03), x1 = W - m, y1 = H - botR - fh - m * 0.6;
+            ctx.save(); ctx.strokeStyle = P.acc; ctx.lineWidth = Math.max(4, U * 0.008); ctx.strokeRect(x0, y0, x1 - x0, y1 - y0); ctx.lineWidth = Math.max(1.5, U * 0.0025); ctx.strokeRect(x0 + U * 0.018, y0 + U * 0.018, x1 - x0 - U * 0.036, y1 - y0 - U * 0.036); ctx.restore();
+            [[x0, y0], [x1, y0], [x0, y1], [x1, y1]].forEach(p => { ctx.save(); ctx.fillStyle = P.bg[0]; ctx.beginPath(); ctx.arc(p[0], p[1], U * 0.04, 0, Math.PI * 2); ctx.fill(); ctx.restore(); flower(ctx, p[0], p[1], U * 0.038, P.acc, P.bg[0], 8); });
+            let t2 = y0 + U * 0.07; if (proLogo(ctx, cx, t2 + U * 0.05, U * 0.11, '#ffffff')) t2 += U * 0.12;
+            proStack(ctx, { W, U, cx, top: t2, bottom: y1 - U * 0.06, colW: Math.min(colW, x1 - x0 - U * 0.16), P, k, align: 'center', hSize: 0.095, hOpt: { shadow: 'rgba(0,0,0,.35)' }, divider, fromPill: P.acc, fromCol: P.bg[0] });
+        } else {
+            // Ribbon: sub → ribbon heading → card message → from
+            const hfi = proFont('h'), mfi = proFont('m'); svNeedFont(hfi, S.heading); if (mfi) svNeedFont(mfi, S.message);
+            if (proLogo(ctx, cx, top + U * 0.06, U * 0.12, '#ffffff')) top += U * 0.14;
+            const avail = bottom - top, rw = Math.min(W * 0.8, colW * 1.02);
+            const sb = fitF(ctx, S.sub, colW, avail * 0.1, U * 0.042 * k, 0, 1.3, 12, '700');
+            const hb = fitF(ctx, S.heading, rw * 0.78, avail * 0.3, U * 0.09 * k, hfi, 1.2, 18);
+            const mb = fitF(ctx, S.message, colW * 0.82, avail * 0.32, U * 0.048 * k, mfi, 1.42, 14, mfi ? null : '500');
+            const fromLine = [S.from, S.date].filter(Boolean).join('  •  ');
+            const fb = fitF(ctx, fromLine, colW, avail * 0.1, U * 0.04 * k, 0, 1.3, 12, '700');
+            const gap = U * 0.035, rh = hb.h + U * 0.06, ch = mb.h ? mb.h + U * 0.08 : 0;
+            const total = (sb.h ? sb.h + gap : 0) + rh + (ch ? gap + ch : 0) + (fb.h ? gap + fb.h : 0);
+            let y = top + Math.max(0, (avail - total) / 2);
+            if (sb.h) y = drawF(ctx, sb, cx, y, 'center', P.acc) + gap;
+            const rx = cx - rw / 2, t = rh * 0.45;
+            ctx.save(); ctx.fillStyle = mixHex(P.acc, -0.35);
+            [[rx - t * 0.2, 1], [rx + rw + t * 0.2, -1]].forEach(e => { ctx.beginPath(); ctx.moveTo(e[0], y + rh * 0.22); ctx.lineTo(e[0] - e[1] * t * 1.4, y + rh * 0.22); ctx.lineTo(e[0] - e[1] * t * 0.9, y + rh * 0.72); ctx.lineTo(e[0] - e[1] * t * 1.4, y + rh * 1.22); ctx.lineTo(e[0], y + rh * 1.22); ctx.closePath(); ctx.fill(); });
+            ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = U * 0.03; ctx.fillStyle = P.acc; ctx.fillRect(rx, y, rw, rh); ctx.restore();
+            drawF(ctx, hb, cx, y + U * 0.03, 'center', user.head || darkOn(P.acc));
+            y += rh + gap;
+            if (ch) { const cw = colW * 0.92; ctx.save(); ctx.fillStyle = hexA(P.card, 0.92); rr(ctx, cx - cw / 2, y, cw, ch, U * 0.03); ctx.fill(); ctx.restore(); drawF(ctx, mb, cx, y + U * 0.04, 'center', user.fg || darkOn(P.card)); y += ch + gap; }
+            if (fb.h) drawF(ctx, fb, cx, y, 'center', P.acc, { shadow: 'rgba(0,0,0,.3)' });
+        }
+    }
     const PRO_DESIGNS = {
-        festival: ['🎨 सोहराय पारंपरिक', '🌸 मंडल / रंगोली', '🪪 Modern Card'],
+        festival: FEST_NAMES(),
         notice:   ['🏛️ Official Letterhead', '📢 Bold Alert', '📌 Notice Board'],
         invite:   ['👑 Royal Frame', '🚪 मेहराब (Arch)', '🌼 Floral Minimal'],
         quote:    ['📰 Editorial', '◧ Split Panel', '🖍️ Highlight']
@@ -1110,52 +1229,7 @@
         const d = S.pro.design[S.tpl] || 0, wide = W / H > 1.25;
         const cx = W / 2, colW = proCol(W, H);
 
-        if (S.tpl === 'festival') {
-            if (d === 0) {
-                proBg(ctx, W, H, P, 'radial');
-                if (!S.pro.bg) mandala(ctx, cx, H * 0.48, U * 0.46, P.acc, 0.09, 6);
-                dots(ctx, W, H, P.acc, 30, 11);
-                const band = Math.round(U * 0.06);
-                sohraiBand(ctx, W, 0, band, P.acc, P.bg[0]);
-                ctx.save(); ctx.translate(0, H); ctx.scale(1, -1); sohraiBand(ctx, W, 0, band, P.acc, P.bg[0]); ctx.restore();
-                const fh = proFooter(ctx, W, H - band, U, null, P.fg);
-                let top = band + U * 0.06;
-                if (proLogo(ctx, cx, top + U * 0.07, U * 0.14, '#ffffff')) top += U * 0.16;
-                proStack(ctx, { W, U, cx, top, bottom: H - band - fh - U * 0.04, colW, P, k, align: 'center', hSize: 0.1,
-                    hOpt: { shadow: 'rgba(0,0,0,.35)' }, divider: y => diamondDivider(ctx, cx, y, Math.min(colW * 0.5, U * 0.4), P.acc, Math.max(2, U * 0.004)),
-                    fromPill: P.acc, fromCol: P.bg[0] });
-            } else if (d === 1) {
-                proBg(ctx, W, H, P, 'radial');
-                const R = U * 0.42;
-                mandala(ctx, 0, 0, R, P.acc, 0.35, 5); mandala(ctx, W, H, R, P.acc, 0.35, 5);
-                if (wide) { mandala(ctx, W, 0, R * 0.6, P.acc, 0.2, 4); mandala(ctx, 0, H, R * 0.6, P.acc, 0.2, 4); }
-                const m = U * 0.035;
-                ctx.save(); ctx.strokeStyle = P.acc; ctx.lineWidth = Math.max(3, U * 0.005); ctx.strokeRect(m, m, W - m * 2, H - m * 2);
-                ctx.lineWidth = Math.max(1.5, U * 0.002); ctx.strokeRect(m * 1.6, m * 1.6, W - m * 3.2, H - m * 3.2); ctx.restore();
-                const fh = proFooter(ctx, W, H - m * 1.6, U, null, P.fg);
-                let top = U * 0.12;
-                if (proLogo(ctx, cx, top + U * 0.02, U * 0.13, '#ffffff')) top += U * 0.12;
-                proStack(ctx, { W, U, cx, top, bottom: H - U * 0.12 - fh, colW: colW * 0.86, P, k, align: 'center', hSize: 0.11,
-                    hOpt: { shadow: 'rgba(0,0,0,.4)' }, divider: y => { flower(ctx, cx, y, U * 0.025, P.acc, P.bg[0], 8); ctx.save(); ctx.strokeStyle = P.acc; ctx.lineWidth = Math.max(2, U * 0.003); ctx.beginPath(); ctx.moveTo(cx - U * 0.22, y); ctx.lineTo(cx - U * 0.04, y); ctx.moveTo(cx + U * 0.04, y); ctx.lineTo(cx + U * 0.22, y); ctx.stroke(); ctx.restore(); } });
-            } else {
-                proBg(ctx, W, H, P, 'lin');
-                if (!S.pro.bg) { // confetti
-                    let s = 5; const rnd = () => { s = (s * 9301 + 49297) % 233280; return s / 233280; };
-                    ctx.save(); for (let i = 0; i < 70; i++) { ctx.globalAlpha = 0.35 + rnd() * 0.4; ctx.fillStyle = i % 3 ? P.acc : P.card; ctx.save(); ctx.translate(rnd() * W, rnd() * H); ctx.rotate(rnd() * 6); ctx.fillRect(0, 0, U * 0.018, U * 0.007); ctx.restore(); } ctx.restore();
-                }
-                const fh = proFooter(ctx, W, H, U, null, P.fg);
-                const cw = Math.min(W * 0.86, colW * 1.02), chh = (H - fh) * (wide ? 0.78 : 0.72), cx0 = cx - cw / 2, cy0 = (H - fh - chh) / 2;
-                ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = U * 0.05; ctx.shadowOffsetY = U * 0.015;
-                ctx.fillStyle = P.card; rr(ctx, cx0, cy0, cw, chh, U * 0.04); ctx.fill(); ctx.restore();
-                ctx.save(); rr(ctx, cx0, cy0, cw, chh, U * 0.04); ctx.clip(); ctx.fillStyle = P.acc; ctx.fillRect(cx0, cy0, cw, U * 0.025); sohraiBand(ctx, W, cy0 + chh - U * 0.035, U * 0.035, P.acc, P.card); ctx.restore();
-                const dark = isLight(P.card) ? '#1f2937' : '#f8fafc';
-                const P2 = Object.assign({}, P, { fg: (S.pro.colors[S.tpl] || {}).fg || dark, head: (S.pro.colors[S.tpl] || {}).head || shade(P.bg[0], 0) });
-                let top = cy0 + U * 0.06;
-                if (proLogo(ctx, cx, top + U * 0.05, U * 0.11, P.card)) top += U * 0.11;
-                proStack(ctx, { W, U, cx, top, bottom: cy0 + chh - U * 0.07, colW: cw * 0.84, P: P2, k, align: 'center', hSize: 0.095,
-                    divider: y => diamondDivider(ctx, cx, y, cw * 0.4, P.acc, Math.max(2, U * 0.0035)), fromPill: P.bg[0], fromCol: '#ffffff', subCol: isLight(P.card) ? shade(P.acc, -0.45) : P.acc });
-            }
-        }
+        if (S.tpl === 'festival') festDraw(ctx, W, H, P, U, k, d, wide, cx, colW);
 
         else if (S.tpl === 'notice') {
             const fromBlock = (x, y, w, col, line) => { // हस्ताक्षर
@@ -1526,6 +1600,7 @@
   <div class="hkp-row"><button type="button" class="hkp-chip" id="svPosReset">↺ फोटो अपनी जगह</button><button type="button" class="hkp-chip" id="svPhotoLayer">📷 फोटो: text के पीछे</button></div>
   <div class="hkp-sec">🖼️ Background</div>
   <div class="hkp-row"><button type="button" class="hkp-btn" id="svBgBtn">🖼️ अपनी Background</button><button type="button" class="hkp-btn ghost" id="svBgDel">↩️ Built-in</button></div>
+  <div><label>↩️ Built-in Background (370 डिज़ाइन)</label><select data-o="scene" data-bgsel="1" style="width:100%;"></select></div>
   <input type="file" accept="image/*" id="svBgFile" style="display:none">
   <div><label>परत (Overlay): <span id="svOvV">0%</span></label><input type="range" min="0" max="75" step="5" data-r="ov" style="width:100%;"></div>
   <div class="hkp-row"><button type="button" class="hkp-btn ghost" id="svBgLayer">🔁 Background: text के पीछे</button></div>
@@ -1555,6 +1630,7 @@
                 S.sv.over[k] = +sel.value;
                 if (k === 'pal' && !S.sv.keepColors) S.sv.colors = {};
                 if (k === 'side') S.sv.pos = +sel.value > 1 ? svSidePos(+sel.value) : null;
+                if (sel.hasAttribute('data-bgsel') && S.sv.bg) { S.sv.bg = null; S.sv.bgUrl = ''; }
                 svSync(); svSave(); schedule();
             });
         });
