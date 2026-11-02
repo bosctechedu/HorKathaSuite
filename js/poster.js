@@ -1101,6 +1101,11 @@
         ]],
         ['2. आदिवासी / संताली पहचान', [
             ['★ सोहराय', 'festival', fd(0, 3, 0), 0, 'ᱡᱚᱦᱟᱨ', 'सोहराय परब की हार्दिक शुभकामनाएँ', 'आपके परिवार में सुख, शांति और खुशहाली बनी रहे।', 'BOSC Tech & Edu'],
+            ['सोहराय दिन 1 — उम-नड़का (8 नवंबर)', 'festival', fd(0, 3, 0), 0, 'ᱥᱚᱦᱨᱟᱭ · दिन 1', 'उम-नड़का', 'स्नान और शुद्धि के साथ सोहराय परब की शुरुआत। सबको सोहराय की हार्दिक शुभकामनाएँ।', 'BOSC Tech & Edu'],
+            ['सोहराय दिन 2 — गोट बोंगा (9 नवंबर)', 'festival', fd(4, 3, 2), 1, 'ᱥᱚᱦᱨᱟᱭ · दिन 2', 'गोट बोंगा', 'गोट टांडी में पूजा, पशुधन और खेत-खलिहान की खुशहाली की कामना।', 'BOSC Tech & Edu'],
+            ['सोहराय दिन 3 — दाकाय माहा (10 नवंबर)', 'festival', fd(1, 3, 1), 4, 'ᱥᱚᱦᱨᱟᱭ · दिन 3', 'दाकाय माहा', 'घर-आँगन सजा, बेटी-बहन घर आईं — मिलन और भोज का दिन।', 'BOSC Tech & Edu'],
+            ['सोहराय दिन 4 — खूंटाव माहा (11 नवंबर)', 'festival', fd(5, 3, 2), 5, 'ᱥᱚᱦᱨᱟᱭ · दिन 4', 'खूंटाव माहा', 'सजे हुए बैल, मांदर की थाप और गाँव भर का उत्सव।', 'BOSC Tech & Edu'],
+            ['सोहराय दिन 5 — जाजले माहा (12 नवंबर)', 'festival', fd(3, 3, 0), 2, 'ᱥᱚᱦᱨᱟᱭ · दिन 5', 'जाजले माहा', 'घर-घर नाच-गान के साथ सोहराय परब का समापन। जोहार!', 'BOSC Tech & Edu'],
             ['बाहा', 'festival', fd(4, 4, 0), 1, 'ᱡᱚᱦᱟᱨ', 'बाहा परब की हार्दिक शुभकामनाएँ', 'साल के फूलों की तरह आपका जीवन खिलता रहे।', 'BOSC Tech & Edu'],
             ['करम', 'festival', fd(1, 3, 2), 1, 'ᱡᱚᱦᱟᱨ', 'करम परब की हार्दिक शुभकामनाएँ', 'भाई-बहन का प्यार और प्रकृति का साथ सदा बना रहे।', 'BOSC Tech & Edu'],
             ['सरहुल', 'festival', fd(3, 4, 1), 1, 'ᱡᱚᱦᱟᱨ', 'सरहुल पर्व की हार्दिक शुभकामनाएँ', 'प्रकृति की पूजा, धरती का सम्मान — सरहुल की बधाई।', 'BOSC Tech & Edu'],
@@ -2173,7 +2178,7 @@
   <div class="hkp-body">
     <div class="hkp-side">
       <div><label>Template</label><div class="hkp-row" id="hkpTpl"></div></div>
-      <div><label>🗂️ Category (140 तैयार — चुनते ही design और text भर जाएगा)</label><select id="hkpCat" style="width:100%;"></select></div>
+      <div><label>🗂️ Category (145 तैयार — चुनते ही design और text भर जाएगा)</label><select id="hkpCat" style="width:100%;"></select></div>
       <div id="hkpPalWrap"><label>रंग</label><div class="hkp-row" id="hkpPal"></div></div>
       <div><label>📐 Size / Preview (Mobile · Tab · Desktop)</label><select id="hkpSize"></select></div>
       <div><label>⌨️ Typing भाषा (poster के सब box)</label><select id="hkpLang"></select></div>
@@ -2235,7 +2240,7 @@
         svBind();
         proBind();
         const catSel = modal.querySelector('#hkpCat');
-        catSel.innerHTML = '<option value="-1">— Category चुनें (140) —</option>' + (() => { let n = 0; return HK_CATS.map(g => '<optgroup label="' + g[0] + '">' + g[1].map(it => '<option value="' + (n++) + '">' + n + '. ' + it[0] + '</option>').join('') + '</optgroup>').join(''); })();
+        catSel.innerHTML = '<option value="-1">— Category चुनें (145) —</option>' + (() => { let n = 0; return HK_CATS.map(g => '<optgroup label="' + g[0] + '">' + g[1].map(it => '<option value="' + (n++) + '">' + n + '. ' + it[0] + '</option>').join('') + '</optgroup>').join(''); })();
         catSel.onchange = () => { const v = +catSel.value; if (v >= 0) hkApplyCat(v); };
         const szSel = modal.querySelector('#hkpSize');
         szSel.onchange = () => { S.size = szSel.value; proSave(); renderChips(); schedule(); };
