@@ -693,7 +693,8 @@ const TrialSystem = {
             _infoCache.value = result; _infoCache.timestamp = now; return result;
         } catch (e) { return { active: false, started: false, hasKey: false, error: e.message }; }
     },
-    isActive() { return this.getInfo().active === true; },
+    // v41: अब सिर्फ़ Worker-signed trial मान्य — localStorage बदलकर trial नहीं बढ़ेगा
+    isActive() { let signed = false; try { signed = typeof window.hkSignedTrialActive === 'function' && window.hkSignedTrialActive() === true; } catch (e) {} return signed && this.getInfo().active === true; },
     isExpired() { const info = this.getInfo(); return info.expired === true || info.tampered === true; },
     isNew() { const info = this.getInfo(); return info.started && info.elapsedDays === 0; },
     async hasStarted() { try { const info = this.getInfo(); if (info.started) return true; const registry = await this.getKeyRegistry(); return Object.keys(registry).length > 0; } catch (e) { return false; } },
@@ -820,9 +821,7 @@ const TrialSystem = {
         const registry = await this.getKeyRegistry(); const keys = Object.keys(registry); console.log('🔑 TRIAL KEYS REGISTRY'); if (keys.length === 0) { console.log('  📭 No keys'); return; }
         keys.forEach(key => { const r = registry[key]; const remaining = r.expiresAt - Date.now(); const status = r.status === 'revoked' ? '🚫 REVOKED' : (remaining > 0 ? '✅ ACTIVE' : '❌ EXPIRED'); console.log(`  ${status} ${key}`); console.log(`     Activated: ${TimeHelper.formatDate(r.activatedAt)}`); console.log(`     Expires:   ${TimeHelper.formatDate(r.expiresAt)}`); });
     },
-    async testTimeTravel(key, daysToAdvance) {
-        try { const registry = await this.getKeyRegistry(); const cleanKey = key.trim().toUpperCase(); if (!registry[cleanKey]) return { success: false, error: 'Key not in registry' }; const daysMs = TimeHelper.daysToMs(daysToAdvance); registry[cleanKey].activatedAt -= daysMs; registry[cleanKey].expiresAt -= daysMs; await this.saveKeyRegistry(registry); const currentKey = this._lsGet(this.KEYS.LOCAL_KEY); if (currentKey === cleanKey) { const currentStart = parseInt(this._lsGet(this.KEYS.LOCAL_START), 10); if (!isNaN(currentStart)) this._lsSet(this.KEYS.LOCAL_START, String(currentStart - daysMs)); } const deviceData = await this.getDeviceData(); if (deviceData) { if (deviceData.lastTrialAt) deviceData.lastTrialAt -= daysMs; if (deviceData.lastTrialExpiresAt) deviceData.lastTrialExpiresAt -= daysMs; await this.saveDeviceData(deviceData); } _invalidateInfoCache(); return { success: true }; } catch (e) { return { success: false, error: e.message }; }
-    }
+    async testTimeTravel() { return { success: false, error: 'disabled in production' }; }
 };
 window.TrialSystem = TrialSystem;
 
@@ -1236,7 +1235,7 @@ window.LicenseDebug = {
     }
 };
 
-window.TrialDebug = Object.assign(window.TrialDebug || {}, { status: async () => { if (_isTrialSystemReady()) await TrialSystem.debugDevice(); }, reset: async () => { const result = await TrialSystem.reset(true); console.log('Reset:', result); location.reload(); }, extend: async (days = 7) => { if (_isTrialSystemReady()) { const key = localStorage.getItem('hor_trial_key'); if (key) { await TrialSystem.testTimeTravel(key, -Math.abs(days)); location.reload(); } else { console.warn('No active trial key found to extend'); } } }, info: () => { if (_isTrialSystemReady()) console.table(TrialSystem.getInfo()); }, showBanner: () => { if (_isTrialSystemReady()) return TrialSystem.showBanner(); }, hideBanner: () => { if (_isTrialSystemReady()) return TrialSystem.hideBanner(); }, testServerVerify: () => LicenseDebug.testTrialKeyServerVerification() });
+window.TrialDebug = Object.assign(window.TrialDebug || {}, { status: async () => { if (_isTrialSystemReady()) await TrialSystem.debugDevice(); }, reset: async () => { const result = await TrialSystem.reset(true); console.log('Reset:', result); location.reload(); },info: () => { if (_isTrialSystemReady()) console.table(TrialSystem.getInfo()); }, showBanner: () => { if (_isTrialSystemReady()) return TrialSystem.showBanner(); }, hideBanner: () => { if (_isTrialSystemReady()) return TrialSystem.hideBanner(); }, testServerVerify: () => LicenseDebug.testTrialKeyServerVerification() });
 
 setTimeout(async () => { try { if (window.__appReady) return; await getDeviceHardwareFingerprint(); await checkLicenseIntegrity(); } catch (e) { console.warn('[License] Auto-init failed:', e.message); } }, 1000);
 
