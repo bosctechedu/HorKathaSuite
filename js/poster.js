@@ -1,5 +1,5 @@
 // ============================================================
-// 🖼️ POSTER MAKER — Hoṛ Katha Suite (v40)
+// 🖼️ POSTER MAKER — Hoṛ Katha Suite (v40, v43: 🌟 सुविचार Photo Poster)
 // BOSC Tech & Edu
 // ============================================================
 // Ol Chiki / हिन्दी / संताली / English में festival badhai,
@@ -29,6 +29,11 @@
     // 🎨 TEMPLATES
     // ------------------------------------------------------------
     const TEMPLATES = {
+        suvichar: {
+            name: '🌟 सुविचार Photo',
+            palettes: [{ bg: ['#bfe3ff', '#ffffff'], fg: '#1e3a8a', accent: '#c81e1e', name: 'Auto' }],
+            defaults: { heading: '', message: '', from: '' }
+        },
         festival: {
             name: '🎉 त्योहार बधाई',
             palettes: [
@@ -85,7 +90,7 @@
     };
 
     const S = {
-        tpl: 'festival', pal: 0, size: 'square', scale: 100,
+        tpl: 'suvichar', pal: 0, lang: 'app', exporting: false, size: 'square', scale: 100,
         heading: '', message: '', from: '', date: '',
         edited: { heading: false, message: false, from: false }
     };
@@ -198,6 +203,573 @@
         ctx.restore();
     }
 
+    // ============================================================
+    // 🌟 SUVICHAR PHOTO POSTER (v43)
+    //   • हर दिन नया style: photo frame, badge, name box, quote font+effect,
+    //     background, रंग — साल भर (365 दिन) कोई style दोबारा नहीं
+    //   • 🎲 नया Style: पहले इस्तेमाल हुए style छोड़कर random
+    //   • फोटो + background upload, हर चीज़ का color picker
+    // ============================================================
+    const SV_FONTS = [
+        { f: 'Noto Sans Devanagari', w: '700', n: 'Noto Bold' },
+        { f: 'Rozha One', w: '400', n: 'Rozha (मोटा)' },
+        { f: 'Yatra One', w: '400', n: 'Yatra (सुंदर)' },
+        { f: 'Kalam', w: '700', n: 'Kalam (हस्तलिखित)' },
+        { f: 'Khand', w: '700', n: 'Khand (पतला-लंबा)' },
+        { f: 'Teko', w: '600', n: 'Teko (Condensed)' },
+        { f: 'Baloo 2', w: '800', n: 'Baloo (गोल)' },
+        { f: 'Amita', w: '700', n: 'Amita (कलात्मक)' },
+        { f: 'Martel', w: '800', n: 'Martel (Serif)' },
+        { f: 'Tiro Devanagari Hindi', w: '400', n: 'Tiro (क्लासिक)' },
+        { f: 'Eczar', w: '700', n: 'Eczar (Display)' },
+        { f: 'Rajdhani', w: '700', n: 'Rajdhani' },
+        { f: 'Laila', w: '700', n: 'Laila' },
+        { f: 'Palanquin Dark', w: '700', n: 'Palanquin Dark' },
+        { f: 'Mukta', w: '800', n: 'Mukta Heavy' },
+        { f: 'Sarpanch', w: '700', n: 'Sarpanch (चौड़ा)' }
+    ];
+    const SV_NAME_FONTS = [6, 5, 11, 4, 14, 8, 0, 15];
+    const SV_FONT_CSS = 'https://fonts.googleapis.com/css2?family=Rozha+One&family=Yatra+One&family=Kalam:wght@700&family=Khand:wght@700&family=Teko:wght@600&family=Baloo+2:wght@800&family=Amita:wght@700&family=Martel:wght@800&family=Tiro+Devanagari+Hindi&family=Eczar:wght@700&family=Rajdhani:wght@700&family=Laila:wght@700&family=Palanquin+Dark:wght@700&family=Mukta:wght@800&family=Sarpanch:wght@700&display=swap';
+
+    const SV_SHAPES = ['⚪ गोल', '⬛ चौकोर', '▢ गोल-कोने', '⬡ षट्कोण', '🛑 अष्टकोण', '◆ हीरा', '❤️ दिल', '🚪 मेहराब', '🛡️ ढाल', '🍃 पत्ती', '☁️ बादल-आकार', '⭐ सितारा'];
+    const SV_RINGS = ['एक रेखा', 'दो रेखा', 'बिंदीदार'];
+    const SV_BADGES = ['🎀 लटकन + दिल', '💊 Pill', '🏳️ Banner', '🔴 मोहर (गोल)', '➖ रेखा के बीच', '🏷️ Tag', '✴️ Starburst', '▭ परछाईं वाला', '📜 Scroll', '⬢ षट्कोण चिप'];
+    const SV_NAMEBOX = ['▬ पूरी पट्टी', '💊 Pill', '▱ तिरछा', '🏷️ Tag', '◧ दो-रंग', '__ नीचे रेखा', '🪟 काँच', '🎀 Ribbon', '▢ Card', '➤ तीर'];
+    const SV_FX = ['दो-रंग शब्द', 'मोटी सफ़ेद रेखा', 'परछाईं', 'Gradient', 'पंक्ति पर पट्टी', 'पहला शब्द रंगीन', '3D', 'काली पट्टी पर', 'चमक (Glow)', 'आख़िरी पंक्ति बड़ी', 'नीचे रेखा', 'सफ़ेद Card'];
+    const SV_SCENES = ['☁️ आसमान + घास', '🌅 सूर्योदय', '✨ Bokeh', '⛰️ पहाड़', '🌸 मंडल', '🎨 सोहराय', '🔺 Geometric', '🌊 लहरें', '🍃 पत्तियाँ', '🫧 रंगीन बादल'];
+    const SV_PALS = [
+        { n: 'नीला आसमान', sky: ['#bfe3ff', '#ffffff'], gr: '#3f9b2f', acc: '#e11d48', ink1: '#1e3a8a', ink2: '#b91c1c', badge: '#c81e1e', badgeT: '#fde047', box: '#5b4e9b', boxT: '#e0e7ff', border: '#ffffff', foot: '#f8fafc', footT: '#334155' },
+        { n: 'केसरिया', sky: ['#fff1d6', '#ffd08a'], gr: '#d97706', acc: '#dc2626', ink1: '#7c2d12', ink2: '#c2410c', badge: '#9a3412', badgeT: '#fff7ed', box: '#ea580c', boxT: '#ffffff', border: '#fff7ed', foot: '#7c2d12', footT: '#ffedd5' },
+        { n: 'हरा-भरा', sky: ['#e7f9e7', '#c4f0c5'], gr: '#15803d', acc: '#f59e0b', ink1: '#14532d', ink2: '#b45309', badge: '#166534', badgeT: '#fef08a', box: '#15803d', boxT: '#f0fdf4', border: '#fef08a', foot: '#14532d', footT: '#dcfce7' },
+        { n: 'गुलाबी', sky: ['#ffe4f1', '#fff5fa'], gr: '#db2777', acc: '#9333ea', ink1: '#831843', ink2: '#7e22ce', badge: '#be185d', badgeT: '#ffffff', box: '#9d174d', boxT: '#fce7f3', border: '#ffffff', foot: '#fdf2f8', footT: '#831843' },
+        { n: 'शाही बैंगनी', sky: ['#2e1065', '#6d28d9'], gr: '#4c1d95', acc: '#fbbf24', ink1: '#ffffff', ink2: '#fde047', badge: '#f59e0b', badgeT: '#3b0764', box: '#fbbf24', boxT: '#3b0764', border: '#fde047', foot: '#1e0b3d', footT: '#ede9fe' },
+        { n: 'रात का नीला', sky: ['#0b1736', '#1e3a8a'], gr: '#0f2a5c', acc: '#38bdf8', ink1: '#ffffff', ink2: '#7dd3fc', badge: '#0ea5e9', badgeT: '#ffffff', box: '#0284c7', boxT: '#ffffff', border: '#7dd3fc', foot: '#081026', footT: '#bae6fd' },
+        { n: 'सुनहरा', sky: ['#fffbea', '#fde68a'], gr: '#b45309', acc: '#b91c1c', ink1: '#78350f', ink2: '#b91c1c', badge: '#b91c1c', badgeT: '#fef3c7', box: '#92400e', boxT: '#fef3c7', border: '#ffffff', foot: '#78350f', footT: '#fef3c7' },
+        { n: 'फ़िरोज़ी', sky: ['#d5fbf6', '#ecfeff'], gr: '#0f766e', acc: '#e11d48', ink1: '#134e4a', ink2: '#be123c', badge: '#0f766e', badgeT: '#ffffff', box: '#115e59', boxT: '#ccfbf1', border: '#ffffff', foot: '#f0fdfa', footT: '#134e4a' },
+        { n: 'मिट्टी', sky: ['#f5e6d3', '#e7cfae'], gr: '#7c4a21', acc: '#166534', ink1: '#3f2a14', ink2: '#9a3412', badge: '#7c2d12', badgeT: '#fde68a', box: '#57351a', boxT: '#fde68a', border: '#fef3c7', foot: '#3f2a14', footT: '#f5e6d3' },
+        { n: 'लाल-सफ़ेद', sky: ['#ffffff', '#ffe4e6'], gr: '#be123c', acc: '#1d4ed8', ink1: '#9f1239', ink2: '#1d4ed8', badge: '#1d4ed8', badgeT: '#ffffff', box: '#be123c', boxT: '#ffffff', border: '#ffffff', foot: '#9f1239', footT: '#ffe4e6' },
+        { n: 'हरा-सुनहरा (गहरा)', sky: ['#052e16', '#166534'], gr: '#064e3b', acc: '#facc15', ink1: '#fefce8', ink2: '#facc15', badge: '#facc15', badgeT: '#052e16', box: '#ca8a04', boxT: '#052e16', border: '#facc15', foot: '#022c22', footT: '#fef9c3' },
+        { n: 'शाम', sky: ['#fb923c', '#7c3aed'], gr: '#4c1d95', acc: '#fde047', ink1: '#ffffff', ink2: '#fde047', badge: '#ffffff', badgeT: '#7c2d12', box: '#1e1b4b', boxT: '#fde047', border: '#ffffff', foot: '#1e1b4b', footT: '#fde68a' }
+    ];
+    // पहला अंक सबसे तेज़ बदलता है → हर दिन photo frame अलग
+    const SV_DIMS = [['shape', 12], ['badge', 10], ['name', 10], ['fx', 12], ['scene', 10], ['font', 16], ['pal', 12], ['ring', 3], ['side', 2], ['nfont', 8]];
+    const SV_N = SV_DIMS.reduce((a, d) => a * d[1], 1);
+    const SV_COLOR_KEYS = [
+        ['badge', 'Badge'], ['badgeT', 'Badge text'], ['ink1', 'Quote रंग 1'], ['ink2', 'Quote रंग 2'], ['outline', 'Quote रेखा'],
+        ['box', 'Name box'], ['boxT', 'Name text'], ['border', 'Photo border'], ['sky0', 'Background 1'], ['sky1', 'Background 2'],
+        ['gr', 'Background 3'], ['foot', 'नीचे पट्टी'], ['footT', 'नीचे text'], ['overlay', 'परत (Overlay)']
+    ];
+
+    const SV_QUOTES = [
+        'उस ज्ञान का कोई लाभ नहीं जो समाज के हित में ना हो',
+        'मेहनत इतनी खामोशी से करो कि सफलता शोर मचा दे',
+        'जो बीत गया उस पर दुखी मत हो, जो आने वाला है उसकी तैयारी करो',
+        'सपने वो नहीं जो हम सोते हुए देखते हैं, सपने वो हैं जो हमें सोने नहीं देते',
+        'अपनी भाषा में लिखना, अपनी पहचान को ज़िंदा रखना है',
+        'शिक्षा सबसे शक्तिशाली हथियार है जिससे दुनिया बदली जा सकती है',
+        'कठिनाइयाँ ही इंसान को मज़बूत बनाती हैं',
+        'समय और धैर्य, दो सबसे बड़े योद्धा हैं',
+        'खुद पर विश्वास रखो, रास्ते अपने आप बन जाएँगे',
+        'छोटे-छोटे कदम भी बड़ी मंज़िल तक पहुँचा देते हैं',
+        'जो दूसरों का सम्मान करता है, वही सम्मान पाता है',
+        'मीठी वाणी सबसे बड़ा धन है',
+        'जहाँ एकता है, वहीं शक्ति है',
+        'असफलता यह बताती है कि प्रयास पूरे मन से नहीं हुआ',
+        'पढ़ेगा समाज, तभी तो बढ़ेगा समाज',
+        'अच्छे विचार ही अच्छे कर्मों की नींव हैं',
+        'माता-पिता की सेवा ही सबसे बड़ी पूजा है',
+        'प्रकृति की रक्षा करो, प्रकृति तुम्हारी रक्षा करेगी',
+        'किताबें सबसे सच्ची मित्र होती हैं',
+        'गुस्से में लिया गया फ़ैसला अक्सर पछतावा देता है',
+        'सच्चा सुख दूसरों की मदद करने में है',
+        'जो सीखना बंद कर देता है, वह आगे बढ़ना बंद कर देता है',
+        'हर दिन एक नया अवसर है, इसे व्यर्थ मत जाने दो',
+        'अनुशासन ही सफलता की पहली सीढ़ी है',
+        'अपनी संस्कृति पर गर्व करो, यही तुम्हारी जड़ है',
+        'ईमानदारी सबसे अच्छी नीति है',
+        'बड़ा वही है जो दूसरों को छोटा महसूस नहीं कराता',
+        'मुस्कुराहट सबसे सुंदर गहना है',
+        'संघर्ष जितना कठिन होगा, जीत उतनी ही शानदार होगी',
+        'ज्ञान बाँटने से बढ़ता है',
+        'सोच बदलो, ज़िंदगी बदल जाएगी',
+        'मंज़िल उन्हीं को मिलती है जिनके सपनों में जान होती है',
+        'आलस्य मनुष्य का सबसे बड़ा शत्रु है',
+        'धैर्य कड़वा है, पर उसका फल मीठा होता है',
+        'जो समय की कद्र करता है, समय उसकी कद्र करता है',
+        'विनम्रता सबसे बड़ी ताकत है',
+        'सच बोलने के लिए साहस चाहिए',
+        'दूसरों की गलतियों से सीखो, खुद पर सब आज़माने का समय नहीं',
+        'हार मत मानो, अगला प्रयास ही जीत हो सकता है',
+        'एक अच्छा शिक्षक पूरी पीढ़ी बदल सकता है',
+        'जैसा बोओगे, वैसा काटोगे',
+        'मन के हारे हार है, मन के जीते जीत',
+        'करत-करत अभ्यास के जड़मति होत सुजान',
+        'बूँद-बूँद से घड़ा भरता है',
+        'जहाँ चाह, वहाँ राह',
+        'स्वास्थ्य ही सबसे बड़ा धन है',
+        'अच्छी संगति जीवन को सुंदर बनाती है',
+        'कल करे सो आज कर, आज करे सो अब',
+        'दूसरों के लिए जीना ही सच्चा जीवन है',
+        'अपने काम से प्यार करो, सफलता पीछे-पीछे आएगी',
+        'बेटी पढ़ेगी, तभी तो आगे बढ़ेगी',
+        'पेड़ लगाओ, जीवन बचाओ',
+        'शब्दों में बड़ी ताकत होती है, सोच-समझकर बोलो',
+        'जो झुकता है, वही ऊँचा उठता है',
+        'हर समस्या अपने साथ एक समाधान लेकर आती है',
+        'उम्मीद कभी मत छोड़ो, सुबह ज़रूर होती है',
+        'सादा जीवन, उच्च विचार',
+        'अपनी गलती मानना बड़प्पन है',
+        'खुश रहना सबसे बड़ी जीत है',
+        'जीवन में कुछ पाना है तो पहले खुद को बदलो',
+        'अपनों का साथ हर मुश्किल आसान कर देता है',
+        'सफलता का कोई शॉर्टकट नहीं होता',
+        'जो सपने देखता है, वही उन्हें पूरा भी करता है',
+        'अपनी मातृभाषा का सम्मान करो',
+        'गाँव की मिट्टी में ही असली खुशबू है',
+        'लक्ष्य ऊँचा रखो, मेहनत उससे भी ऊँची',
+        'दया धर्म का मूल है',
+        'जो आज मेहनत करेगा, कल वही राज करेगा',
+        'प्रेम से बड़ी कोई ताकत नहीं',
+        'नेकी कर, दरिया में डाल',
+        'हर अंधेरी रात के बाद उजला सवेरा आता है',
+        'सीखने की कोई उम्र नहीं होती',
+        'सब्र और मेहनत कभी बेकार नहीं जाते',
+        'विचार बदलो, समाज बदलेगा',
+        'अच्छा इंसान बनना सबसे बड़ी उपलब्धि है',
+        'अपना कर्म करते रहो, फल की चिंता मत करो',
+        'जो डर गया, वो रुक गया',
+        'आत्मविश्वास ही सफलता की कुंजी है',
+        'सच्चे दोस्त हीरे की तरह कीमती होते हैं',
+        'जल है तो कल है',
+        'स्वच्छता में ही स्वास्थ्य है',
+        'अपनी परंपरा हमारी पहचान है',
+        'दूसरों की खुशी में खुश होना सीखो',
+        'मेहनत की रोटी सबसे मीठी होती है',
+        'हर दिन कुछ नया सीखो',
+        'जो दूसरों को रोशनी देता है, वह खुद भी रोशन रहता है',
+        'शांत मन सबसे बड़ी ताकत है',
+        'छोटी शुरुआत से मत डरो',
+        'समय सबसे बड़ा शिक्षक है',
+        'कोशिश करने वालों की कभी हार नहीं होती',
+        'जीवन एक संघर्ष है, इसे मुस्कुराकर जियो',
+        'बड़ों का आशीर्वाद सबसे बड़ी पूँजी है',
+        'मन साफ़ हो तो हर दिन त्योहार है',
+        'ज्ञान ही सच्चा प्रकाश है',
+        'आज का परिश्रम कल की सफलता है',
+        'अपनों से बड़ा कोई खज़ाना नहीं',
+        'अच्छा सोचो, अच्छा होगा',
+        'सपनों को पूरा करने के लिए जागना पड़ता है',
+        'जो दूसरों का भला करता है, उसका भला अपने आप होता है',
+        'एकता में ही बल है, मिलकर आगे बढ़ो'
+    ];
+
+    function svDefaults() {
+        return {
+            badgeText: 'सुविचार', quote: '', name: '', sub: '', footer: '',
+            photo: null, photoUrl: '', pz: 1, px: 0, py: 0,
+            bg: null, bgUrl: '', ov: 0,
+            styleId: -1, over: {}, colors: {}, keepColors: false, qpos: 'top',
+            used: [], quoteIdx: -1, usedQ: []
+        };
+    }
+    S.sv = svDefaults();
+
+    function dayOfYear(d) {
+        const s = new Date(d.getFullYear(), 0, 0);
+        return Math.floor((d - s) / 86400000) - 1; // 0..365
+    }
+    function todayStyleSeed() { const d = new Date(); return d.getFullYear() * 366 + dayOfYear(d); }
+    function svStyleId(seed) { return Number((BigInt(seed) * 820195379n + 104729n) % BigInt(SV_N)); } // गुणक N से co-prime → हर seed का अलग style
+    function svDecode(id) {
+        const o = {}; let v = id;
+        const raw = SV_DIMS.map(d => { const r = v % d[1]; v = Math.floor(v / d[1]); return r; });
+        // हर हिस्सा पिछले हिस्सों से मिलाकर (फिर भी हर id का अलग style) → रोज़ सब कुछ बदले
+        let acc = 0;
+        SV_DIMS.forEach((d, i) => { o[d[0]] = (raw[i] + acc) % d[1]; acc += raw[i] * (i + 3) + 1; });
+        return o;
+    }
+    function svStyle() {
+        const st = svDecode(S.sv.styleId < 0 ? svStyleId(todayStyleSeed()) : S.sv.styleId);
+        Object.keys(S.sv.over).forEach(k => { if (S.sv.over[k] != null) st[k] = S.sv.over[k]; });
+        return st;
+    }
+    function svColors(st) {
+        const p = SV_PALS[st.pal];
+        const c = { badge: p.badge, badgeT: p.badgeT, ink1: p.ink1, ink2: p.ink2, outline: isLight(p.ink1) ? '#0f172a' : '#ffffff',
+            box: p.box, boxT: p.boxT, border: p.border, sky0: p.sky[0], sky1: p.sky[1], gr: p.gr, foot: p.foot, footT: p.footT, overlay: '#000000', acc: p.acc };
+        Object.keys(S.sv.colors).forEach(k => { if (S.sv.colors[k]) c[k] = S.sv.colors[k]; });
+        return c;
+    }
+    function isLight(hex) {
+        const h = String(hex).replace('#', '');
+        if (h.length < 6) return true;
+        const r = parseInt(h.substr(0, 2), 16), g = parseInt(h.substr(2, 2), 16), b = parseInt(h.substr(4, 2), 16);
+        return (r * 299 + g * 587 + b * 114) / 1000 > 150;
+    }
+    function rng(seed) { let a = seed >>> 0; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+    function rr(ctx, x, y, w, h, r) {
+        r = Math.max(0, Math.min(r, w / 2, h / 2));
+        ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+    }
+    function poly(ctx, cx, cy, r, n, rot) {
+        ctx.beginPath();
+        for (let i = 0; i < n; i++) { const a = rot + i * Math.PI * 2 / n; i ? ctx.lineTo(cx + r * Math.cos(a), cy + r * Math.sin(a)) : ctx.moveTo(cx + r * Math.cos(a), cy + r * Math.sin(a)); }
+        ctx.closePath();
+    }
+    function fontStr(fi, px) { const F = SV_FONTS[fi] || SV_FONTS[0]; return F.w + ' ' + px + "px '" + F.f + "','Noto Sans Ol Chiki','Noto Sans Devanagari','Nirmala UI',sans-serif"; }
+
+    // --- fonts: poster खुलने पर ही load (बाकी app पर असर नहीं)
+    const svFontState = {};
+    function svEnsureFontsCss() {
+        if (document.getElementById('hkpSvFonts')) return;
+        const l = document.createElement('link'); l.id = 'hkpSvFonts'; l.rel = 'stylesheet'; l.href = SV_FONT_CSS;
+        document.head.appendChild(l);
+    }
+    function svNeedFont(fi, sample) {
+        const F = SV_FONTS[fi]; if (!F || fi === 0) return;
+        const key = F.f + F.w;
+        if (svFontState[key]) return;
+        svFontState[key] = 'loading';
+        try {
+            document.fonts.load(F.w + " 40px '" + F.f + "'", sample || 'अआ Aa').then(() => { svFontState[key] = 'ok'; schedule(); }, () => { svFontState[key] = 'fail'; });
+        } catch (e) { svFontState[key] = 'fail'; }
+    }
+
+    // ---------------- backgrounds ----------------
+    function svScene(ctx, W, H, sc, C, seed) {
+        const R = rng(seed);
+        const lin = (a, b, x0, y0, x1, y1) => { const g = ctx.createLinearGradient(x0, y0, x1, y1); g.addColorStop(0, a); g.addColorStop(1, b); return g; };
+        ctx.fillStyle = lin(C.sky0, C.sky1, 0, 0, 0, H); ctx.fillRect(0, 0, W, H);
+        const cloud = (x, y, s, a) => {
+            ctx.save(); ctx.globalAlpha = a; ctx.fillStyle = '#ffffff';
+            [[0, 0, 1], [0.8, -0.25, 0.8], [1.6, 0, 0.9], [0.8, 0.2, 0.9], [-0.7, 0.15, 0.7]].forEach(b => { ctx.beginPath(); ctx.arc(x + b[0] * s, y + b[1] * s, b[2] * s, 0, Math.PI * 2); ctx.fill(); });
+            ctx.restore();
+        };
+        if (sc === 0) { // आसमान + घास
+            for (let i = 0; i < 6; i++) cloud(R() * W, H * (0.08 + R() * 0.5), W * (0.05 + R() * 0.06), 0.55 + R() * 0.35);
+            const gy = H * 0.74;
+            ctx.fillStyle = lin(C.gr, '#14532d', 0, gy, 0, H); ctx.beginPath(); ctx.moveTo(0, gy + H * 0.02);
+            for (let x = 0; x <= W; x += W / 8) ctx.quadraticCurveTo(x + W / 16, gy - H * 0.015 * R(), x + W / 8, gy + H * 0.01);
+            ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath(); ctx.fill();
+            ctx.strokeStyle = 'rgba(255,255,255,.18)'; ctx.lineWidth = Math.max(1, W * 0.002);
+            for (let i = 0; i < 260; i++) { const x = R() * W, y = gy + R() * (H - gy); ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + (R() - 0.5) * W * 0.01, y - H * (0.01 + R() * 0.02)); ctx.stroke(); }
+        } else if (sc === 1) { // सूर्योदय
+            const cx = W * (0.3 + R() * 0.4), cy = H * 0.62;
+            ctx.save(); ctx.globalAlpha = 0.18; ctx.fillStyle = C.acc;
+            for (let i = 0; i < 18; i++) { const a = i * Math.PI / 9; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, H * 1.2, a, a + Math.PI / 30); ctx.closePath(); ctx.fill(); }
+            ctx.restore();
+            const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, W * 0.22); g.addColorStop(0, '#fffbe6'); g.addColorStop(0.5, C.acc); g.addColorStop(1, 'rgba(255,255,255,0)');
+            ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, W * 0.22, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = C.gr; ctx.beginPath(); ctx.moveTo(0, H * 0.72); ctx.quadraticCurveTo(W * 0.5, H * 0.66, W, H * 0.74); ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.fill();
+        } else if (sc === 2) { // bokeh
+            for (let i = 0; i < 45; i++) { ctx.globalAlpha = 0.08 + R() * 0.25; ctx.fillStyle = [C.acc, '#ffffff', C.ink2][i % 3]; ctx.beginPath(); ctx.arc(R() * W, R() * H, W * (0.01 + R() * 0.07), 0, Math.PI * 2); ctx.fill(); }
+            ctx.globalAlpha = 1;
+        } else if (sc === 3) { // पहाड़
+            for (let i = 0; i < 4; i++) cloud(R() * W, H * (0.1 + R() * 0.3), W * 0.05, 0.5);
+            [[0.55, 0.55], [0.65, 0.75], [0.75, 1]].forEach((L, li) => {
+                ctx.fillStyle = li === 2 ? C.gr : (li === 1 ? shade(C.gr, 0.35) : shade(C.gr, 0.6));
+                ctx.beginPath(); ctx.moveTo(0, H);
+                let x = 0; ctx.lineTo(0, H * L[0] + R() * H * 0.05);
+                while (x < W) { x += W * (0.12 + R() * 0.15); ctx.lineTo(x, H * L[0] - R() * H * 0.12 + li * H * 0.02); }
+                ctx.lineTo(W, H); ctx.closePath(); ctx.fill();
+            });
+        } else if (sc === 4) { // मंडल
+            const cx = W / 2, cy = H * 0.98;
+            ctx.save(); ctx.strokeStyle = C.acc; ctx.fillStyle = C.acc;
+            for (let ring = 1; ring <= 6; ring++) {
+                const r = W * 0.1 * ring, n = 8 + ring * 4; ctx.globalAlpha = 0.07 + 0.02 * (6 - ring);
+                for (let i = 0; i < n; i++) { const a = i * Math.PI * 2 / n; ctx.beginPath(); ctx.ellipse(cx + Math.cos(a) * r, cy + Math.sin(a) * r, W * 0.03, W * 0.012 * ring * 0.6 + 4, a, 0, Math.PI * 2); ctx.fill(); }
+            }
+            ctx.restore();
+        } else if (sc === 5) { // सोहराय
+            dots(ctx, W, H, C.acc, 30, seed % 97 + 1);
+            const b = Math.round(H * 0.035);
+            ctx.save(); ctx.translate(0, H); ctx.scale(1, -1); sohraiBand(ctx, W, 0, b, C.acc, C.sky0); ctx.restore();
+        } else if (sc === 6) { // geometric
+            for (let i = 0; i < 26; i++) { ctx.globalAlpha = 0.05 + R() * 0.12; ctx.fillStyle = [C.acc, C.ink2, C.gr][i % 3]; const x = R() * W, y = R() * H, s = W * (0.05 + R() * 0.14); ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + s, y + s * 0.3); ctx.lineTo(x + s * 0.2, y + s); ctx.closePath(); ctx.fill(); }
+            ctx.globalAlpha = 1;
+        } else if (sc === 7) { // लहरें
+            for (let k = 0; k < 4; k++) {
+                ctx.globalAlpha = 0.25 + k * 0.18; ctx.fillStyle = k % 2 ? C.acc : C.gr;
+                const base = H * (0.66 + k * 0.08), amp = H * 0.02, ph = R() * 6;
+                ctx.beginPath(); ctx.moveTo(0, H);
+                for (let x = 0; x <= W; x += W / 40) ctx.lineTo(x, base + Math.sin(x / W * Math.PI * 3 + ph) * amp);
+                ctx.lineTo(W, H); ctx.closePath(); ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+        } else if (sc === 8) { // पत्तियाँ
+            const leaf = (x, y, s, a, col) => { ctx.save(); ctx.translate(x, y); ctx.rotate(a); ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(0, 0); ctx.quadraticCurveTo(s * 0.5, -s * 0.35, s, 0); ctx.quadraticCurveTo(s * 0.5, s * 0.35, 0, 0); ctx.fill(); ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(s, 0); ctx.stroke(); ctx.restore(); };
+            [[0, 0], [W, 0], [0, H], [W, H]].forEach((c, ci) => { for (let i = 0; i < 9; i++) { ctx.globalAlpha = 0.55 + R() * 0.4; leaf(c[0], c[1], W * (0.12 + R() * 0.12), (ci * Math.PI / 2) + R() * Math.PI / 2 + (ci === 1 ? Math.PI / 2 : 0) + (ci === 2 ? -Math.PI : 0), i % 2 ? C.gr : shade(C.gr, 0.3)); } });
+            ctx.globalAlpha = 1;
+        } else { // रंगीन बादल (mesh)
+            [C.acc, C.ink2, C.gr, C.sky1].forEach(col => { const x = R() * W, y = R() * H, r = W * (0.35 + R() * 0.3); const g = ctx.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, hexA(col, 0.55)); g.addColorStop(1, hexA(col, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); });
+        }
+    }
+    function hexA(hex, a) {
+        const h = String(hex).replace('#', ''); if (h.length < 6) return 'rgba(255,255,255,' + a + ')';
+        return 'rgba(' + parseInt(h.substr(0, 2), 16) + ',' + parseInt(h.substr(2, 2), 16) + ',' + parseInt(h.substr(4, 2), 16) + ',' + a + ')';
+    }
+    function shade(hex, t) { // t>0 → हल्का
+        const h = String(hex).replace('#', ''); if (h.length < 6) return hex;
+        const f = i => { const v = parseInt(h.substr(i, 2), 16); return Math.max(0, Math.min(255, Math.round(t >= 0 ? v + (255 - v) * t : v * (1 + t)))); };
+        return 'rgb(' + f(0) + ',' + f(2) + ',' + f(4) + ')';
+    }
+    function drawCover(ctx, img, x, y, w, h, zoom, ox, oy) {
+        const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+        if (!iw || !ih) return;
+        const s = Math.max(w / iw, h / ih) * (zoom || 1);
+        const dw = iw * s, dh = ih * s;
+        const dx = x + (w - dw) / 2 + (ox || 0) * (dw - w) / 2, dy = y + (h - dh) / 2 + (oy || 0) * (dh - h) / 2;
+        ctx.drawImage(img, dx, dy, dw, dh);
+    }
+
+    // ---------------- photo frame ----------------
+    function shapePath(ctx, sh, x, y, s) {
+        const cx = x + s / 2, cy = y + s / 2, r = s / 2;
+        ctx.beginPath();
+        switch (sh) {
+            case 0: ctx.arc(cx, cy, r, 0, Math.PI * 2); break;
+            case 1: ctx.rect(x, y, s, s); break;
+            case 2: rr(ctx, x, y, s, s, s * 0.18); break;
+            case 3: poly(ctx, cx, cy, r, 6, Math.PI / 6); break;
+            case 4: poly(ctx, cx, cy, r / Math.cos(Math.PI / 8) * 0.98, 8, Math.PI / 8); break;
+            case 5: poly(ctx, cx, cy, r * 1.08, 4, -Math.PI / 2); break;
+            case 6: ctx.moveTo(cx, y + s * 0.95); ctx.bezierCurveTo(x - s * 0.05, y + s * 0.55, x + s * 0.05, y - s * 0.02, cx, y + s * 0.25); ctx.bezierCurveTo(x + s * 0.95, y - s * 0.02, x + s * 1.05, y + s * 0.55, cx, y + s * 0.95); ctx.closePath(); break;
+            case 7: ctx.moveTo(x, y + s); ctx.lineTo(x, y + r); ctx.arc(cx, y + r, r, Math.PI, 0); ctx.lineTo(x + s, y + s); ctx.closePath(); break;
+            case 8: ctx.moveTo(x, y); ctx.lineTo(x + s, y); ctx.lineTo(x + s, y + s * 0.55); ctx.quadraticCurveTo(x + s, y + s * 0.88, cx, y + s); ctx.quadraticCurveTo(x, y + s * 0.88, x, y + s * 0.55); ctx.closePath(); break;
+            case 9: ctx.moveTo(x, y + s); ctx.lineTo(x, y + s * 0.35); ctx.quadraticCurveTo(x, y, x + s * 0.35, y); ctx.lineTo(x + s, y); ctx.lineTo(x + s, y + s * 0.65); ctx.quadraticCurveTo(x + s, y + s, x + s * 0.65, y + s); ctx.closePath(); break;
+            case 10: {
+                const n = 9; for (let i = 0; i <= n; i++) { const a = i * Math.PI * 2 / n; const rad = r * (0.9 + 0.1 * Math.sin(i * 2.3)); const px = cx + rad * Math.cos(a), py = cy + rad * Math.sin(a); if (!i) ctx.moveTo(px, py); else { const am = (i - 0.5) * Math.PI * 2 / n; ctx.quadraticCurveTo(cx + r * 1.05 * Math.cos(am), cy + r * 1.05 * Math.sin(am), px, py); } }
+                ctx.closePath(); break;
+            }
+            default: { const n = 7; for (let i = 0; i < n * 2; i++) { const a = -Math.PI / 2 + i * Math.PI / n; const rad = i % 2 ? r * 0.8 : r; const px = cx + rad * Math.cos(a), py = cy + rad * Math.sin(a); i ? ctx.lineTo(px, py) : ctx.moveTo(px, py); } ctx.closePath(); }
+        }
+    }
+    function svPhoto(ctx, st, C, x, y, s) {
+        const lw = Math.max(4, s * 0.035);
+        ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = s * 0.06; ctx.shadowOffsetY = s * 0.02;
+        shapePath(ctx, st.shape, x, y, s); ctx.fillStyle = C.border; ctx.fill(); ctx.restore();
+        ctx.save(); shapePath(ctx, st.shape, x, y, s); ctx.clip();
+        if (S.sv.photo) { ctx.fillStyle = '#e5e7eb'; ctx.fillRect(x, y, s, s); drawCover(ctx, S.sv.photo, x, y, s, s, S.sv.pz, S.sv.px, S.sv.py); }
+        else {
+            ctx.fillStyle = '#e2e8f0'; ctx.fillRect(x, y, s, s); ctx.fillStyle = '#94a3b8';
+            ctx.beginPath(); ctx.arc(x + s / 2, y + s * 0.4, s * 0.17, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.ellipse(x + s / 2, y + s * 0.95, s * 0.32, s * 0.3, 0, Math.PI, 0); ctx.fill();
+            ctx.fillStyle = '#475569'; ctx.font = '700 ' + Math.round(s * 0.08) + 'px ' + FONT; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText('📷 फोटो', x + s / 2, y + s * 0.12);
+        }
+        ctx.restore();
+        ctx.save(); ctx.strokeStyle = C.border; ctx.lineWidth = lw;
+        if (st.ring === 2) ctx.setLineDash([lw * 1.6, lw * 1.1]);
+        shapePath(ctx, st.shape, x + lw / 2, y + lw / 2, s - lw); ctx.stroke();
+        if (st.ring === 1) { ctx.lineWidth = lw * 0.45; ctx.strokeStyle = C.box; shapePath(ctx, st.shape, x + lw * 1.4, y + lw * 1.4, s - lw * 2.8); ctx.stroke(); }
+        ctx.restore();
+    }
+
+    // ---------------- badge (सुविचार) ----------------
+    function svBadge(ctx, st, C, W, y, bh) {
+        const text = S.sv.badgeText || '';
+        if (!text.trim()) return y;
+        const fi = SV_NAME_FONTS[(st.nfont + 3) % SV_NAME_FONTS.length];
+        svNeedFont(fi, text);
+        let px = Math.round(bh * 0.62);
+        ctx.font = fontStr(fi, px);
+        while (ctx.measureText(text).width > W * 0.7 && px > 14) { px -= 2; ctx.font = fontStr(fi, px); }
+        const tw = ctx.measureText(text).width, padX = bh * 0.55;
+        if (st.badge === 0) y += bh * 0.55; else if (st.badge === 3 || st.badge === 6) y += bh * 0.45;
+        const bw = tw + padX * 2, x = (W - bw) / 2, cx = W / 2, cy = y + bh / 2;
+        let bot = y + bh;
+        ctx.save();
+        ctx.fillStyle = C.badge; ctx.strokeStyle = C.badge;
+        const shadow = () => { ctx.shadowColor = 'rgba(0,0,0,.28)'; ctx.shadowBlur = bh * 0.25; ctx.shadowOffsetY = bh * 0.08; };
+        switch (st.badge) {
+            case 0: { // लटकन + दिल
+                ctx.lineWidth = Math.max(2, bh * 0.04); ctx.strokeStyle = C.acc;
+                [[x + bw * 0.1, -1], [x + bw * 0.9, 1]].forEach(p => {
+                    ctx.beginPath(); ctx.moveTo(p[0], y); ctx.lineTo(p[0] - p[1] * bh * 0.35, y - bh * 0.45); ctx.stroke();
+                    heart(ctx, p[0] - p[1] * bh * 0.35, y - bh * 0.55, bh * 0.22, C.acc);
+                    ctx.beginPath(); ctx.moveTo(p[0], y); ctx.lineTo(p[0] + p[1] * bh * 0.12, y - bh * 0.3); ctx.stroke();
+                    heart(ctx, p[0] + p[1] * bh * 0.12, y - bh * 0.38, bh * 0.15, C.acc);
+                });
+                shadow(); ctx.fillStyle = C.badge; ctx.beginPath(); ctx.ellipse(cx, y + bh * 0.1, bw / 2, bh * 0.14, 0, 0, Math.PI * 2); ctx.fill();
+                ctx.fillRect(x, y + bh * 0.1, bw, bh * 0.82);
+                ctx.fillStyle = shade(C.badge, -0.2); ctx.beginPath(); ctx.ellipse(cx, y + bh * 0.92, bw / 2, bh * 0.12, 0, 0, Math.PI); ctx.fill();
+                break;
+            }
+            case 1: shadow(); rr(ctx, x, y, bw, bh, bh / 2); ctx.fill(); break;
+            case 2: { shadow(); const t = bh * 0.45; ctx.beginPath(); ctx.moveTo(x - t, y); ctx.lineTo(x + bw + t, y); ctx.lineTo(x + bw + t * 0.4, cy); ctx.lineTo(x + bw + t, y + bh); ctx.lineTo(x - t, y + bh); ctx.lineTo(x - t * 0.4, cy); ctx.closePath(); ctx.fill(); break; }
+            case 3: { shadow(); const R0 = Math.max(tw / 2 + bh * 0.3, bh * 0.9); bot = cy + R0; ctx.beginPath(); ctx.arc(cx, cy, R0, 0, Math.PI * 2); ctx.fill(); ctx.shadowColor = 'transparent'; ctx.strokeStyle = C.badgeT; ctx.lineWidth = 2; ctx.setLineDash([5, 5]); ctx.beginPath(); ctx.arc(cx, cy, R0 * 0.88, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]); break; }
+            case 4: { ctx.lineWidth = Math.max(3, bh * 0.06); ctx.beginPath(); ctx.moveTo(W * 0.08, cy); ctx.lineTo(x - bh * 0.2, cy); ctx.moveTo(x + bw + bh * 0.2, cy); ctx.lineTo(W * 0.92, cy); ctx.stroke(); poly(ctx, x - bh * 0.2, cy, bh * 0.12, 4, 0); ctx.fill(); poly(ctx, x + bw + bh * 0.2, cy, bh * 0.12, 4, 0); ctx.fill(); break; }
+            case 5: { shadow(); ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + bw, y); ctx.lineTo(x + bw + bh * 0.4, cy); ctx.lineTo(x + bw, y + bh); ctx.lineTo(x, y + bh); ctx.closePath(); ctx.fill(); ctx.shadowColor = 'transparent'; ctx.fillStyle = C.badgeT; ctx.beginPath(); ctx.arc(x + bw + bh * 0.05, cy, bh * 0.08, 0, Math.PI * 2); ctx.fill(); break; }
+            case 6: { shadow(); bot = cy + bh * 1.3; const n = 20, ro = Math.max(bw * 0.62, bh), ri = ro * 0.86; ctx.beginPath(); for (let i = 0; i < n * 2; i++) { const a = i * Math.PI / n; const rad = i % 2 ? ri : ro; ctx.lineTo(cx + rad * Math.cos(a), cy + rad * Math.sin(a) * (bh * 1.3 / ro)); } ctx.closePath(); ctx.fill(); break; }
+            case 7: { ctx.fillStyle = shade(C.badge, -0.35); ctx.fillRect(x + bh * 0.12, y + bh * 0.12, bw, bh); ctx.fillStyle = C.badge; ctx.fillRect(x, y, bw, bh); break; }
+            case 8: { shadow(); rr(ctx, x, y, bw, bh, bh * 0.15); ctx.fill(); ctx.shadowColor = 'transparent'; ctx.fillStyle = shade(C.badge, -0.25); [x, x + bw].forEach((ex, i) => { ctx.beginPath(); ctx.ellipse(ex, cy, bh * 0.22, bh * 0.55, 0, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = shade(C.badge, -0.25); }); break; }
+            default: { shadow(); const t = bh * 0.4; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + bw, y); ctx.lineTo(x + bw + t, cy); ctx.lineTo(x + bw, y + bh); ctx.lineTo(x, y + bh); ctx.lineTo(x - t, cy); ctx.closePath(); ctx.fill(); }
+        }
+        ctx.restore();
+        ctx.save();
+        ctx.font = fontStr(fi, px); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillStyle = st.badge === 4 ? C.badge : C.badgeT;
+        if (st.badge === 4) { ctx.lineWidth = px * 0.12; ctx.strokeStyle = '#ffffff'; ctx.strokeText(text, cx, cy + px * 0.04); }
+        ctx.fillText(text, cx, cy + px * 0.04);
+        ctx.restore();
+        return bot;
+    }
+    function heart(ctx, x, y, s, col) {
+        ctx.save(); ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(x, y + s * 0.35);
+        ctx.bezierCurveTo(x - s, y - s * 0.25, x - s * 0.35, y - s * 0.9, x, y - s * 0.35);
+        ctx.bezierCurveTo(x + s * 0.35, y - s * 0.9, x + s, y - s * 0.25, x, y + s * 0.35); ctx.fill(); ctx.restore();
+    }
+
+    // ---------------- quote ----------------
+    function svQuote(ctx, st, C, W, H, top, bottom, k) {
+        const text = (S.sv.quote || '').trim();
+        if (!text) return;
+        const fi = st.font; svNeedFont(fi, text);
+        const padX = W * 0.07, maxW = W - padX * 2, maxH = bottom - top;
+        let px = Math.round(W * 0.1 * k), lines = [];
+        const lhK = st.fx === 4 || st.fx === 7 ? 1.5 : 1.3;
+        while (px > 16) { ctx.font = fontStr(fi, px); lines = wrap(ctx, text, maxW); if (lines.length * px * lhK <= maxH && lines.every(l => ctx.measureText(l).width <= maxW)) break; px -= 2; }
+        const lh = px * lhK;
+        let y0 = top;
+        if (S.sv.qpos === 'mid') y0 = top + Math.max(0, (maxH - lines.length * lh) / 2);
+        const cx = W / 2;
+        ctx.save(); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.lineJoin = 'round';
+        const cardDark = isLight(C.ink1);
+        if (st.fx === 7 || st.fx === 11) { // पट्टी / card पीछे
+            ctx.font = fontStr(fi, px);
+            const bw = Math.min(W - padX, Math.max(...lines.map(l => ctx.measureText(l).width)) + px * 1.4);
+            ctx.fillStyle = st.fx === 7 ? 'rgba(0,0,0,.55)' : (cardDark ? 'rgba(15,23,42,.82)' : 'rgba(255,255,255,.9)');
+            rr(ctx, cx - bw / 2, y0 - px * 0.35, bw, lines.length * lh + px * 0.7, px * 0.4); ctx.fill();
+            if (st.fx === 11) { ctx.fillStyle = C.ink2; ctx.font = '700 ' + Math.round(px * 1.6) + 'px Georgia,serif'; ctx.fillText('“', cx - bw / 2 + px * 0.5, y0 + px * 0.2); }
+        }
+        let wordIdx = 0;
+        lines.forEach((line, i) => {
+            const y = y0 + i * lh + lh / 2;
+            let lpx = px;
+            if (st.fx === 9 && i === lines.length - 1 && lines.length > 1) lpx = Math.round(px * 1.12);
+            ctx.font = fontStr(fi, lpx);
+            const lw = ctx.measureText(line).width;
+            const lineBox = i % 2 ? C.ink2 : (isLight(C.ink1) ? C.badge : C.ink1);
+            if (st.fx === 4) { ctx.fillStyle = lineBox; rr(ctx, cx - lw / 2 - lpx * 0.3, y - lh * 0.45, lw + lpx * 0.6, lh * 0.9, lpx * 0.15); ctx.fill(); }
+            if (st.fx === 10) { ctx.fillStyle = C.ink2; ctx.fillRect(cx - lw / 2, y + lpx * 0.55, lw, Math.max(3, lpx * 0.08)); }
+            const words = line.split(' ');
+            const sp = ctx.measureText(' ').width;
+            let x = cx - lw / 2;
+            ctx.textAlign = 'left';
+            words.forEach((w, wi) => {
+                const ww = ctx.measureText(w).width;
+                let fill = C.ink1;
+                if (st.fx === 0) fill = (wordIdx % 3 === 1) ? C.ink2 : C.ink1;
+                else if (st.fx === 5 && wi === 0) fill = C.ink2;
+                else if (st.fx === 4) fill = isLight(lineBox) ? '#111827' : '#ffffff';
+                else if (st.fx === 7) fill = (wordIdx % 4 === 2) ? '#fde047' : '#ffffff';
+                else if (st.fx === 9 && i === lines.length - 1 && lines.length > 1) fill = C.ink2;
+                else if (st.fx === 3) { const g = ctx.createLinearGradient(0, y - lpx / 2, 0, y + lpx / 2); g.addColorStop(0, C.ink1); g.addColorStop(1, C.ink2); fill = g; }
+                else if (st.fx === 8) fill = C.ink1;
+                if (st.fx === 0 || st.fx === 1 || st.fx === 5 || st.fx === 9) { ctx.lineWidth = lpx * (st.fx === 1 ? 0.2 : 0.12); ctx.strokeStyle = C.outline; ctx.strokeText(w, x, y); }
+                if (st.fx === 2) { ctx.shadowColor = 'rgba(0,0,0,.45)'; ctx.shadowBlur = lpx * 0.2; ctx.shadowOffsetX = lpx * 0.05; ctx.shadowOffsetY = lpx * 0.07; }
+                if (st.fx === 6) { ctx.fillStyle = C.ink2; for (let d = 1; d <= 4; d++) ctx.fillText(w, x + d * lpx * 0.018, y + d * lpx * 0.018); ctx.lineWidth = lpx * 0.06; ctx.strokeStyle = C.outline; ctx.strokeText(w, x, y); }
+                if (st.fx === 8) { ctx.shadowColor = isLight(C.ink1) ? C.ink2 : '#ffffff'; ctx.shadowBlur = lpx * 0.5; for (let g = 0; g < 2; g++) { ctx.fillStyle = fill; ctx.fillText(w, x, y); } }
+                if (st.fx === 3) { ctx.lineWidth = lpx * 0.1; ctx.strokeStyle = C.outline; ctx.strokeText(w, x, y); }
+                ctx.fillStyle = fill; ctx.fillText(w, x, y);
+                ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
+                x += ww + sp; wordIdx++;
+            });
+            ctx.textAlign = 'center';
+        });
+        ctx.restore();
+    }
+
+    // ---------------- name box ----------------
+    function svNameBox(ctx, st, C, W, x0, x1, y, h, photoSide, hasPhoto, cut) {
+        cut = hasPhoto ? (cut || 0) : 0;
+        const name = (S.sv.name || '').trim(), sub = (S.sv.sub || '').trim();
+        if (!name && !sub) return;
+        const w = x1 - x0, outerLeft = photoSide === 'right' || !hasPhoto;
+        ctx.save(); ctx.fillStyle = C.box;
+        const sh = () => { ctx.shadowColor = 'rgba(0,0,0,.25)'; ctx.shadowBlur = h * 0.2; ctx.shadowOffsetY = h * 0.06; };
+        switch (st.name) {
+            case 0: ctx.fillRect(x0, y, w, h); break;
+            case 1: sh(); rr(ctx, x0, y, w, h, h / 2); ctx.fill(); break;
+            case 2: { sh(); const t = h * 0.45; ctx.beginPath(); ctx.moveTo(x0 + t, y); ctx.lineTo(x1, y); ctx.lineTo(x1 - t, y + h); ctx.lineTo(x0, y + h); ctx.closePath(); ctx.fill(); break; }
+            case 3: { sh(); const t = h * 0.5; ctx.beginPath(); if (outerLeft) { ctx.moveTo(x0 + t, y); ctx.lineTo(x1, y); ctx.lineTo(x1, y + h); ctx.lineTo(x0 + t, y + h); ctx.lineTo(x0, y + h / 2); } else { ctx.moveTo(x0, y); ctx.lineTo(x1 - t, y); ctx.lineTo(x1, y + h / 2); ctx.lineTo(x1 - t, y + h); ctx.lineTo(x0, y + h); } ctx.closePath(); ctx.fill(); break; }
+            case 4: { ctx.fillRect(x0, y, w, h); ctx.fillStyle = C.badge; if (outerLeft) ctx.fillRect(x0, y, h * 0.35, h); else ctx.fillRect(x1 - h * 0.35, y, h * 0.35, h); ctx.fillStyle = C.acc; ctx.fillRect(x0, y, w, Math.max(3, h * 0.07)); break; }
+            case 5: { ctx.fillStyle = hexA(C.box, 0.0); ctx.strokeStyle = C.box; ctx.lineWidth = Math.max(4, h * 0.08); ctx.beginPath(); ctx.moveTo(x0, y + h * 0.92); ctx.lineTo(x1, y + h * 0.92); ctx.stroke(); break; }
+            case 6: { ctx.fillStyle = hexA(C.box, 0.62); rr(ctx, x0, y, w, h, h * 0.25); ctx.fill(); ctx.strokeStyle = 'rgba(255,255,255,.6)'; ctx.lineWidth = 2; ctx.stroke(); break; }
+            case 7: { sh(); ctx.fillRect(x0 + h * 0.3, y, w - h * 0.3, h); ctx.shadowColor = 'transparent'; ctx.fillStyle = shade(C.box, -0.3); const ex = outerLeft ? x0 : x1; const d = outerLeft ? 1 : -1; ctx.beginPath(); ctx.moveTo(ex + d * h * 0.3, y + h * 0.15); ctx.lineTo(ex - d * h * 0.25, y + h * 0.15); ctx.lineTo(ex, y + h * 0.58); ctx.lineTo(ex - d * h * 0.25, y + h * 1.0); ctx.lineTo(ex + d * h * 0.3, y + h * 1.0); ctx.closePath(); ctx.fill(); ctx.fillStyle = C.box; ctx.fillRect(x0 + h * 0.3, y, w - h * 0.6, h); break; }
+            case 8: { sh(); rr(ctx, x0, y, w, h, h * 0.18); ctx.fill(); ctx.shadowColor = 'transparent'; ctx.strokeStyle = C.acc; ctx.lineWidth = Math.max(3, h * 0.05); rr(ctx, x0 + h * 0.08, y + h * 0.08, w - h * 0.16, h - h * 0.16, h * 0.12); ctx.stroke(); break; }
+            default: { sh(); const t = h * 0.5; ctx.beginPath(); if (outerLeft) { ctx.moveTo(x0, y); ctx.lineTo(x1 - t, y); ctx.lineTo(x1, y + h / 2); ctx.lineTo(x1 - t, y + h); ctx.lineTo(x0, y + h); } else { ctx.moveTo(x0 + t, y); ctx.lineTo(x1, y); ctx.lineTo(x1, y + h); ctx.lineTo(x0 + t, y + h); ctx.lineTo(x0, y + h / 2); } ctx.closePath(); ctx.fill(); }
+        }
+        ctx.restore();
+        // text
+        const fi = SV_NAME_FONTS[st.nfont]; svNeedFont(fi, name + sub);
+        const pad = h * 0.45;
+        const tx0 = x0 + pad + (photoSide === 'left' ? cut : 0), tx1 = x1 - pad - (photoSide === 'right' ? cut : 0);
+        const align = hasPhoto ? (photoSide === 'right' ? 'right' : 'left') : 'center';
+        const tx = align === 'right' ? tx1 : (align === 'left' ? tx0 : (x0 + x1) / 2);
+        const maxW = tx1 - tx0;
+        ctx.save(); ctx.textAlign = align; ctx.textBaseline = 'middle';
+        ctx.fillStyle = st.name === 5 ? C.box : C.boxT;
+        let npx = Math.round(h * (sub ? 0.46 : 0.56));
+        ctx.font = fontStr(fi, npx); while (ctx.measureText(name).width > maxW && npx > 12) { npx -= 2; ctx.font = fontStr(fi, npx); }
+        const ny = sub ? y + h * 0.38 : y + h * 0.53;
+        if (st.name === 5) { ctx.lineWidth = npx * 0.14; ctx.strokeStyle = '#ffffff'; ctx.lineJoin = 'round'; ctx.strokeText(name, tx, ny); }
+        ctx.fillText(name, tx, ny);
+        if (sub) {
+            let spx = Math.round(h * 0.26); ctx.font = '600 ' + spx + 'px ' + FONT;
+            while (ctx.measureText(sub).width > maxW && spx > 10) { spx -= 1; ctx.font = '600 ' + spx + 'px ' + FONT; }
+            ctx.globalAlpha = 0.92; ctx.fillText(sub, tx, y + h * 0.76);
+        }
+        ctx.restore();
+    }
+
+    function svDraw(ctx, W, H) {
+        const st = svStyle(), C = svColors(st);
+        const tall = H / W > 1.3;
+        // background
+        if (S.sv.bg) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); drawCover(ctx, S.sv.bg, 0, 0, W, H, 1, 0, 0); }
+        else svScene(ctx, W, H, st.scene, C, (S.sv.styleId < 0 ? svStyleId(todayStyleSeed()) : S.sv.styleId) % 100000 + st.scene * 7);
+        if (S.sv.ov > 0) { ctx.fillStyle = hexA(C.overlay, S.sv.ov / 100); ctx.fillRect(0, 0, W, H); }
+        // footer
+        const footer = (S.sv.footer || '').trim();
+        const wm = !isWatermarkFree();
+        const fh = (footer || wm) ? Math.round(H * (tall ? 0.035 : 0.05)) : 0;
+        if (fh) {
+            ctx.fillStyle = C.foot; ctx.fillRect(0, H - fh, W, fh);
+            ctx.save(); ctx.textBaseline = 'middle'; ctx.fillStyle = C.footT;
+            let fpx = Math.round(fh * 0.5);
+            if (footer) { ctx.font = '700 ' + fpx + 'px ' + FONT; ctx.textAlign = wm ? 'left' : 'center'; const mw = wm ? W * 0.55 : W * 0.92; while (ctx.measureText(footer).width > mw && fpx > 10) { fpx--; ctx.font = '700 ' + fpx + 'px ' + FONT; } ctx.fillText(footer, wm ? W * 0.03 : W / 2, H - fh / 2); }
+            if (wm) { const wpx = Math.round(fh * 0.36); ctx.font = '700 ' + wpx + 'px ' + FONT; ctx.textAlign = 'right'; ctx.globalAlpha = 0.85; ctx.fillText('Made with Hoṛ Katha Suite · ' + SITE, W * 0.97, H - fh / 2); }
+            ctx.restore();
+        }
+        // photo + name
+        const hasPhoto = !!S.sv.photo || !S.exporting;
+        const side = st.side === 0 ? 'right' : 'left';
+        const ps = Math.round(W * (tall ? 0.34 : 0.28));
+        const m = Math.round(W * 0.02);
+        const bottomY = H - fh - m;
+        const nh = Math.round(W * ((S.sv.sub || '').trim() ? 0.105 : 0.09));
+        const ny = bottomY - nh - (st.name === 5 ? 0 : ps * 0.0);
+        let px0 = side === 'right' ? W - m - ps : m;
+        let bx0, bx1;
+        if (hasPhoto) { if (side === 'right') { bx0 = m * 0.5; bx1 = px0 + ps * 0.5; } else { bx0 = px0 + ps * 0.5; bx1 = W - m * 0.5; } }
+        else { bx0 = W * 0.08; bx1 = W * 0.92; }
+        svNameBox(ctx, st, C, W, bx0, bx1, ny, nh, side, hasPhoto, ps * 0.5);
+        if (hasPhoto) {
+            // name box को text area photo से बाहर रखें
+            svPhoto(ctx, st, C, px0, bottomY - ps, ps);
+        }
+        // badge + quote
+        const k = S.scale / 100;
+        const by = Math.round(H * (tall ? 0.07 : 0.055));
+        const after = svBadge(ctx, st, C, W, by, Math.round(W * 0.085));
+        const qTop = after + W * 0.035;
+        const qBottom = hasPhoto ? (bottomY - ps - W * 0.03) : (ny - W * 0.04);
+        svQuote(ctx, st, C, W, H, qTop, Math.max(qTop + W * 0.2, Math.min(qBottom, qTop + H * (tall ? 0.5 : 0.42))), k * (tall ? 1.1 : 1));
+    }
+
     // ------------------------------------------------------------
     // 🖌️ DRAW
     // ------------------------------------------------------------
@@ -206,6 +778,7 @@
         const W = sz.w, H = sz.h;
         canvas.width = W; canvas.height = H;
         const ctx = canvas.getContext('2d');
+        if (S.tpl === 'suvichar') { svDraw(ctx, W, H); return; }
         const T = TEMPLATES[S.tpl];
         const P = T.palettes[S.pal] || T.palettes[0];
         const tall = H / W > 1.3 ? 1.25 : 1; // Story/A4 में बड़ा text
@@ -334,6 +907,246 @@
 
     let modal, canvas, raf = 0;
 
+    // ------------------------------------------------------------
+    // 🌟 SUVICHAR — panel, save, upload
+    // ------------------------------------------------------------
+    const SV_STORE = 'hk_poster_sv_v1';
+    let svLoaded = false, svSaveT = 0;
+    function todayKey() { const d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
+    function svSave() {
+        clearTimeout(svSaveT);
+        svSaveT = setTimeout(() => {
+            const v = S.sv;
+            const o = { badgeText: v.badgeText, name: v.name, sub: v.sub, footer: v.footer, pz: v.pz, px: v.px, py: v.py, ov: v.ov,
+                colors: v.colors, keepColors: v.keepColors, qpos: v.qpos, used: v.used.slice(-365), usedQ: v.usedQ.slice(-SV_QUOTES.length),
+                lang: S.lang || 'app', day: todayKey(), styleId: v.styleId, over: v.over, photoUrl: v.photoUrl, bgUrl: v.bgUrl };
+            try { localStorage.setItem(SV_STORE, JSON.stringify(o)); }
+            catch (e) { try { o.bgUrl = ''; localStorage.setItem(SV_STORE, JSON.stringify(o)); toast('Background बहुत बड़ी है — याद नहीं रखी गई (poster में लगी है)।', 'warning'); } catch (e2) {} }
+        }, 400);
+    }
+    function loadImg(url) { return new Promise(res => { if (!url) return res(null); const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = url; }); }
+    async function svLoad() {
+        if (svLoaded) return; svLoaded = true;
+        let o = null; try { o = JSON.parse(localStorage.getItem(SV_STORE) || 'null'); } catch (e) {}
+        if (!o) return;
+        const v = S.sv;
+        ['badgeText', 'name', 'sub', 'footer', 'qpos'].forEach(k => { if (typeof o[k] === 'string') v[k] = o[k]; });
+        ['pz', 'px', 'py', 'ov'].forEach(k => { if (typeof o[k] === 'number') v[k] = o[k]; });
+        if (o.colors && typeof o.colors === 'object') v.colors = o.colors;
+        v.keepColors = !!o.keepColors;
+        if (Array.isArray(o.used)) v.used = o.used;
+        if (Array.isArray(o.usedQ)) v.usedQ = o.usedQ;
+        if (o.lang) S.lang = o.lang;
+        if (o.day === todayKey()) { if (typeof o.styleId === 'number') v.styleId = o.styleId; if (o.over) v.over = o.over; }
+        else if (!v.keepColors) v.colors = {};
+        v.photoUrl = o.photoUrl || ''; v.bgUrl = o.bgUrl || '';
+        v.photo = await loadImg(v.photoUrl); v.bg = await loadImg(v.bgUrl);
+    }
+    function fileToDataUrl(file, maxSide, q) {
+        return new Promise((res, rej) => {
+            const fr = new FileReader();
+            fr.onload = () => {
+                const img = new Image();
+                img.onload = () => {
+                    const sc = Math.min(1, maxSide / Math.max(img.width, img.height));
+                    const c = document.createElement('canvas'); c.width = Math.round(img.width * sc); c.height = Math.round(img.height * sc);
+                    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+                    res(c.toDataURL('image/jpeg', q || 0.85));
+                };
+                img.onerror = rej; img.src = fr.result;
+            };
+            fr.onerror = rej; fr.readAsDataURL(file);
+        });
+    }
+    function svDailyQuote() {
+        const d = new Date(), i = (dayOfYear(d) * 37 + d.getFullYear()) % SV_QUOTES.length;
+        S.sv.quoteIdx = i; return SV_QUOTES[i];
+    }
+    function svNextQuote() {
+        const v = S.sv;
+        let pool = SV_QUOTES.map((q, i) => i).filter(i => !v.usedQ.includes(i) && i !== v.quoteIdx);
+        if (!pool.length) { v.usedQ = []; pool = SV_QUOTES.map((q, i) => i).filter(i => i !== v.quoteIdx); }
+        const i = pool[Math.floor(Math.random() * pool.length)];
+        v.usedQ.push(i); v.quoteIdx = i; return SV_QUOTES[i];
+    }
+
+    // ---- ⌨️ App की keyboard भाषा poster के हर text box में ----
+    const SV_LANGS = [['app', '⌨️ App जैसी'], ['english', 'English'], ['roman', 'Santali (R)'], ['santali-dev', 'Santali (D)'], ['olchiki', 'ओलचिकी'], ['hindi-dev', 'हिन्दी'], ['hindi-phonetic', 'हिन्दी फोनेटिक']];
+    function svLangNow() { const l = S.lang || 'app'; return l === 'app' ? (window.currentLayout || 'english') : l; }
+    function svLangAllowed(l) {
+        if (l === 'english' || l === 'app') return true;
+        const t = document.getElementById('tab-' + l);
+        return !(t && t.classList.contains('is-locked'));
+    }
+    function svTypeKey(e) {
+        const el = e.target;
+        if (!el || (el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA') || (el.type && el.type !== 'text' && el.tagName === 'INPUT')) return;
+        if (e.isComposing || e.keyCode === 229 || e.ctrlKey || e.metaKey || e.altKey) return;
+        const L = svLangNow();
+        if (L === 'english' || L === 'roman' || !svLangAllowed(L)) return;
+        const put = (txt, a, b) => { el.setRangeText(txt, a, b, 'end'); el.dispatchEvent(new Event('input', { bubbles: true })); };
+        if (L === 'hindi-phonetic') {
+            if (!(e.key === ' ' || e.key === 'Enter' || /^[,!?;:।]$/.test(e.key))) return;
+            const c = el.selectionStart; if (c == null || el.selectionEnd !== c) return;
+            const m = /[A-Za-z.]+$/.exec(el.value.slice(0, c)); if (!m) return;
+            try {
+                const out = window.HindiPhonetic && window.HindiPhonetic.translate(m[0]);
+                if (out && out.text && out.text !== m[0]) put(out.text, c - m[0].length, c);
+            } catch (x) {}
+            return;
+        }
+        if (e.key.length !== 1) return;
+        let mapped = null;
+        try {
+            if (L === 'santali-dev' || L === 'hindi-dev') mapped = (typeof hardwareDevMap !== 'undefined') ? hardwareDevMap[e.key] : null;
+            else if (L === 'olchiki') mapped = (typeof hardwareOlchikiMap !== 'undefined') ? hardwareOlchikiMap[e.key.toLowerCase()] : null;
+        } catch (x) { mapped = null; }
+        if (!mapped || mapped === e.key) return;
+        e.preventDefault();
+        put(mapped, el.selectionStart, el.selectionEnd);
+    }
+
+    const SV_PANEL = `
+<div id="hkpSv" style="display:none;flex-direction:column;gap:9px;">
+  <div class="hkp-sec">🎨 Style <span id="svStyleNo" class="hkp-note"></span></div>
+  <div class="hkp-row"><button type="button" class="hkp-btn" id="svNew">🎲 नया Style</button><button type="button" class="hkp-btn ghost" id="svPrev">↩️ पिछला</button><button type="button" class="hkp-btn ghost" id="svToday">📅 आज का</button></div>
+  <div class="hkp-svgrid">
+    <div><label>Photo frame</label><select data-o="shape"></select></div>
+    <div><label>Frame रेखा</label><select data-o="ring"></select></div>
+    <div><label>सुविचार Badge</label><select data-o="badge"></select></div>
+    <div><label>Name box</label><select data-o="name"></select></div>
+    <div><label>Quote font</label><select data-o="font"></select></div>
+    <div><label>Quote style</label><select data-o="fx"></select></div>
+    <div><label>Name font</label><select data-o="nfont"></select></div>
+    <div><label>Background</label><select data-o="scene"></select></div>
+    <div><label>रंग-set</label><select data-o="pal"></select></div>
+    <div><label>Photo की तरफ़</label><select data-o="side"></select></div>
+  </div>
+  <div class="hkp-sec">✍️ Text</div>
+  <div><label>Badge पर (सुविचार)</label><input type="text" data-sv="badgeText">
+    <div class="hkp-row" id="svBadgeChips" style="margin-top:5px;"></div></div>
+  <div><label>सुविचार / Quote</label><textarea data-sv="quote"></textarea>
+    <div class="hkp-row" style="margin-top:5px;"><button type="button" class="hkp-chip" id="svNextQ">💡 नया सुविचार</button><button type="button" class="hkp-chip" id="svFromEd">📝 Editor से</button><button type="button" class="hkp-chip" data-qpos="top">⬆️ ऊपर</button><button type="button" class="hkp-chip" data-qpos="mid">↕️ बीच</button></div></div>
+  <div><label>नाम</label><input type="text" data-sv="name" placeholder="जैसे PARISH MARANDI"></div>
+  <div><label>पद / पहचान (वैकल्पिक)</label><input type="text" data-sv="sub" placeholder="जैसे समाज सेवक, पोड़ैयाहाट"></div>
+  <div><label>नीचे की पंक्ति (वैकल्पिक)</label><input type="text" data-sv="footer" placeholder="जैसे 📞 98xxxxxx · BOSC Tech & Edu"></div>
+  <div class="hkp-sec">📷 फोटो</div>
+  <div class="hkp-row"><button type="button" class="hkp-btn" id="svPhotoBtn">📷 फोटो चुनें</button><button type="button" class="hkp-btn ghost" id="svPhotoDel">🗑️ हटाएँ</button></div>
+  <input type="file" accept="image/*" id="svPhotoFile" style="display:none">
+  <div><label>Zoom</label><input type="range" min="100" max="300" step="5" data-r="pz" style="width:100%;"></div>
+  <div class="hkp-svgrid"><div><label>← →</label><input type="range" min="-100" max="100" step="2" data-r="px" style="width:100%;"></div><div><label>↑ ↓</label><input type="range" min="-100" max="100" step="2" data-r="py" style="width:100%;"></div></div>
+  <div class="hkp-sec">🖼️ Background</div>
+  <div class="hkp-row"><button type="button" class="hkp-btn" id="svBgBtn">🖼️ अपनी Background</button><button type="button" class="hkp-btn ghost" id="svBgDel">↩️ Built-in</button></div>
+  <input type="file" accept="image/*" id="svBgFile" style="display:none">
+  <div><label>परत (Overlay): <span id="svOvV">0%</span></label><input type="range" min="0" max="75" step="5" data-r="ov" style="width:100%;"></div>
+  <div class="hkp-sec">🌈 रंग (हर चीज़)</div>
+  <div class="hkp-svcolors" id="svColors"></div>
+  <label style="font-weight:700;display:flex;gap:6px;align-items:center;"><input type="checkbox" id="svKeep"> नया Style आने पर भी मेरे रंग रखें</label>
+  <div class="hkp-row"><button type="button" class="hkp-chip" id="svResetC">♻️ रंग reset</button></div>
+  <div class="hkp-note">फोटो, नाम और रंग इसी device में याद रहते हैं। Style रोज़ अपने-आप बदलता है और साल भर दोबारा नहीं आता।</div>
+</div>`;
+    const SV_CSS = `
+#hkPosterModal .hkp-sec{font-size:12.5px;font-weight:900;border-top:1px dashed var(--border-color,#ccc);padding-top:8px;margin-top:2px;}
+#hkPosterModal .hkp-svgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+#hkPosterModal .hkp-svgrid select{font-size:12.5px;padding:5px 6px;}
+#hkPosterModal .hkp-svcolors{display:grid;grid-template-columns:1fr 1fr;gap:5px 8px;}
+#hkPosterModal .hkp-svcolors label{display:flex;align-items:center;gap:6px;font-weight:700;font-size:11.5px;margin:0;}
+#hkPosterModal .hkp-svcolors input[type=color]{width:30px;height:26px;padding:0;border:1px solid var(--border-color,#ccc);border-radius:6px;background:none;cursor:pointer;flex:0 0 30px;}
+`;
+    function svFillSelect(sel, items) { sel.innerHTML = items.map((t, i) => '<option value="' + i + '">' + t + '</option>').join(''); }
+    function svBind() {
+        const q = s => modal.querySelector(s);
+        const st0 = el('style', { id: 'hkPosterSvCss' }); st0.textContent = SV_CSS; document.head.appendChild(st0);
+        const lists = { shape: SV_SHAPES, ring: SV_RINGS, badge: SV_BADGES, name: SV_NAMEBOX, font: SV_FONTS.map(f => f.n), fx: SV_FX,
+            nfont: SV_NAME_FONTS.map(i => SV_FONTS[i].n), scene: SV_SCENES, pal: SV_PALS.map(p => p.n), side: ['➡️ दाएँ', '⬅️ बाएँ'] };
+        modal.querySelectorAll('[data-o]').forEach(sel => {
+            const k = sel.getAttribute('data-o'); svFillSelect(sel, lists[k]);
+            sel.addEventListener('change', () => {
+                S.sv.over[k] = +sel.value;
+                if (k === 'pal' && !S.sv.keepColors) S.sv.colors = {};
+                svSync(); svSave(); schedule();
+            });
+        });
+        const chips = q('#svBadgeChips');
+        ['सुविचार', 'आज का विचार', 'सुप्रभात', 'शुभ रात्रि', 'Good Morning', 'ᱡᱚᱦᱟᱨ'].forEach(t => {
+            const b = el('button', { type: 'button', class: 'hkp-chip' }, t);
+            b.onclick = () => { S.sv.badgeText = t; q('[data-sv="badgeText"]').value = t; svSave(); schedule(); };
+            chips.appendChild(b);
+        });
+        modal.querySelectorAll('[data-sv]').forEach(inp => {
+            inp.addEventListener('input', () => { S.sv[inp.getAttribute('data-sv')] = inp.value; if (inp.getAttribute('data-sv') !== 'quote') svSave(); schedule(); });
+        });
+        modal.querySelectorAll('[data-r]').forEach(r => {
+            r.addEventListener('input', () => {
+                const k = r.getAttribute('data-r'), v = +r.value;
+                S.sv[k] = k === 'pz' ? v / 100 : (k === 'ov' ? v : v / 100);
+                if (k === 'ov') q('#svOvV').textContent = v + '%';
+                svSave(); schedule();
+            });
+        });
+        modal.querySelectorAll('[data-qpos]').forEach(b => b.onclick = () => { S.sv.qpos = b.getAttribute('data-qpos'); svSync(); svSave(); schedule(); });
+        q('#svNew').onclick = () => {
+            const v = S.sv; let id, n = 0;
+            do { id = Math.floor(Math.random() * SV_N); n++; } while (v.used.includes(id) && n < 50);
+            v.hist = v.hist || []; v.hist.push(v.styleId);
+            v.used.push(id); if (v.used.length > 365) v.used = v.used.slice(-365);
+            v.styleId = id; v.over = {}; if (!v.keepColors) v.colors = {};
+            svSync(); svSave(); schedule();
+        };
+        q('#svPrev').onclick = () => {
+            const v = S.sv; if (!v.hist || !v.hist.length) { toast('पहले वाला style नहीं है।', 'info'); return; }
+            v.styleId = v.hist.pop(); v.over = {}; if (!v.keepColors) v.colors = {}; svSync(); svSave(); schedule();
+        };
+        q('#svToday').onclick = () => { const v = S.sv; v.hist = v.hist || []; v.hist.push(v.styleId); v.styleId = -1; v.over = {}; if (!v.keepColors) v.colors = {}; svSync(); svSave(); schedule(); };
+        q('#svNextQ').onclick = () => { S.sv.quote = svNextQuote(); q('[data-sv="quote"]').value = S.sv.quote; svSave(); schedule(); };
+        q('#svFromEd').onclick = () => {
+            const ed = document.getElementById('editor');
+            const txt = ed ? (ed.innerText || ed.textContent || '').trim() : '';
+            if (!txt) { toast('Editor खाली है — पहले वहाँ text type करें।', 'warning'); return; }
+            S.sv.quote = txt; q('[data-sv="quote"]').value = txt; schedule();
+        };
+        const pick = (btn, file, key, max, q2) => {
+            q(btn).onclick = () => q(file).click();
+            q(file).onchange = async () => {
+                const f = q(file).files && q(file).files[0]; q(file).value = '';
+                if (!f) return;
+                try {
+                    const url = await fileToDataUrl(f, max, q2);
+                    S.sv[key + 'Url'] = url; S.sv[key] = await loadImg(url);
+                    if (key === 'photo') { S.sv.pz = 1; S.sv.px = 0; S.sv.py = 0; }
+                    svSync(); svSave(); schedule();
+                } catch (e) { toast('यह फोटो नहीं खुली — कोई दूसरी चुनें।', 'warning'); }
+            };
+        };
+        pick('#svPhotoBtn', '#svPhotoFile', 'photo', 800, 0.88);
+        pick('#svBgBtn', '#svBgFile', 'bg', 1600, 0.8);
+        q('#svPhotoDel').onclick = () => { S.sv.photo = null; S.sv.photoUrl = ''; svSave(); schedule(); };
+        q('#svBgDel').onclick = () => { S.sv.bg = null; S.sv.bgUrl = ''; svSave(); schedule(); };
+        const cw = q('#svColors');
+        SV_COLOR_KEYS.forEach(c => {
+            const lab = el('label', null, '<input type="color" data-c="' + c[0] + '"> ' + c[1]);
+            cw.appendChild(lab);
+        });
+        modal.querySelectorAll('[data-c]').forEach(inp => inp.addEventListener('input', () => { S.sv.colors[inp.getAttribute('data-c')] = inp.value; if (inp.getAttribute('data-c') === 'overlay' && !S.sv.ov) { S.sv.ov = 30; svSync(); } svSave(); schedule(); }));
+        q('#svKeep').onchange = () => { S.sv.keepColors = q('#svKeep').checked; svSave(); };
+        q('#svResetC').onclick = () => { S.sv.colors = {}; svSync(); svSave(); schedule(); };
+    }
+    function svSync() {
+        if (!modal) return;
+        const st = svStyle(), C = svColors(st), v = S.sv;
+        modal.querySelectorAll('[data-o]').forEach(sel => { sel.value = String(st[sel.getAttribute('data-o')]); });
+        modal.querySelectorAll('[data-sv]').forEach(inp => { const k = inp.getAttribute('data-sv'); if (document.activeElement !== inp) inp.value = v[k] || ''; });
+        modal.querySelectorAll('[data-c]').forEach(inp => { const c = C[inp.getAttribute('data-c')]; if (/^#[0-9a-f]{6}$/i.test(c)) inp.value = c; });
+        const pr = modal.querySelector('[data-r="pz"]'); if (pr) pr.value = Math.round(v.pz * 100);
+        const xr = modal.querySelector('[data-r="px"]'); if (xr) xr.value = Math.round(v.px * 100);
+        const yr = modal.querySelector('[data-r="py"]'); if (yr) yr.value = Math.round(v.py * 100);
+        const or = modal.querySelector('[data-r="ov"]'); if (or) { or.value = v.ov; modal.querySelector('#svOvV').textContent = v.ov + '%'; }
+        modal.querySelectorAll('[data-qpos]').forEach(b => b.classList.toggle('on', b.getAttribute('data-qpos') === v.qpos));
+        const kp = modal.querySelector('#svKeep'); if (kp) kp.checked = !!v.keepColors;
+        const no = modal.querySelector('#svStyleNo');
+        if (no) no.textContent = v.styleId < 0 ? '· आज का (' + (dayOfYear(new Date()) + 1) + '/365)' : '· Random #' + v.styleId;
+    }
+
     function el(tag, attrs, html) {
         const e = document.createElement(tag);
         if (attrs) Object.keys(attrs).forEach(a => e.setAttribute(a, attrs[a]));
@@ -376,6 +1189,12 @@
             b.onclick = () => { S.size = key; renderChips(); schedule(); };
             sizeRow.appendChild(b);
         });
+        const isSv = S.tpl === 'suvichar';
+        const gen = modal.querySelector('#hkpGeneric'), svp = modal.querySelector('#hkpSv'), palW = modal.querySelector('#hkpPalWrap');
+        if (gen) gen.style.display = isSv ? 'none' : 'flex';
+        if (svp) svp.style.display = isSv ? 'flex' : 'none';
+        if (palW) palW.style.display = isSv ? 'none' : '';
+        if (isSv) svSync();
         const note = modal.querySelector('#hkpWm');
         if (note) note.textContent = isWatermarkFree()
             ? '✅ आपके plan में poster बिना watermark बनेगा।'
@@ -392,15 +1211,19 @@
   <div class="hkp-body">
     <div class="hkp-side">
       <div><label>Template</label><div class="hkp-row" id="hkpTpl"></div></div>
-      <div><label>रंग</label><div class="hkp-row" id="hkpPal"></div></div>
+      <div id="hkpPalWrap"><label>रंग</label><div class="hkp-row" id="hkpPal"></div></div>
       <div><label>Size</label><div class="hkp-row" id="hkpSize"></div></div>
+      <div><label>⌨️ Typing भाषा (poster के सब box)</label><select id="hkpLang"></select></div>
+      <div id="hkpGeneric" style="display:flex;flex-direction:column;gap:9px;">
       <div><label>शीर्षक (Heading)</label><input type="text" data-f="heading"></div>
       <div><label>संदेश (Message)</label><textarea data-f="message"></textarea>
         <div class="hkp-row" style="margin-top:5px;"><button type="button" class="hkp-chip" id="hkpFromEditor">📝 Editor से Text लें</button></div></div>
       <div><label>नाम / संस्था</label><input type="text" data-f="from"></div>
       <div><label>तारीख (वैकल्पिक)</label><input type="text" data-f="date" placeholder="जैसे 15/11/2026"></div>
+      </div>
+      ${SV_PANEL}
       <div><label>Text का आकार: <span id="hkpScaleV">100%</span></label><input type="range" min="70" max="130" step="5" value="100" id="hkpScale" style="width:100%;"></div>
-      <div class="hkp-note">Ol Chiki या हिन्दी में लिखने के लिए पहले App के Editor में type करें, फिर "Editor से Text लें" दबाएँ।</div>
+      <div class="hkp-note">ऊपर "Typing भाषा" चुनकर computer keyboard से सीधे Ol Chiki / हिन्दी / Santali लिखें। Mobile पर phone का अपना keyboard चलेगा, या App के Editor में लिखकर "Editor से" दबाएँ।</div>
       <div class="hkp-note" id="hkpWm"></div>
       <div class="hkp-row"><button type="button" class="hkp-btn" id="hkpDl">⬇️ PNG</button><button type="button" class="hkp-btn alt" id="hkpShare">📲 Share</button><button type="button" class="hkp-btn ghost" id="hkpPrint">🖨️ Print</button></div>
     </div>
@@ -414,9 +1237,19 @@
         modal.querySelector('.hkp-close').onclick = close;
         modal.querySelectorAll('[data-f]').forEach(inp => {
             inp.addEventListener('input', () => { const f = inp.getAttribute('data-f'); S[f] = inp.value; if (f in S.edited) S.edited[f] = true; schedule(); });
-            // App के global key handlers इन fields में typing न रोकें
-            inp.addEventListener('keydown', e => { if (e.key !== 'Escape') e.stopPropagation(); });
         });
+        svBind();
+        // App के global key handlers इन fields में typing न रोकें + चुनी हुई भाषा में typing
+        modal.querySelectorAll('input[type=text],textarea').forEach(inp => {
+            inp.addEventListener('keydown', e => { if (e.key !== 'Escape') e.stopPropagation(); svTypeKey(e); });
+        });
+        const ls = modal.querySelector('#hkpLang');
+        ls.innerHTML = SV_LANGS.map(l => '<option value="' + l[0] + '">' + l[1] + (svLangAllowed(l[0]) ? '' : ' 🔒') + '</option>').join('');
+        ls.value = S.lang || 'app';
+        ls.onchange = () => {
+            if (!svLangAllowed(ls.value)) { toast('🔒 यह भाषा आपके plan में नहीं है।', 'warning'); ls.value = S.lang || 'app'; return; }
+            S.lang = ls.value; svSave();
+        };
         const sc = modal.querySelector('#hkpScale');
         sc.addEventListener('input', () => { S.scale = +sc.value; modal.querySelector('#hkpScaleV').textContent = sc.value + '%'; schedule(); });
         modal.querySelector('#hkpFromEditor').onclick = () => {
@@ -443,8 +1276,9 @@
     }
 
     function getBlob() {
-        draw(canvas);
-        return new Promise(res => canvas.toBlob(b => res(b), 'image/png'));
+        S.exporting = true;
+        try { draw(canvas); } finally { S.exporting = false; }
+        return new Promise(res => canvas.toBlob(b => { res(b); schedule(); }, 'image/png'));
     }
 
     async function download() {
@@ -485,8 +1319,13 @@
     function close() { if (modal) modal.classList.remove('open'); }
 
     async function open() {
+        svEnsureFontsCss();
+        await svLoad();
         build();
+        if (!S.sv.quote) S.sv.quote = svDailyQuote();
         if (!S.heading && !S.message) applyDefaults(true);
+        const ls = modal.querySelector('#hkpLang');
+        if (ls) { Array.from(ls.options).forEach(o => { const l = SV_LANGS.find(x => x[0] === o.value); if (l) o.textContent = l[1] + (svLangAllowed(l[0]) ? '' : ' 🔒'); }); ls.value = S.lang || 'app'; }
         renderChips();
         modal.classList.add('open');
         try {
@@ -507,5 +1346,5 @@
 
     window.openPosterMaker = open;
     window.closePosterMaker = close;
-    window.__hkPoster = { draw, S, TEMPLATES, SIZES, wrap };
+    window.__hkPoster = { draw, S, TEMPLATES, SIZES, wrap, svStyle, svDecode, svStyleId, SV_N, SV_QUOTES };
 })();
