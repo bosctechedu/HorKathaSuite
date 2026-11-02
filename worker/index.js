@@ -359,6 +359,9 @@ async function redeemTrialKey(env, ctx, { email, name, mobile, key }) {
 // ─── 👥 CONCURRENT LOGIN LIMITS (Device ID नहीं; license = email + mobile) ───
 // Trial 1 · P1 1 · P2 3 · P3 5 · Institute seat 1. Limit पूरी होने पर सबसे पुराना login auto-logout.
 const SESSION_LIMITS = { TRIAL: 1, P1: 1, P2: 3, P3: 5, SEAT: 1 };
+// 🏫 Classroom limits
+const CLS_MAX_PER_TEACHER = 10, CLS_MAX_STUDENTS = 150, CLS_MAX_RESULTS = 4000, CLS_MAX_ASSIGN = 24;
+const CLS_LANGS = ["any", "english", "hindi-dev", "santali-dev", "olchiki", "roman"];
 const SESSION_IDLE_DAYS = 60; // 60 दिन से न दिखा session अपने-आप हट जाता है
 function cleanSid(s) { s = String(s || ""); return /^[A-Za-z0-9_-]{16,64}$/.test(s) ? s : null; }
 function hexToBytesW(hex) { if (!/^[0-9A-Fa-f]+$/.test(hex) || hex.length % 2) return null; const out = new Uint8Array(hex.length / 2); for (let i = 0; i < out.length; i++) out[i] = parseInt(hex.substr(i * 2, 2), 16); return out; }
@@ -608,6 +611,137 @@ export default {
         await saveSessions(env, kid, list);
         return json({ success: true, active: true, limit, used: list.length, evicted, tier: v.tier }, 200, cors);
       } catch (e) { console.error("session:", e); return json({ error: "Server error" }, 500, cors); }
+    }
+
+    // 🏫 Classroom / Teacher Dashboard (v42)
+    // Teacher = P3 या Institute seat license; student = कोई भी user (class code से)
+    if (url.pathname === "/class" && request.method === "POST") {
+      try {
+        const n = await bumpCounter(env.OTP_STORE, `clsip:${ip}`, 3600);
+        if (n > 300) return json({ error: "बहुत ज़्यादा requests, थोड़ी देर बाद करें" }, 429, cors);
+        const body = await request.json().catch(() => ({}));
+        const op = String(body.op || "");
+        const now = Date.now();
+        const cleanCode = c => { c = String(c || "").trim().toUpperCase(); return /^HKC-[A-HJ-NP-Z2-9]{6}$/.test(c) ? c : null; };
+        const cleanStu = s => { s = String(s || ""); return /^[a-f0-9]{16,32}$/.test(s) ? s : null; };
+        const loadCls = async code => { try { return JSON.parse((await env.OTP_STORE.get(`cls:${code}`)) || "null"); } catch (e) { return null; } };
+        const saveCls = (code, c) => env.OTP_STORE.put(`cls:${code}`, JSON.stringify(c));
+        const loadRes = async code => { try { return JSON.parse((await env.OTP_STORE.get(`clsr:${code}`)) || "[]"); } catch (e) { return []; } };
+        const cleanAssign = a => (Array.isArray(a) ? a : []).slice(0, CLS_MAX_ASSIGN).map(x => ({
+          g: ["basic", "advanced", "job", "exam"].includes(x && x.g) ? x.g : null,
+          i: Math.max(0, Math.min(2, parseInt(x && x.i, 10) || 0)),
+          l: CLS_LANGS.includes(x && x.l) ? x.l : "any"
+        })).filter(x => x.g);
+
+        // ── Student ops ──
+        if (op === "join" || op === "info" || op === "report" || op === "leave") {
+          const code = cleanCode(body.code), stu = cleanStu(body.stu);
+          if (!code || !stu) return json({ error: "Class code गलत है" }, 400, cors);
+          const c = await loadCls(code);
+          if (!c) return json({ error: "यह class नहीं मिली। Teacher से code दोबारा लें।" }, 404, cors);
+          if (op === "join") {
+            const sname = cleanText(body.name, 40);
+            if (sname.length < 2) return json({ error: "अपना नाम लिखें" }, 400, cors);
+            c.students = c.students || {};
+            if (!c.students[stu] && Object.keys(c.students).length >= CLS_MAX_STUDENTS) return json({ error: `Class भर चुकी है (${CLS_MAX_STUDENTS} students)` }, 409, cors);
+            c.students[stu] = { n: sname, j: (c.students[stu] && c.students[stu].j) || now };
+            await saveCls(code, c);
+          } else if (!c.students || !c.students[stu]) {
+            return json({ error: "आप इस class में नहीं हैं (teacher ने हटाया हो सकता है)", code: "NOT_MEMBER" }, 403, cors);
+          }
+          if (op === "leave") {
+            delete c.students[stu]; await saveCls(code, c);
+            return json({ success: true }, 200, cors);
+          }
+          if (op === "report") {
+            const sid = String(body.sid || "");
+            if (!/^[0-9a-f]{32}$/.test(sid)) return json({ error: "Invalid test" }, 400, cors);
+            const raw = await env.OTP_STORE.get(`tsess:${sid}`);
+            if (!raw) return json({ error: "Test server पर दर्ज नहीं है" }, 404, cors);
+            const sess = JSON.parse(raw);
+            if (!sess.t2) return json({ error: "Test पूरा दर्ज नहीं हुआ" }, 400, cors);
+            if (sess.cls) return json({ error: "यह test पहले ही जमा हो चुका है" }, 409, cors);
+            const sec = Math.max(3, (sess.t2 - sess.t1) / 1000 - (sess.pause || 0));
+            const wpm = Math.round(Math.max(0, sess.chars / 5 - sess.errors) / (sec / 60));
+            const a = cleanAssign([{ g: body.g, i: body.i, l: body.l }])[0] || { g: "basic", i: 0, l: "any" };
+            sess.cls = code; await env.OTP_STORE.put(`tsess:${sid}`, JSON.stringify(sess), { expirationTtl: 7200 });
+            const res = await loadRes(code);
+            res.push({ s: stu, g: a.g, i: a.i, l: a.l, w: Math.min(wpm, 250), a: sess.acc, c: sess.chars, e: sess.errors, d: Math.round(sec), t: now });
+            if (res.length > CLS_MAX_RESULTS) res.splice(0, res.length - CLS_MAX_RESULTS);
+            await env.OTP_STORE.put(`clsr:${code}`, JSON.stringify(res));
+            return json({ success: true, wpm, acc: sess.acc }, 200, cors);
+          }
+          const mine = (await loadRes(code)).filter(r => r.s === stu).map(({ s, ...r }) => r);
+          return json({ success: true, code, title: c.title, teacher: c.tname, assign: c.assign || [], name: c.students[stu].n, results: mine.slice(-200) }, 200, cors);
+        }
+
+        // ── Teacher ops ──
+        const email = normalizeEmail(body.email);
+        const key = String(body.key || "").trim().toUpperCase();
+        if (!email || !key) return json({ error: "Teacher Dashboard के लिए P3 या Institute license ज़रूरी है", code: "NO_LICENSE" }, 403, cors);
+        const kid = (await sha256Hex("hkcls|" + key + "|" + email)).slice(0, 40);
+        let tier = await env.OTP_STORE.get(`tver:${kid}`);
+        if (!tier) {
+          const v = await verifyProKeyServer(env, { name: body.name, email, mobile: body.mobile, key });
+          if (!v.ok) return json({ error: v.error, code: "NO_LICENSE" }, v.status || 403, cors);
+          tier = v.tier;
+          await env.OTP_STORE.put(`tver:${kid}`, tier, { expirationTtl: 3600 });
+        }
+        if (tier !== "P3" && tier !== "SEAT") return json({ error: "Teacher Dashboard सिर्फ़ P3 Ultimate और Institute plan में है", code: "NEED_P3" }, 403, cors);
+        let mineCodes = [];
+        try { mineCodes = JSON.parse((await env.OTP_STORE.get(`tcls:${kid}`)) || "[]"); } catch (e) { mineCodes = []; }
+
+        if (op === "list") {
+          const out = [];
+          for (const code of mineCodes) { const c = await loadCls(code); if (c) out.push({ code, title: c.title, students: Object.keys(c.students || {}).length, created: c.created }); }
+          return json({ success: true, classes: out, tier }, 200, cors);
+        }
+        if (op === "create") {
+          if (mineCodes.length >= CLS_MAX_PER_TEACHER) return json({ error: `ज़्यादा से ज़्यादा ${CLS_MAX_PER_TEACHER} classes बना सकते हैं` }, 409, cors);
+          const title = cleanText(body.title, 50);
+          if (title.length < 2) return json({ error: "Class का नाम लिखें" }, 400, cors);
+          const AL = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+          let code = null;
+          for (let t = 0; t < 6 && !code; t++) {
+            const b = crypto.getRandomValues(new Uint8Array(6));
+            const c = "HKC-" + Array.from(b, x => AL[x % AL.length]).join("");
+            if (!(await env.OTP_STORE.get(`cls:${c}`))) code = c;
+          }
+          if (!code) return json({ error: "Code नहीं बन पाया, दोबारा करें" }, 500, cors);
+          await saveCls(code, { title, owner: kid, tname: cleanText(body.name, 40), created: now, assign: [], students: {} });
+          mineCodes.push(code);
+          await env.OTP_STORE.put(`tcls:${kid}`, JSON.stringify(mineCodes));
+          return json({ success: true, code, title }, 200, cors);
+        }
+        const code = cleanCode(body.code);
+        if (!code || !mineCodes.includes(code)) return json({ error: "यह class आपकी नहीं है" }, 403, cors);
+        const c = await loadCls(code);
+        if (!c || c.owner !== kid) return json({ error: "Class नहीं मिली" }, 404, cors);
+        if (op === "view") {
+          const res = await loadRes(code);
+          return json({ success: true, code, title: c.title, created: c.created, assign: c.assign || [], students: c.students || {}, results: res }, 200, cors);
+        }
+        if (op === "assign") {
+          c.assign = cleanAssign(body.assign); await saveCls(code, c);
+          return json({ success: true, assign: c.assign }, 200, cors);
+        }
+        if (op === "rename") {
+          const title = cleanText(body.title, 50); if (title.length < 2) return json({ error: "Class का नाम लिखें" }, 400, cors);
+          c.title = title; await saveCls(code, c);
+          return json({ success: true }, 200, cors);
+        }
+        if (op === "kick") {
+          const stu = cleanStu(body.stu);
+          if (stu && c.students) { delete c.students[stu]; await saveCls(code, c); }
+          return json({ success: true }, 200, cors);
+        }
+        if (op === "delete") {
+          await env.OTP_STORE.delete(`cls:${code}`); await env.OTP_STORE.delete(`clsr:${code}`);
+          await env.OTP_STORE.put(`tcls:${kid}`, JSON.stringify(mineCodes.filter(x => x !== code)));
+          return json({ success: true }, 200, cors);
+        }
+        return json({ error: "Unknown op" }, 400, cors);
+      } catch (e) { console.error("class:", e); return json({ error: "Server error" }, 500, cors); }
     }
 
     // ☁️ Documents Cloud Sync (Pro) — client-side encrypted blob, server सिर्फ़ रखता है

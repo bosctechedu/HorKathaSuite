@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://hor-katha-api.bosctechedu.workers.dev; base-uri 'self'; form-action 'none';">
+<meta name="robots" content="noindex">
+<title>Teacher Dashboard — Hoṛ Katha Suite</title>
+<link rel="icon" href="assets/icon.ico">
+<style>
+:root{--bg:#f3f5f9;--card:#fff;--text:#111827;--muted:#6b7280;--line:#e5e7eb;--pri:#2563eb;--pur:#7c3aed;--ok:#16a34a;--bad:#dc2626;--warn:#d97706;}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,"Noto Sans Devanagari",sans-serif;background:var(--bg);color:var(--text);font-size:14px;}
+header{background:linear-gradient(90deg,#1e3a8a,#7c3aed);color:#fff;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+header h1{margin:0;font-size:18px}
+header .who{font-size:12.5px;opacity:.9}
+header a{color:#fff}
+main{max-width:1150px;margin:0 auto;padding:16px;}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;}
+.card h2{margin:0 0 10px;font-size:16px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;}
+.muted{color:var(--muted);font-size:12.5px}
+.btn{padding:8px 13px;border-radius:9px;border:0;font-weight:700;cursor:pointer;background:var(--pri);color:#fff;font-size:13px;}
+.btn.alt{background:var(--ok)} .btn.pur{background:var(--pur)} .btn.bad{background:var(--bad)}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn:disabled{opacity:.5;cursor:default}
+input,select{padding:8px 10px;border-radius:9px;border:1px solid var(--line);font-size:14px;background:#fff;color:var(--text)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.classes{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;}
+.cls{border:1px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;background:#fafbff}
+.cls:hover,.cls.on{border-color:var(--pur);box-shadow:0 0 0 2px rgba(124,58,237,.15)}
+.cls b{display:block;font-size:15px}
+.code{font-family:Consolas,monospace;font-weight:800;letter-spacing:1px;background:#eef2ff;color:#3730a3;padding:3px 8px;border-radius:7px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:12px}
+.stat{border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+.stat b{display:block;font-size:22px}
+.tblwrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:8px 8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{background:#f8fafc;font-size:12px;color:var(--muted);cursor:pointer;user-select:none;position:sticky;top:0}
+td.num,th.num{text-align:right}
+.pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:12px;font-weight:700}
+.p-ok{background:#dcfce7;color:#166534}.p-mid{background:#fef3c7;color:#92400e}.p-no{background:#fee2e2;color:#991b1b}
+.lessons{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:6px 14px;margin:8px 0}
+.lessons label{display:flex;gap:6px;align-items:center;font-size:13px}
+.grp{font-weight:800;font-size:12px;color:var(--muted);margin-top:6px;grid-column:1/-1}
+.msg{padding:10px 12px;border-radius:10px;margin-bottom:12px;font-size:13.5px}
+.msg.err{background:#fee2e2;color:#991b1b}.msg.info{background:#eff6ff;color:#1e3a8a}
+.hide{display:none!important}
+.x{background:none;border:0;color:var(--bad);cursor:pointer;font-size:15px}
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 16px;border-radius:10px;font-size:13.5px;opacity:0;transition:.25s;pointer-events:none;z-index:9}
+#toast.show{opacity:1}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>👩‍🏫 Teacher Dashboard</h1><div class="who" id="who">Hoṛ Katha Suite</div></div>
+  <a href="./" class="who">← App पर वापस</a>
+</header>
+<main>
+  <div id="gate" class="msg info">Loading…</div>
+
+  <section id="app" class="hide">
+    <div class="card">
+      <h2><span>📚 मेरी classes</span>
+        <span class="row"><input id="newTitle" maxlength="50" placeholder="नई class का नाम, जैसे Batch A 2026"><button class="btn pur" id="btnCreate">+ Class बनाएँ</button></span></h2>
+      <div class="classes" id="classes"></div>
+      <div class="muted" id="noClasses">अभी कोई class नहीं है। ऊपर नाम लिखकर पहली class बनाएँ।</div>
+    </div>
+
+    <div id="detail" class="hide">
+      <div class="card">
+        <h2><span id="dTitle"></span>
+          <span class="row">
+            <span class="code" id="dCode"></span>
+            <button class="btn ghost" id="btnCopy">📋 Code copy</button>
+            <button class="btn alt" id="btnWa">📲 WhatsApp पर भेजें</button>
+            <button class="btn ghost" id="btnRefresh">🔄 Refresh</button>
+          </span></h2>
+        <div class="muted">Students app में <b>🏫 Class</b> button दबाकर यह code डालें, या WhatsApp link खोलें। उनके Typing Practice के result अपने-आप यहाँ आएँगे।</div>
+      </div>
+
+      <div class="stats" id="stats"></div>
+
+      <div class="card">
+        <h2><span>📋 Lessons assign करें</span>
+          <span class="row"><select id="aLang"></select><button class="btn" id="btnSaveAssign">Save</button></span></h2>
+        <div class="muted">जो lessons students को करने हैं, उन पर tick करें। भाषा "कोई भी" रखें तो किसी भी भाषा में किया test गिना जाएगा।</div>
+        <div class="lessons" id="lessons"></div>
+      </div>
+
+      <div class="card">
+        <h2><span>👥 Students</span>
+          <span class="row">
+            <select id="fRange"><option value="0">सारा समय</option><option value="7">पिछले 7 दिन</option><option value="30">पिछले 30 दिन</option></select>
+            <button class="btn alt" id="btnCsv">⬇️ Summary CSV</button>
+            <button class="btn ghost" id="btnCsvAll">⬇️ सभी tests CSV</button>
+          </span></h2>
+        <div class="tblwrap"><table id="tbl"><thead><tr>
+          <th data-k="n">नाम</th><th class="num" data-k="tests">Tests</th><th class="num" data-k="best">Best WPM</th><th class="num" data-k="avg">Avg WPM</th>
+          <th class="num" data-k="acc">Avg Acc</th><th class="num" data-k="streak">Streak</th><th data-k="done">Assigned</th><th data-k="last">आख़िरी test</th><th></th>
+        </tr></thead><tbody></tbody></table></div>
+        <div class="muted" id="noStu">अभी कोई student नहीं जुड़ा। Code students को भेजें।</div>
+      </div>
+
+      <div class="card">
+        <h2><span>⚙️ Class settings</span></h2>
+        <div class="row"><input id="renTitle" maxlength="50"><button class="btn ghost" id="btnRename">नाम बदलें</button>
+        <button class="btn bad" id="btnDelete">🗑️ Class delete करें</button></div>
+      </div>
+    </div>
+  </section>
+</main>
+<div id="toast"></div>
+<script>
+(function () {
+  'use strict';
+  const API = 'https://hor-katha-api.bosctechedu.workers.dev/class';
+  const GROUPS = { basic: 'Basic', advanced: 'Advanced', job: 'Job', exam: 'Govt Exam' };
+  const LESSONS = {
+    basic: ['Home Row Practice', 'Common Words', 'Short Sentences'],
+    advanced: ['Punctuation & Quotes', 'Numbers & Symbols', 'Complex Paragraph'],
+    job: ['Email Writing', 'Office Report', 'Government Format'],
+    exam: ['Govt Exam — Passage 1', 'Govt Exam — Office Order', 'Govt Exam — Passage 3']
+  };
+  const LANGS = { any: 'कोई भी भाषा', roman: 'Santali (R)', 'santali-dev': 'Santali (D)', olchiki: 'ओलचिकी', 'hindi-dev': 'हिन्दी', english: 'English' };
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const ls = k => { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } };
+  const lic = { name: ls('hor_lic_user'), email: ls('hor_lic_email'), mobile: ls('hor_lic_mobile'), key: ls('hor_lic_key') };
+  let cur = null, sortK = 'avg', sortDir = -1;
+
+  function toast(m) { const t = $('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), 2600); }
+  async function call(op, extra) {
+    const res = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.assign({ op }, lic, extra || {})) });
+    const d = await res.json().catch(() => ({}));
+    if (!res.ok) { const e = new Error(d.error || ('Error ' + res.status)); e.code = d.code; throw e; }
+    return d;
+  }
+  function gate(msg, isErr) { const g = $('gate'); g.className = 'msg ' + (isErr ? 'err' : 'info'); g.innerHTML = msg; g.classList.remove('hide'); }
+  const lessonLabel = a => (GROUPS[a.g] || a.g) + ' · ' + ((LESSONS[a.g] || [])[a.i] || 'Lesson') + (a.l && a.l !== 'any' ? ' · ' + (LANGS[a.l] || a.l) : '');
+  const fmtDate = t => t ? new Date(t).toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : '—';
+
+  async function init() {
+    if (!lic.key || !lic.email) { gate('इस browser में कोई license activate नहीं है। पहले <a href="./">app</a> में अपनी <b>P3 Ultimate</b> या <b>Institute</b> license activate करें, फिर यह page दोबारा खोलें।', true); return; }
+    $('who').textContent = (lic.name || lic.email) + ' · ' + lic.email;
+    try { const d = await call('list'); $('gate').classList.add('hide'); $('app').classList.remove('hide'); renderClasses(d.classes); }
+    catch (e) {
+      if (e.code === 'NEED_P3') gate('Teacher Dashboard सिर्फ़ <b>P3 Ultimate (₹999)</b> और <b>Institute</b> plan में है। <a href="./">App</a> में upgrade करें।', true);
+      else gate(esc(e.message) + ' — <a href="#" onclick="location.reload();return false">दोबारा कोशिश करें</a>', true);
+    }
+  }
+  function renderClasses(list) {
+    const box = $('classes'); box.innerHTML = '';
+    $('noClasses').classList.toggle('hide', list.length > 0);
+    list.forEach(c => {
+      const d = document.createElement('div'); d.className = 'cls' + (cur && cur.code === c.code ? ' on' : '');
+      d.innerHTML = '<b>' + esc(c.title) + '</b><span class="code">' + esc(c.code) + '</span><div class="muted" style="margin-top:6px">' + c.students + ' students</div>';
+      d.onclick = () => openClass(c.code);
+      box.appendChild(d);
+    });
+    if (!cur && list.length) openClass(list[0].code);
+  }
+  async function refreshList() { const d = await call('list'); renderClasses(d.classes); }
+
+  async function openClass(code) {
+    try {
+      cur = await call('view', { code });
+      document.querySelectorAll('.cls').forEach(el => el.classList.toggle('on', el.querySelector('.code').textContent === code));
+      $('detail').classList.remove('hide');
+      $('dTitle').textContent = '🏫 ' + cur.title; $('dCode').textContent = cur.code; $('renTitle').value = cur.title;
+      renderAssign(); renderStudents();
+    } catch (e) { toast('⚠️ ' + e.message); }
+  }
+
+  function renderAssign() {
+    const sel = $('aLang'); sel.innerHTML = Object.keys(LANGS).map(k => '<option value="' + k + '">' + LANGS[k] + '</option>').join('');
+    const curLang = (cur.assign[0] && cur.assign[0].l) || 'any'; sel.value = curLang;
+    const box = $('lessons'); box.innerHTML = '';
+    Object.keys(LESSONS).forEach(g => {
+      box.insertAdjacentHTML('beforeend', '<div class="grp">' + GROUPS[g] + '</div>');
+      LESSONS[g].forEach((n, i) => {
+        const on = cur.assign.some(a => a.g === g && a.i === i);
+        box.insertAdjacentHTML('beforeend', '<label><input type="checkbox" data-g="' + g + '" data-i="' + i + '"' + (on ? ' checked' : '') + '> ' + esc(n) + '</label>');
+      });
+    });
+  }
+  $('btnSaveAssign').onclick = async () => {
+    const l = $('aLang').value;
+    const assign = [...document.querySelectorAll('#lessons input:checked')].map(x => ({ g: x.dataset.g, i: +x.dataset.i, l }));
+    try { const d = await call('assign', { code: cur.code, assign }); cur.assign = d.assign; renderStudents(); toast('✅ Lessons save हो गए'); }
+    catch (e) { toast('⚠️ ' + e.message); }
+  };
+
+  function streakOf(rs) {
+    const days = new Set(rs.map(r => new Date(r.t).toDateString()));
+    let n = 0; const d = new Date(); if (!days.has(d.toDateString())) d.setDate(d.getDate() - 1);
+    while (days.has(d.toDateString())) { n++; d.setDate(d.getDate() - 1); }
+    return n;
+  }
+  const doneBy = (rs, a) => rs.some(x => x.g === a.g && x.i === a.i && (a.l === 'any' || x.l === a.l));
+  function rangedResults() {
+    const days = +$('fRange').value; const since = days ? Date.now() - days * 86400000 : 0;
+    return cur.results.filter(r => r.t >= since);
+  }
+  function summary() {
+    const res = rangedResults();
+    return Object.keys(cur.students).map(id => {
+      const st = cur.students[id], rs = res.filter(r => r.s === id), all = cur.results.filter(r => r.s === id);
+      const done = cur.assign.filter(a => doneBy(all, a)).length;
+      return {
+        id, n: st.n, joined: st.j, tests: rs.length,
+        best: rs.reduce((m, r) => Math.max(m, r.w), 0),
+        avg: rs.length ? Math.round(rs.reduce((s, r) => s + r.w, 0) / rs.length) : 0,
+        acc: rs.length ? Math.round(rs.reduce((s, r) => s + r.a, 0) / rs.length) : 0,
+        streak: streakOf(all), done, last: all.length ? all[all.length - 1].t : 0
+      };
+    });
+  }
+  function renderStudents() {
+    const rows = summary(); const tot = cur.assign.length;
+    rows.sort((a, b) => { const x = a[sortK], y = b[sortK]; return (typeof x === 'string' ? x.localeCompare(y) : x - y) * sortDir; });
+    const active = rows.filter(r => r.last && Date.now() - r.last < 7 * 86400000).length;
+    const res = rangedResults();
+    const avgW = res.length ? Math.round(res.reduce((s, r) => s + r.w, 0) / res.length) : 0;
+    const avgA = res.length ? Math.round(res.reduce((s, r) => s + r.a, 0) / res.length) : 0;
+    const allDone = tot ? rows.filter(r => r.done === tot).length : 0;
+    $('stats').innerHTML = [['👥', rows.length, 'Students'], ['✅', active, '7 दिन में active'], ['📝', res.length, 'Tests'], ['⚡', avgW, 'Avg WPM'], ['🎯', avgA + '%', 'Avg Accuracy'], ['📋', tot ? allDone + '/' + rows.length : '—', 'सारे lessons पूरे']]
+      .map(s => '<div class="stat"><b>' + s[0] + ' ' + s[1] + '</b><span class="muted">' + s[2] + '</span></div>').join('');
+    $('noStu').classList.toggle('hide', rows.length > 0);
+    $('tbl').querySelector('tbody').innerHTML = rows.map(r => {
+      const pc = !tot ? '' : r.done === tot ? 'p-ok' : r.done ? 'p-mid' : 'p-no';
+      return '<tr><td>' + esc(r.n) + '</td><td class="num">' + r.tests + '</td><td class="num">' + r.best + '</td><td class="num">' + r.avg + '</td><td class="num">' + (r.tests ? r.acc + '%' : '—') +
+        '</td><td class="num">' + (r.streak ? r.streak + '🔥' : '0') + '</td><td>' + (tot ? '<span class="pill ' + pc + '">' + r.done + '/' + tot + '</span>' : '—') +
+        '</td><td>' + fmtDate(r.last) + '</td><td><button class="x" title="Class से हटाएँ" data-kick="' + r.id + '">✕</button></td></tr>';
+    }).join('');
+    document.querySelectorAll('[data-kick]').forEach(b => b.onclick = async () => {
+      const st = cur.students[b.dataset.kick]; if (!confirm((st ? st.n : 'Student') + ' को class से हटाएँ?')) return;
+      try { await call('kick', { code: cur.code, stu: b.dataset.kick }); delete cur.students[b.dataset.kick]; renderStudents(); refreshList(); toast('Student हटाया गया'); } catch (e) { toast('⚠️ ' + e.message); }
+    });
+  }
+  document.querySelectorAll('#tbl th[data-k]').forEach(th => th.onclick = () => { const k = th.dataset.k; if (sortK === k) sortDir *= -1; else { sortK = k; sortDir = k === 'n' ? 1 : -1; } renderStudents(); });
+  $('fRange').onchange = renderStudents;
+
+  function csvDownload(name, rows) {
+    const csv = '\ufeff' + rows.map(r => r.map(v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"').join(',')).join('\r\n');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+    a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  }
+  const safe = s => String(s).replace(/[^\w\u0900-\u097F-]+/g, '_');
+  const dstr = t => t ? new Date(t).toLocaleString('en-IN') : '';
+  $('btnCsv').onclick = () => {
+    const tot = cur.assign.length;
+    csvDownload('Class-' + safe(cur.title) + '-summary.csv', [['Name', 'Tests', 'Best WPM', 'Avg WPM', 'Avg Accuracy %', 'Streak (days)', 'Assigned done', 'Assigned total', 'Last test', 'Joined']]
+      .concat(summary().map(r => [r.n, r.tests, r.best, r.avg, r.tests ? r.acc : '', r.streak, r.done, tot, dstr(r.last), dstr(r.joined)])));
+  };
+  $('btnCsvAll').onclick = () => {
+    csvDownload('Class-' + safe(cur.title) + '-all-tests.csv', [['Name', 'Date', 'Lesson', 'Language', 'WPM', 'Accuracy %', 'Chars', 'Errors', 'Time (sec)']]
+      .concat(rangedResults().map(r => [(cur.students[r.s] || {}).n || '(removed)', dstr(r.t), (GROUPS[r.g] || r.g) + ' · ' + ((LESSONS[r.g] || [])[r.i] || ''), LANGS[r.l] || r.l, r.w, r.a, r.c, r.e, r.d])));
+  };
+
+  const joinLink = () => location.origin + '/?class=' + cur.code;
+  $('btnCopy').onclick = async () => { try { await navigator.clipboard.writeText(cur.code); toast('✅ Code copy हो गया'); } catch (e) { prompt('Code:', cur.code); } };
+  $('btnWa').onclick = () => {
+    const t = '🏫 ' + cur.title + ' — Hoṛ Katha Suite typing class\n\nClass join करने के लिए यह link खोलें:\n' + joinLink() + '\n\nया app में 🏫 Class दबाकर code डालें: ' + cur.code;
+    window.open('https://wa.me/?text=' + encodeURIComponent(t), '_blank', 'noopener');
+  };
+  $('btnRefresh').onclick = () => openClass(cur.code).then(refreshList);
+  $('btnCreate').onclick = async () => {
+    const title = $('newTitle').value.trim(); if (title.length < 2) { toast('Class का नाम लिखें'); return; }
+    $('btnCreate').disabled = true;
+    try { const d = await call('create', { title }); $('newTitle').value = ''; toast('✅ Class बन गई: ' + d.code); cur = null; await refreshList(); await openClass(d.code); }
+    catch (e) { toast('⚠️ ' + e.message); } finally { $('btnCreate').disabled = false; }
+  };
+  $('btnRename').onclick = async () => {
+    const title = $('renTitle').value.trim();
+    try { await call('rename', { code: cur.code, title }); cur.title = title; $('dTitle').textContent = '🏫 ' + title; refreshList(); toast('✅ नाम बदल गया'); } catch (e) { toast('⚠️ ' + e.message); }
+  };
+  $('btnDelete').onclick = async () => {
+    if (!confirm('"' + cur.title + '" class और उसके सारे results हमेशा के लिए delete हो जाएँगे। पक्का?')) return;
+    try { await call('delete', { code: cur.code }); cur = null; $('detail').classList.add('hide'); await refreshList(); toast('Class delete हो गई'); } catch (e) { toast('⚠️ ' + e.message); }
+  };
+  init();
+})();
+</script>
+</body>
+</html>
