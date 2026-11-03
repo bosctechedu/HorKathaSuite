@@ -25,7 +25,9 @@
         desktop:  { w: 1920, h: 1080, label: '🖥️ Desktop / YouTube / Banner (16:9)', dev: 'desktop' },
         square:   { w: 1080, h: 1080, label: '⬛ Square — WhatsApp / FB Post (1:1)', dev: '' },
         portrait: { w: 1080, h: 1350, label: '📷 Instagram Post (4:5)', dev: '' },
-        a4:       { w: 1240, h: 1754, label: '📄 A4 (Print)', dev: '' }
+        a4:       { w: 1240, h: 1754, label: '📄 A4 (Print)', dev: '' },
+        card:     { w: 1050, h: 600, label: '🪪 Visiting Card (3.5×2 inch, 300 DPI)', dev: '' },
+        cardsheet:{ w: 2480, h: 3508, label: '🖨️ A4 Print Sheet — 10 Visiting Card', dev: '' }
     };
 
     // ------------------------------------------------------------
@@ -97,6 +99,18 @@
             ],
             defaults: { sub: '', heading: 'छुट्टी हेतु आवेदन।', message: 'सविनय निवेदन है कि ……………\nअतः श्रीमान से निवेदन है कि ……………… की कृपा करें।', from: '', footer: '' },
             letter: { lto: 'प्रधानाध्यापक महोदय\n…………… विद्यालय', lfrom: 'नाम: ……………\nकक्षा: ……………', lsal: 'महोदय,', lclose: 'भवदीय / भवदीया', lplace: '' }
+        },
+        vcard: {
+            name: '🪪 Visiting Card',
+            palettes: [
+                { bg: ['#0f172a', '#1e3a8a'], fg: '#f8fafc', accent: '#f5c451', card: '#ffffff', head: '#0f172a', name: 'Navy Gold' },
+                { bg: ['#4a0d1a', '#9f1239'], fg: '#fff7ed', accent: '#f5c451', card: '#fffbf5', head: '#4a0d1a', name: 'मैरून' },
+                { bg: ['#052e16', '#15803d'], fg: '#f0fdf4', accent: '#facc15', card: '#ffffff', head: '#052e16', name: 'हरा' },
+                { bg: ['#2e1065', '#7c3aed'], fg: '#f5f3ff', accent: '#fbbf24', card: '#ffffff', head: '#2e1065', name: 'Royal' },
+                { bg: ['#7c2d12', '#c2410c'], fg: '#fff7ed', accent: '#fde047', card: '#fffaf0', head: '#7c2d12', name: 'सोहराय' },
+                { bg: ['#111827', '#0f766e'], fg: '#f0fdfa', accent: '#2dd4bf', card: '#ffffff', head: '#111827', name: 'Graphite Teal' }
+            ],
+            defaults: { sub: 'पद / काम', heading: 'आपका नाम', message: '📞 ……………\n✉️ ……………\n📍 ……………', from: 'संस्था / दुकान का नाम', footer: '' }
         }
     };
 
@@ -1254,6 +1268,14 @@
             ['शिकायत पत्र (FIR हेतु)', 'letter', 5, 1, 'थाना प्रभारी महोदय\n' + DOTS + ' थाना', DOTS + ' के संबंध में शिकायत।', 'सविनय निवेदन है कि दिनांक ' + DOTS + ' को ' + DOTS + ' ने ' + DOTS + '।\nअतः उचित कानूनी कार्रवाई करने की कृपा करें।', 'नाम: ' + DOTS + '\nपता: ' + DOTS + '\nमोबाइल: ' + DOTS],
             ['साइबर ठगी की शिकायत', 'letter', 5, 1, 'थाना प्रभारी महोदय\nसाइबर थाना, ' + DOTS, 'साइबर ठगी की शिकायत।', 'सविनय निवेदन है कि दिनांक ' + DOTS + ' को एक फोन/लिंक के ज़रिए मेरे खाते से ₹' + DOTS + ' निकाल लिए गए (Ref. No. ' + DOTS + ')।\nअतः जाँच कर राशि वापस दिलाने की कृपा करें।', 'नाम: ' + DOTS + '\nखाता संख्या: ' + DOTS + '\nमोबाइल: ' + DOTS],
             ['सामान्य प्रार्थना पत्र (खाली ढाँचा)', 'letter', 0, 0, DOTS + ' महोदय\n' + DOTS, DOTS + ' हेतु आवेदन।', 'सविनय निवेदन है कि ' + DOTS + '\nअतः श्रीमान से निवेदन है कि ' + DOTS + ' की कृपा करें।', 'नाम: ' + DOTS + '\nपता: ' + DOTS]
+        ]],
+        ['12. 🪪 Visiting Card', [
+            ['★ दुकान / Shop Card', 'vcard', 0, 0, 'प्रोप्राइटर', DOTS, '📞 ' + DOTS + '\n📍 ' + DOTS, DOTS + ' Store'],
+            ['★ CSC / Online सेवा केंद्र', 'vcard', 2, 0, 'संचालक', DOTS, '📞 ' + DOTS + '\n✉️ ' + DOTS + '\n📍 ' + DOTS, DOTS + ' ऑनलाइन सेवा केंद्र'],
+            ['शिक्षक / Coaching Card', 'vcard', 3, 3, 'शिक्षक', DOTS, '📞 ' + DOTS + '\n✉️ ' + DOTS + '\n📍 ' + DOTS, DOTS + ' Coaching Centre'],
+            ['Business / Professional', 'vcard', 1, 0, 'Founder & CEO', DOTS, '📞 ' + DOTS + '\n✉️ ' + DOTS + '\n🌐 ' + DOTS + '\n📍 ' + DOTS, DOTS],
+            ['★ आदिवासी पहचान (सोहराय)', 'vcard', 4, 4, 'समाजसेवी', DOTS, '📞 ' + DOTS + '\n📍 ' + DOTS, DOTS],
+            ['ᱚ संताली / Ol Chiki Card', 'vcard', 5, 2, 'ᱥᱮᱣᱟᱜ', DOTS, '📞 ' + DOTS + '\n✉️ ' + DOTS + '\n📍 ' + DOTS, DOTS]
         ]]
     ];
     const HK_CAT_FLAT = []; HK_CATS.forEach(g => g[1].forEach(it => {
@@ -1334,9 +1356,10 @@
         notice:   ['🏛️ Official Letterhead', '📢 Bold Alert', '📌 Notice Board'],
         invite:   ['👑 Royal Frame', '🚪 मेहराब (Arch)', '🌼 Floral Minimal'],
         quote:    ['📰 Editorial', '◧ Split Panel', '🖍️ Highlight'],
-        letter:   ['📄 सादा', '🏢 Letterhead पट्टी', '🏦 Formal Border', '▌ Professional Stripe', '🏛️ सरकारी', '🚔 शिकायत (Box विषय)']
+        letter:   ['📄 सादा', '🏢 Letterhead पट्टी', '🏦 Formal Border', '▌ Professional Stripe', '🏛️ सरकारी', '🚔 शिकायत (Box विषय)'],
+        vcard:    ['▌ Classic Stripe', '🌙 Dark Gold', '◢ Diagonal', '◻ Minimal Center', '🔺 सोहराय Border', 'ᱚ Ol Chiki Watermark']
     };
-    const PRO_FONT_DEF = { festival: [2, 0], notice: [8, 0], invite: [1, 0], quote: [9, 0], letter: [0, 0] };
+    const PRO_FONT_DEF = { festival: [2, 0], notice: [8, 0], invite: [1, 0], quote: [9, 0], letter: [0, 0], vcard: [14, 0] };
     const PRO_COLOR_KEYS = [['bg1', 'Background 1'], ['bg2', 'Background 2'], ['head', 'शीर्षक'], ['fg', 'Text'], ['acc', 'Accent / सजावट'], ['card', 'Card / पट्टी']];
     function proDefaults() { return { design: { festival: 0, notice: 0, invite: 0, quote: 0 }, hf: {}, mf: {}, colors: {}, logo: null, logoUrl: '', bg: null, bgUrl: '', ov: 45 }; }
     S.pro = proDefaults();
@@ -1489,12 +1512,195 @@
         }
     }
 
+
+    // ============================================================
+    // 🪪 VISITING CARD (v51): 6 design × 6 रंग, आगे/पीछे, A4 sheet (10 card)
+    // ============================================================
+    S.cside = 'front'; S.ctag = '';
+    const VC_W = 1050, VC_H = 600;
+    function vcLines() {
+        return String(S.message || '').split('\n').map(l => l.trim()).filter(Boolean).slice(0, 5).map(l => {
+            const t = l.replace(/^[^\p{L}\p{N}+@(…]+/u, '').trim();
+            let k = 'addr';
+            if (/@/.test(t) && !/\s/.test(t.replace(/^(email|e-mail|ईमेल)\s*:?\s*/i, ''))) k = 'mail';
+            else if (/(https?:\/\/|www\.|\.(com|in|dev|org|net|co|app|io)(\/|\b))/i.test(t)) k = 'web';
+            else if ((t.match(/\d/g) || []).length >= 6 && !/[\u0900-\u097F]{3,}/.test(t.replace(/^(मोबाइल|फोन|फ़ोन|संपर्क|mob|ph)[^\d+]*/i, ''))) k = 'phone';
+            if (/^📞|^☎|^📱/u.test(l)) k = 'phone'; else if (/^✉|^📧/u.test(l)) k = 'mail'; else if (/^🌐|^🔗/u.test(l)) k = 'web'; else if (/^📍|^🏠/u.test(l)) k = 'addr';
+            return { k, t };
+        }).filter(x => x.t);
+    }
+    function vcIcon(ctx, k, cx, cy, r, bg, fg) {
+        ctx.save();
+        ctx.fillStyle = bg; ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = fg; ctx.fillStyle = fg; ctx.lineWidth = Math.max(1.5, r * 0.13); ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+        const s = r * 0.55;
+        if (k === 'phone') { rr(ctx, cx - s * 0.5, cy - s * 0.85, s, s * 1.7, s * 0.18); ctx.stroke(); ctx.beginPath(); ctx.arc(cx, cy + s * 0.58, s * 0.1, 0, Math.PI * 2); ctx.fill(); }
+        else if (k === 'mail') { ctx.strokeRect(cx - s * 0.85, cy - s * 0.58, s * 1.7, s * 1.16); ctx.beginPath(); ctx.moveTo(cx - s * 0.85, cy - s * 0.58); ctx.lineTo(cx, cy + s * 0.1); ctx.lineTo(cx + s * 0.85, cy - s * 0.58); ctx.stroke(); }
+        else if (k === 'web') { ctx.beginPath(); ctx.arc(cx, cy, s * 0.85, 0, Math.PI * 2); ctx.stroke(); ctx.beginPath(); ctx.ellipse(cx, cy, s * 0.36, s * 0.85, 0, 0, Math.PI * 2); ctx.stroke(); ctx.beginPath(); ctx.moveTo(cx - s * 0.85, cy); ctx.lineTo(cx + s * 0.85, cy); ctx.stroke(); }
+        else { ctx.beginPath(); ctx.arc(cx, cy - s * 0.25, s * 0.55, Math.PI * 0.85, Math.PI * 2.15); ctx.lineTo(cx, cy + s * 0.9); ctx.closePath(); ctx.fill(); ctx.fillStyle = bg; ctx.beginPath(); ctx.arc(cx, cy - s * 0.25, s * 0.22, 0, Math.PI * 2); ctx.fill(); }
+        ctx.restore();
+    }
+    function vcFit1(ctx, t, maxW, px, fnt, minPx) { ctx.font = fnt(px); while (ctx.measureText(t).width > maxW && px > (minPx || 10)) { px--; ctx.font = fnt(px); } return px; }
+    // संपर्क पंक्तियाँ — x,y से शुरू, w चौड़ाई, h ऊँचाई; cols = 1 या 2
+    function vcContacts(ctx, x, y, w, h, col, ibg, ifg, cols, align) {
+        const L = vcLines(); if (!L.length) return;
+        cols = cols || 1; const rows = Math.ceil(L.length / cols), rh = Math.min(h / rows, VC_H * 0.105), cw = w / cols;
+        const fnt = p => '600 ' + p + 'px ' + FONT;
+        let px = Math.round(rh * 0.5);
+        L.forEach(it => { px = Math.min(px, vcFit1(ctx, it.t, cw - rh * 1.15, px, fnt, 11)); });
+        L.forEach((it, i) => {
+            const c = cols === 1 ? 0 : i % cols, r = cols === 1 ? i : Math.floor(i / cols);
+            let cx = x + c * cw; const cy = y + r * rh + rh / 2;
+            if (align === 'center' && cols === 1) { ctx.font = fnt(px); cx = x + (w - (rh * 1.1 + ctx.measureText(it.t).width)) / 2; }
+            vcIcon(ctx, it.k, cx + rh * 0.38, cy, rh * 0.36, ibg, ifg);
+            ctx.save(); ctx.font = fnt(px); ctx.fillStyle = col; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(it.t, cx + rh * 1.0, cy); ctx.restore();
+        });
+    }
+    function vcInitial(ctx, cx, cy, s, bg, fg) {
+        if (proLogo(ctx, cx, cy, s, '#ffffff')) return;
+        const t = Array.from(String(S.from || S.heading || 'H').trim().replace(/^[^\p{L}\p{N}]+/u, ''))[0] || 'H';
+        ctx.save(); ctx.fillStyle = bg; ctx.beginPath(); ctx.arc(cx, cy, s / 2, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = fg; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = '800 ' + Math.round(s * 0.5) + 'px ' + FONT; ctx.fillText(t, cx, cy + s * 0.03); ctx.restore();
+    }
+    function vcZig(ctx, W, y, h, c1, c2, flip) {
+        ctx.save(); const n = Math.max(8, Math.round(W / (h * 1.4))), sp = W / n;
+        ctx.fillStyle = c1; ctx.fillRect(0, flip ? y + h * 0.65 : y, W, h * 0.35);
+        for (let i = 0; i < n; i++) { ctx.fillStyle = i % 2 ? c1 : c2; ctx.beginPath(); if (flip) { ctx.moveTo(i * sp, y + h * 0.65); ctx.lineTo(i * sp + sp / 2, y); ctx.lineTo((i + 1) * sp, y + h * 0.65); } else { ctx.moveTo(i * sp, y + h * 0.35); ctx.lineTo(i * sp + sp / 2, y + h); ctx.lineTo((i + 1) * sp, y + h * 0.35); } ctx.closePath(); ctx.fill(); }
+        ctx.restore();
+    }
+    function vcWm(ctx, W, H, col) {
+        if (isWatermarkFree()) return;
+        ctx.save(); ctx.globalAlpha = 0.6; ctx.fillStyle = col; ctx.font = '600 ' + Math.round(H * 0.03) + 'px ' + FONT; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
+        ctx.fillText('Made with Hoṛ Katha Suite', W - H * 0.035, H - H * 0.012); ctx.restore();
+    }
+    function vcardDraw(ctx, W, H, P, d) {
+        if (S.size === 'cardsheet') {
+            ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, W, H);
+            const cw = VC_W, ch = VC_H, gx = Math.round((W - cw * 2) / 2), gy = Math.round((H - ch * 5) / 2);
+            for (let r = 0; r < 5; r++) for (let c = 0; c < 2; c++) {
+                const x = gx + c * cw, y = gy + r * ch;
+                ctx.save(); ctx.translate(x, y); ctx.beginPath(); ctx.rect(0, 0, cw, ch); ctx.clip(); vcardOne(ctx, cw, ch, P, d); ctx.restore();
+            }
+            ctx.save(); ctx.strokeStyle = '#9ca3af'; ctx.lineWidth = 2; const mk = 40;
+            for (let c = 0; c <= 2; c++) { const x = gx + c * cw; ctx.beginPath(); ctx.moveTo(x, gy - mk - 10); ctx.lineTo(x, gy - 10); ctx.moveTo(x, gy + ch * 5 + 10); ctx.lineTo(x, gy + ch * 5 + mk + 10); ctx.stroke(); }
+            for (let r = 0; r <= 5; r++) { const y = gy + r * ch; ctx.beginPath(); ctx.moveTo(gx - mk - 10, y); ctx.lineTo(gx - 10, y); ctx.moveTo(gx + cw * 2 + 10, y); ctx.lineTo(gx + cw * 2 + mk + 10, y); ctx.stroke(); }
+            ctx.fillStyle = '#6b7280'; ctx.font = '600 28px ' + FONT; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText('✂ निशान पर काटें · 3.5 × 2 inch · 300 DPI पर A4 print करें (Scale 100%)', W / 2, gy / 2);
+            ctx.restore();
+            return;
+        }
+        vcardOne(ctx, W, H, P, d);
+    }
+    function vcardOne(ctx, W, H, P, d) {
+        const U = H, hfi = proFont('h'); svNeedFont(hfi, S.heading);
+        if (S.cside === 'back') return vcardBack(ctx, W, H, P, d);
+        const light = d !== 1 && d !== 4;
+        const ink = light ? (P.head || '#111827') : P.fg, soft = light ? hexA(P.head || '#111827', 0.72) : hexA(P.fg, 0.85);
+        const iBg = d === 1 ? P.acc : d === 4 ? P.acc : P.bg[1], iFg = d === 1 || d === 4 ? P.bg[0] : '#ffffff';
+        const nameB = (w, h, px) => fitF(ctx, S.heading, w, h, px, hfi, 1.1, 14);
+        const roleB = (w, h, px) => fitF(ctx, S.sub, w, h, px, 0, 1.2, 11, '600');
+        const orgB = (w, h, px) => fitF(ctx, S.from, w, h, px, 0, 1.2, 11, '800');
+        if (d === 0 || d === 5 || d === 1) {
+            if (d === 1) { proBg(ctx, W, H, P, 'lin'); ctx.save(); ctx.strokeStyle = P.acc; ctx.lineWidth = Math.max(2, U * 0.006); ctx.strokeRect(U * 0.045, U * 0.045, W - U * 0.09, H - U * 0.09); ctx.restore(); }
+            else { ctx.fillStyle = P.card; ctx.fillRect(0, 0, W, H); }
+            if (d === 0) { const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, P.bg[0]); g.addColorStop(1, P.bg[1]); ctx.fillStyle = g; ctx.fillRect(0, 0, W * 0.045, H); ctx.fillStyle = P.acc; ctx.fillRect(W * 0.045, 0, W * 0.008, H); }
+            if (d === 5) {
+                ctx.save(); ctx.globalAlpha = 0.07; ctx.fillStyle = P.bg[1]; ctx.font = '400 ' + Math.round(H * 1.25) + "px 'Noto Sans Ol Chiki'," + FONT; ctx.textAlign = 'right'; ctx.textBaseline = 'middle'; ctx.fillText('ᱚ', W * 1.02, H * 0.55); ctx.restore();
+                const g = ctx.createLinearGradient(0, 0, W, 0); g.addColorStop(0, P.bg[0]); g.addColorStop(1, P.bg[1]); ctx.fillStyle = g; ctx.fillRect(0, H - U * 0.055, W, U * 0.055); ctx.fillStyle = P.acc; ctx.fillRect(0, H - U * 0.068, W, U * 0.013);
+            }
+            const x = d === 0 ? W * 0.1 : W * 0.08, logoS = U * 0.26, tw = W - x - logoS - W * 0.09;
+            vcInitial(ctx, W - W * 0.07 - logoS / 2, U * 0.2, logoS, d === 1 ? P.acc : P.bg[1], d === 1 ? P.bg[0] : '#ffffff');
+            let y = U * 0.1;
+            const ob = orgB(tw, U * 0.09, U * 0.062); y = drawF(ctx, ob, x, y, 'left', d === 1 ? P.acc : P.bg[1]);
+            y += U * 0.03;
+            const nb = nameB(tw, U * 0.2, U * 0.15); y = drawF(ctx, nb, x, y, 'left', ink);
+            const rb = roleB(tw, U * 0.08, U * 0.058); y = drawF(ctx, rb, x, y + U * 0.005, 'left', d === 1 ? hexA(P.fg, 0.85) : P.bg[1]);
+            ctx.fillStyle = P.acc; ctx.fillRect(x, y + U * 0.03, U * 0.16, Math.max(3, U * 0.009));
+            const cy0 = Math.max(y + U * 0.075, U * 0.55), bottom = d === 5 ? H - U * 0.1 : H - U * 0.08;
+            vcContacts(ctx, x, cy0, W - x - W * 0.07, bottom - cy0, d === 1 ? P.fg : soft, iBg, iFg, 1);
+            vcWm(ctx, W, d === 5 ? H - U * 0.07 : H, d === 1 ? P.fg : '#6b7280');
+        } else if (d === 2) {
+            ctx.fillStyle = P.card; ctx.fillRect(0, 0, W, H);
+            const g = ctx.createLinearGradient(W * 0.5, 0, W, H); g.addColorStop(0, P.bg[0]); g.addColorStop(1, P.bg[1]);
+            ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(W * 0.66, 0); ctx.lineTo(W, 0); ctx.lineTo(W, H); ctx.lineTo(W * 0.54, H); ctx.closePath(); ctx.fill();
+            ctx.fillStyle = P.acc; ctx.beginPath(); ctx.moveTo(W * 0.635, 0); ctx.lineTo(W * 0.66, 0); ctx.lineTo(W * 0.54, H); ctx.lineTo(W * 0.515, H); ctx.closePath(); ctx.fill();
+            const rx = W * 0.8; vcInitial(ctx, rx, H * 0.4, U * 0.3, P.acc, P.bg[0]);
+            const ob = orgB(W * 0.3, U * 0.18, U * 0.06); drawF(ctx, ob, rx, H * 0.6, 'center', '#ffffff');
+            const x = W * 0.07, tw = W * 0.45; let y = U * 0.12;
+            const nb = nameB(tw, U * 0.22, U * 0.14); y = drawF(ctx, nb, x, y, 'left', ink);
+            const rb = roleB(tw, U * 0.08, U * 0.056); y = drawF(ctx, rb, x, y + U * 0.005, 'left', P.bg[1]);
+            ctx.fillStyle = P.acc; ctx.fillRect(x, y + U * 0.03, U * 0.14, Math.max(3, U * 0.009));
+            const cy0 = Math.max(y + U * 0.08, U * 0.5); vcContacts(ctx, x, cy0, W * 0.46, H - U * 0.08 - cy0, soft, P.bg[1], '#ffffff', 1);
+            vcWm(ctx, W, H, '#ffffff');
+        } else if (d === 3) {
+            ctx.fillStyle = P.card; ctx.fillRect(0, 0, W, H);
+            const bh = U * 0.3, g = ctx.createLinearGradient(0, 0, W, 0); g.addColorStop(0, P.bg[0]); g.addColorStop(1, P.bg[1]);
+            ctx.fillStyle = g; ctx.fillRect(0, H - bh, W, bh); ctx.fillStyle = P.acc; ctx.fillRect(0, H - bh, W, Math.max(3, U * 0.01));
+            let y = U * 0.08;
+            const ob = orgB(W * 0.8, U * 0.08, U * 0.055); y = drawF(ctx, ob, W / 2, y, 'center', P.bg[1]);
+            const nb = nameB(W * 0.82, U * 0.2, U * 0.15); y = drawF(ctx, nb, W / 2, y + U * 0.02, 'center', ink);
+            const rb = roleB(W * 0.8, U * 0.08, U * 0.056); y = drawF(ctx, rb, W / 2, y, 'center', soft);
+            ctx.fillStyle = P.acc; ctx.fillRect(W / 2 - U * 0.08, y + U * 0.025, U * 0.16, Math.max(3, U * 0.009));
+            const n = vcLines().length;
+            vcContacts(ctx, W * 0.06, H - bh + U * 0.03, W * 0.88, bh - U * 0.06, '#ffffff', P.acc, P.bg[0], n > 2 ? 2 : 1, 'center');
+            vcWm(ctx, W, H - bh, '#6b7280');
+        } else {
+            proBg(ctx, W, H, P, 'radial');
+            const zh = U * 0.09; vcZig(ctx, W, 0, zh, P.acc, P.card); vcZig(ctx, W, H - zh, zh, P.acc, P.card, true);
+            let y = zh + U * 0.06;
+            const ob = orgB(W * 0.8, U * 0.08, U * 0.055); y = drawF(ctx, ob, W / 2, y, 'center', P.fg);
+            const nb = nameB(W * 0.84, U * 0.2, U * 0.15); y = drawF(ctx, nb, W / 2, y + U * 0.01, 'center', P.acc);
+            const rb = roleB(W * 0.8, U * 0.07, U * 0.055); y = drawF(ctx, rb, W / 2, y, 'center', P.fg);
+            const n = vcLines().length;
+            vcContacts(ctx, W * 0.08, y + U * 0.04, W * 0.84, H - zh - U * 0.05 - (y + U * 0.04), P.fg, P.acc, P.bg[0], n > 2 ? 2 : 1, 'center');
+            vcWm(ctx, W, H - zh, P.fg);
+        }
+    }
+    function vcardBack(ctx, W, H, P, d) {
+        const U = H;
+        if (d === 0 || d === 2 || d === 3 || d === 5) proBg(ctx, W, H, P, 'lin'); else proBg(ctx, W, H, P, 'radial');
+        if (d === 4) { const zh = U * 0.09; vcZig(ctx, W, 0, zh, P.acc, P.card); vcZig(ctx, W, H - zh, zh, P.acc, P.card, true); }
+        else if (d === 1) { ctx.save(); ctx.strokeStyle = P.acc; ctx.lineWidth = Math.max(2, U * 0.006); ctx.strokeRect(U * 0.045, U * 0.045, W - U * 0.09, H - U * 0.09); ctx.restore(); }
+        else if (d === 5) { ctx.save(); ctx.globalAlpha = 0.1; ctx.fillStyle = '#ffffff'; ctx.font = '400 ' + Math.round(H * 1.25) + "px 'Noto Sans Ol Chiki'," + FONT; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('ᱚ', -W * 0.02, H * 0.55); ctx.restore(); }
+        else { ctx.fillStyle = P.acc; ctx.fillRect(0, H - U * 0.035, W, U * 0.035); }
+        const q = qrMake(), cx = q ? W * 0.34 : W / 2, tw = q ? W * 0.52 : W * 0.84;
+        vcInitial(ctx, cx, H * 0.3, U * 0.28, P.acc, P.bg[0]);
+        let y = H * 0.48;
+        const ob = fitF(ctx, S.from, tw, U * 0.17, U * 0.085, proFont('h'), 1.15, 12); y = drawF(ctx, ob, cx, y, 'center', '#ffffff');
+        if (String(S.ctag || '').trim()) { const tb = fitF(ctx, S.ctag, tw, U * 0.12, U * 0.05, 0, 1.25, 11, '600'); y = drawF(ctx, tb, cx, y + U * 0.01, 'center', P.acc); }
+        const web = vcLines().find(l => l.k === 'web');
+        if (web) { ctx.save(); ctx.fillStyle = hexA('#ffffff', 0.85); const fnt = p => '600 ' + p + 'px ' + FONT; const px = vcFit1(ctx, web.t, tw, Math.round(U * 0.045), fnt, 10); ctx.font = fnt(px); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(web.t, cx, Math.min(y + U * 0.06, H - U * 0.1)); ctx.restore(); }
+        if (q) {
+            const n = q.getModuleCount(), box = U * 0.56, pad = box * 0.07, cell = (box - pad * 2) / n, bx = W - box - W * 0.06, by = (H - box * 1.16) / 2;
+            ctx.save(); ctx.fillStyle = '#ffffff'; rr(ctx, bx, by, box, box * 1.16, box * 0.06); ctx.fill(); ctx.fillStyle = '#111111';
+            for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (q.isDark(r, c)) ctx.fillRect(Math.floor(bx + pad + c * cell), Math.floor(by + pad + r * cell), Math.ceil(cell), Math.ceil(cell));
+            const lab = qrLabel(), fnt = p => '700 ' + p + 'px ' + FONT; const px = vcFit1(ctx, lab, box - pad * 2, Math.round(box * 0.085), fnt, 9);
+            ctx.font = fnt(px); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(lab, bx + box / 2, by + box + box * 0.075); ctx.restore();
+        }
+        vcWm(ctx, W, d === 4 ? H - U * 0.09 : H - U * 0.035, '#ffffff');
+    }
+    function vcFromMe(force) {
+        const D = TEMPLATES.vcard.defaults, ph = '……………';
+        const isPh = (v, d) => !String(v || '').trim() || v === d || /^…+$/.test(String(v).trim());
+        if (ME.name.trim() && (force || isPh(S.heading, D.heading))) S.heading = ME.name.trim();
+        if (ME.role && ME.role.trim()) S.sub = ME.role.trim();
+        if (ME.org.trim() && (force || isPh(S.from, D.from) || /^…/.test(String(S.from || '').trim()))) S.from = ME.org.trim();
+        const L = [['📞 ', ME.mobile], ['✉️ ', ME.email], ['🌐 ', ME.web], ['📍 ', ME.addr]];
+        const has = L.some(x => String(x[1] || '').trim());
+        if (has && (force || isPh(S.message, D.message) || /…/.test(S.message))) {
+            const old = String(S.message || '').split('\n');
+            const fill = { '📞': ME.mobile, '✉️': ME.email, '🌐': ME.web, '📍': ME.addr };
+            if (force || S.message === D.message) S.message = L.filter(x => String(x[1] || '').trim()).map(x => x[0] + x[1].trim()).join('\n');
+            else S.message = old.map(l => { const m = l.match(/^(📞|✉️|🌐|📍)\s*…+\s*$/u); return m && String(fill[m[1]] || '').trim() ? m[1] + ' ' + fill[m[1]].trim() : l; }).join('\n');
+        }
+    }
     function proDraw(ctx, W, H) {
         const P = proP(), U = Math.min(W, H), k = S.scale / 100 * Math.min(1.4, Math.sqrt(Math.max(W, H) / U));
         const d = S.pro.design[S.tpl] || 0, wide = W / H > 1.25;
         const cx = W / 2, colW = proCol(W, H);
 
         if (S.tpl === 'letter') { letterDraw(ctx, W, H, P, U, d); return; }
+        if (S.tpl === 'vcard') { vcardDraw(ctx, W, H, P, d); return; }
         if (S.tpl === 'festival') festDraw(ctx, W, H, P, U, k, d, wide, cx, colW);
 
         else if (S.tpl === 'notice') {
@@ -2024,7 +2230,7 @@
         clearTimeout(proSaveT);
         proSaveT = setTimeout(() => {
             const p = S.pro;
-            const o = { design: p.design, hf: p.hf, mf: p.mf, colors: p.colors, ov: p.ov, size: S.size, tpl: S.tpl, logoUrl: p.logoUrl, bgUrl: p.bgUrl, cat: S.cat, letter: { lto: S.lto, lfrom: S.lfrom, lsal: S.lsal, lclose: S.lclose, lplace: S.lplace } };
+            const o = { design: p.design, hf: p.hf, mf: p.mf, colors: p.colors, ov: p.ov, size: S.size, tpl: S.tpl, logoUrl: p.logoUrl, bgUrl: p.bgUrl, cat: S.cat, letter: { lto: S.lto, lfrom: S.lfrom, lsal: S.lsal, lclose: S.lclose, lplace: S.lplace }, card: { cside: S.cside, ctag: S.ctag } };
             try { localStorage.setItem(PRO_STORE, JSON.stringify(o)); }
             catch (e) { try { o.bgUrl = ''; localStorage.setItem(PRO_STORE, JSON.stringify(o)); toast('Background बहुत बड़ी है — याद नहीं रखी गई (poster में लगी है)।', 'warning'); } catch (e2) {} }
         }, 400);
@@ -2039,6 +2245,7 @@
         if (o.size && SIZES[o.size]) S.size = o.size;
         if (o.tpl && TEMPLATES[o.tpl]) S.tpl = o.tpl;
         if (typeof o.cat === 'number') S.cat = o.cat;
+        if (o.card && typeof o.card === 'object') { if (o.card.cside === 'back' || o.card.cside === 'front') S.cside = o.card.cside; if (typeof o.card.ctag === 'string') S.ctag = o.card.ctag; }
         if (o.letter && typeof o.letter === 'object') ['lto', 'lfrom', 'lsal', 'lclose', 'lplace'].forEach(f => { if (typeof o.letter[f] === 'string') S[f] = o.letter[f]; });
         p.logoUrl = o.logoUrl || ''; p.bgUrl = o.bgUrl || '';
         p.logo = await loadImg(p.logoUrl); p.bg = await loadImg(p.bgUrl);
@@ -2120,7 +2327,7 @@
     }
     // 👤 मेरी जानकारी (v49): एक बार save → हर category के …… अपने-आप भरें
     const ME_STORE = 'hk_poster_me_v1';
-    const ME = { name: '', org: '', mobile: '', addr: '', auto: true };
+    const ME = { name: '', org: '', mobile: '', addr: '', role: '', email: '', web: '', auto: true };
     try { Object.assign(ME, JSON.parse(localStorage.getItem(ME_STORE) || '{}')); } catch (e) {}
     function meSave() { try { localStorage.setItem(ME_STORE, JSON.stringify(ME)); } catch (e) {} }
     const DOTRX = '…+';
@@ -2137,6 +2344,7 @@
         return s;
     }
     function meApply() {
+        if (S.tpl === 'vcard') { vcFromMe(false); modal.querySelectorAll('[data-f]').forEach(inp => { const f = inp.getAttribute('data-f'); if (typeof S[f] === 'string') inp.value = S[f]; }); return; }
         const isL = S.tpl === 'letter';
         (isL ? ['lfrom', 'heading', 'message', 'lto'] : ['sub', 'heading', 'message', 'from']).forEach(f => { S[f] = meFill(S[f], f); });
         if (!isL && !S.footer && (ME.mobile.trim() || ME.addr.trim())) S.footer = [ME.mobile.trim() && '📞 ' + ME.mobile.trim(), ME.addr.trim()].filter(Boolean).join(' · ');
@@ -3795,7 +4003,7 @@ var qrcode = function() {
         return QR.type === 'upi' ? 'UPI से भुगतान करें' : QR.type === 'wa' ? 'WhatsApp करें' : 'Scan करें';
     }
     function qrDraw(ctx, W, H) {
-        const txt = qrText(); if (!txt) return;
+        const txt = qrText(); if (!txt || S.tpl === 'vcard') return;
         const pos = QR.pos === 'band' ? 'br' : QR.pos;
         let q; try { q = HKQR(0, 'M'); q.addData(txt); q.make(); } catch (e) { return; }
         const n = q.getModuleCount(), U = Math.min(W, H);
@@ -3818,7 +4026,7 @@ var qrcode = function() {
     }
     function qrMake() { const t = qrText(); if (!t) return null; try { const q = HKQR(0, 'M'); q.addData(t); q.make(); return q; } catch (e) { return null; } }
     function qrBandH(W, H) {
-        if (QR.pos !== 'band' || S.tpl === 'letter' || !qrText()) return 0;
+        if (QR.pos !== 'band' || S.tpl === 'letter' || S.tpl === 'vcard' || !qrText()) return 0;
         return Math.round(Math.min(W, H) * 0.2);
     }
     function qrBand(ctx, W, H, bh) {
@@ -3883,6 +4091,7 @@ var qrcode = function() {
             Object.assign(S, { sub: '', lto: it[4], heading: it[5], message: it[6], lfrom: it[7], lsal: 'महोदय,', lclose: 'भवदीय / भवदीया' });
             S.size = 'a4';
         } else Object.assign(S, { sub: it[4], heading: it[5], message: it[6], from: it[7] });
+        if (S.tpl === 'vcard') { if (S.size !== 'cardsheet') S.size = 'card'; } else if (/^card/.test(S.size)) S.size = 'square';
         ['sub', 'heading', 'message', 'from'].forEach(f => { S.edited[f] = true; });
         if (ME.auto) meApply();
         modal.querySelectorAll('[data-f]').forEach(inp => { const f = inp.getAttribute('data-f'); if (typeof S[f] === 'string') inp.value = S[f]; });
@@ -3894,7 +4103,7 @@ var qrcode = function() {
         tplRow.innerHTML = ''; palRow.innerHTML = '';
         Object.keys(TEMPLATES).forEach(key => {
             const b = el('button', { type: 'button', class: 'hkp-chip' + (S.tpl === key ? ' on' : '') }, TEMPLATES[key].name);
-            b.onclick = () => { S.tpl = key; S.pal = 0; if (key === 'letter') S.size = 'a4'; applyDefaults(false); proSave(); renderChips(); schedule(); };
+            b.onclick = () => { const was = S.tpl; S.tpl = key; S.pal = 0; if (key === 'letter') S.size = 'a4'; if (key === 'vcard') { if (S.size !== 'cardsheet') S.size = 'card'; } else if (was === 'vcard' && /^card/.test(S.size)) S.size = 'square'; applyDefaults(false); if (key === 'vcard' && ME.auto) meApply(); proSave(); renderChips(); schedule(); };
             tplRow.appendChild(b);
         });
         TEMPLATES[S.tpl].palettes.forEach((p, i) => {
@@ -3919,7 +4128,9 @@ var qrcode = function() {
         if (lw) lw.style.display = isL ? 'flex' : 'none';
         const lb2 = modal.querySelector('#hkpLetterB'); if (lb2) lb2.style.display = isL ? 'flex' : 'none';
         if (fw) fw.style.display = isL ? 'none' : '';
-        modal.querySelectorAll('[data-lbl]').forEach(lb => { lb.textContent = lb.getAttribute(isL ? 'data-lbl' : 'data-def'); });
+        const isC = S.tpl === 'vcard', cw = modal.querySelector('#hkpCardO'); if (cw) cw.style.display = isC ? 'flex' : 'none';
+        modal.querySelectorAll('[data-lbl],[data-card]').forEach(lb => { lb.textContent = lb.getAttribute(isL && lb.hasAttribute('data-lbl') ? 'data-lbl' : isC && lb.hasAttribute('data-card') ? 'data-card' : 'data-def'); });
+        if (isC) { const cs2 = modal.querySelector('#hkpCSide'); if (cs2) cs2.value = S.cside || 'front'; const ct = modal.querySelector('[data-f=ctag]'); if (ct && document.activeElement !== ct) ct.value = S.ctag || ''; }
         if (isL) modal.querySelectorAll('#hkpLetter [data-f],#hkpLetterB [data-f]').forEach(inp => { if (document.activeElement !== inp) inp.value = S[inp.getAttribute('data-f')] || ''; });
         const cs = modal.querySelector('#hkpCat'); if (cs) cs.value = String(HK_CAT_FLAT[S.cat] && HK_CAT_FLAT[S.cat][1] === S.tpl ? S.cat : -1);
         const note = modal.querySelector('#hkpWm');
@@ -3938,7 +4149,7 @@ var qrcode = function() {
   <div class="hkp-body">
     <div class="hkp-side">
       <div><label>Template</label><div class="hkp-row" id="hkpTpl"></div></div>
-      <div><label>🗂️ Category (145 तैयार — चुनते ही design और text भर जाएगा)</label>
+      <div><label>🗂️ Category (150+ तैयार — चुनते ही design और text भर जाएगा)</label>
         <input type="text" id="hkpCatQ" placeholder="🔎 खोजें — जैसे सोहराय, छुट्टी, बैंक, offer" style="width:100%;margin-bottom:5px;">
         <select id="hkpCat" style="width:100%;"></select></div>
       <details class="hkp-me"><summary style="cursor:pointer;font-weight:700;font-size:13px;">👤 मेरी जानकारी (एक बार भरें — हर poster में अपने-आप)</summary>
@@ -3947,6 +4158,9 @@ var qrcode = function() {
           <div><label>संस्था / दुकान / विद्यालय</label><input type="text" data-me="org" placeholder="जैसे BASKY ONLINE SERVICE CENTRE"></div>
           <div><label>मोबाइल</label><input type="text" data-me="mobile" placeholder="जैसे 98xxxxxxxx"></div>
           <div><label>पता / गाँव</label><input type="text" data-me="addr" placeholder="जैसे पोड़ैयाहाट, गोड्डा"></div>
+          <div><label>पद / काम (Visiting Card के लिए)</label><input type="text" data-me="role" placeholder="जैसे Founder / शिक्षक / प्रोप्राइटर"></div>
+          <div><label>Email</label><input type="text" data-me="email" placeholder="जैसे name@gmail.com"></div>
+          <div><label>Website (वैकल्पिक)</label><input type="text" data-me="web" placeholder="जैसे horkathasuite.pages.dev"></div>
           <label style="display:flex;gap:6px;align-items:center;"><input type="checkbox" data-me="auto"> Category चुनते ही अपने-आप भरें</label>
           <div class="hkp-row"><button type="button" class="hkp-chip" id="meNow">✨ अभी के poster में भरें</button></div>
           <div class="hkp-note">यह जानकारी सिर्फ़ इसी device में रहती है। "……" वाली जगह (नाम, मोबाइल, संपर्क, पता, आयोजक) भर जाती है, और नीचे की पंक्ति में 📞 मोबाइल · पता आ जाता है।</div>
@@ -3979,11 +4193,17 @@ var qrcode = function() {
         <div><label>सेवा में (पता — हर पंक्ति नई लाइन में)</label><textarea data-f="lto"></textarea></div>
         <div><label>संबोधन</label><input type="text" data-f="lsal" placeholder="महोदय, / महोदया,"></div>
       </div>
-      <div><label data-def="ऊपर की पंक्ति (संस्था / उप-शीर्षक)" data-lbl="Letterhead — संस्था का नाम (वैकल्पिक)">ऊपर की पंक्ति (संस्था / उप-शीर्षक)</label><input type="text" data-f="sub" placeholder="जैसे ग्राम पंचायत पोड़ैयाहाट"></div>
-      <div><label data-def="शीर्षक (Heading)" data-lbl="विषय">शीर्षक (Heading)</label><input type="text" data-f="heading"></div>
-      <div><label data-def="संदेश (Message)" data-lbl="पत्र का मुख्य भाग (हर पैराग्राफ़ नई लाइन में)">संदेश (Message)</label><textarea data-f="message"></textarea>
+      <div><label data-def="ऊपर की पंक्ति (संस्था / उप-शीर्षक)" data-lbl="Letterhead — संस्था का नाम (वैकल्पिक)" data-card="पद / काम (जैसे Founder, शिक्षक)">ऊपर की पंक्ति (संस्था / उप-शीर्षक)</label><input type="text" data-f="sub" placeholder="जैसे ग्राम पंचायत पोड़ैयाहाट"></div>
+      <div><label data-def="शीर्षक (Heading)" data-lbl="विषय" data-card="नाम">शीर्षक (Heading)</label><input type="text" data-f="heading"></div>
+      <div><label data-def="संदेश (Message)" data-lbl="पत्र का मुख्य भाग (हर पैराग्राफ़ नई लाइन में)" data-card="संपर्क — हर पंक्ति नई (मोबाइल, Email, Website, पता)">संदेश (Message)</label><textarea data-f="message"></textarea>
         <div class="hkp-row" style="margin-top:5px;"><button type="button" class="hkp-chip" id="hkpFromEditor">📝 Editor से Text लें</button></div></div>
-      <div id="hkpFromW"><label>नाम / संस्था</label><input type="text" data-f="from"></div>
+      <div id="hkpFromW"><label data-def="नाम / संस्था" data-card="संस्था / दुकान / Brand">नाम / संस्था</label><input type="text" data-f="from"></div>
+      <div id="hkpCardO" style="display:none;flex-direction:column;gap:9px;">
+        <div><label>Card की तरफ़</label><select id="hkpCSide" style="width:100%;"><option value="front">🪪 आगे (नाम + संपर्क)</option><option value="back">🔄 पीछे (Logo + QR)</option></select></div>
+        <div><label>पीछे की Tagline (वैकल्पिक)</label><input type="text" data-f="ctag" placeholder="जैसे संताली · हिन्दी · English Typing"></div>
+        <div class="hkp-row"><button type="button" class="hkp-chip" id="hkpCMe">👤 मेरी जानकारी से भरें</button></div>
+        <div class="hkp-note">🖨️ Print के लिए Size में "A4 Print Sheet — 10 Visiting Card" चुनें। आगे और पीछे दोनों के लिए तरफ़ बदलकर 2 बार Download करें। QR (UPI/WhatsApp) पीछे की तरफ़ आता है।</div>
+      </div>
       <div id="hkpLetterB" style="display:none;flex-direction:column;gap:9px;">
         <div><label>समापन</label><input type="text" data-f="lclose" placeholder="भवदीय / भवदीया / आपका विश्वासी"></div>
         <div><label>प्रार्थी (नाम, कक्षा, पता, मोबाइल — हर पंक्ति नई लाइन में)</label><textarea data-f="lfrom"></textarea></div>
@@ -4029,12 +4249,14 @@ var qrcode = function() {
         catQ.addEventListener('input', () => catFill(catQ.value));
         meBind();
         qrBind();
+        const csd = modal.querySelector('#hkpCSide'); csd.onchange = () => { S.cside = csd.value; proSave(); schedule(); };
+        modal.querySelector('#hkpCMe').onclick = () => { vcFromMe(true); modal.querySelectorAll('[data-f]').forEach(inp => { const f = inp.getAttribute('data-f'); if (typeof S[f] === 'string') inp.value = S[f]; }); proSave(); schedule(); toast(ME.name || ME.org || ME.mobile ? '✅ Card में आपकी जानकारी भर दी गई।' : 'ℹ️ पहले "👤 मेरी जानकारी" भरें।', ME.name || ME.org || ME.mobile ? 'success' : 'warning'); };
         catSel.onchange = () => { const v = +catSel.value; if (v >= 0) hkApplyCat(v); };
         const szSel = modal.querySelector('#hkpSize');
         szSel.onchange = () => { S.size = szSel.value; proSave(); renderChips(); schedule(); };
         // App के global key handlers इन fields में typing न रोकें + चुनी हुई भाषा में typing
         modal.querySelectorAll('input[type=text],textarea').forEach(inp => {
-            const raw = inp.matches('[data-qr=val],[data-qr=amt],[data-me=mobile]'); // UPI ID / नंबर हमेशा English में
+            const raw = inp.matches('[data-qr=val],[data-qr=amt],[data-me=mobile],[data-me=email],[data-me=web]'); // UPI ID / नंबर हमेशा English में
             inp.addEventListener('keydown', e => { if (e.key !== 'Escape') e.stopPropagation(); if (!raw) svTypeKey(e); });
         });
         const ls = modal.querySelector('#hkpLang');
