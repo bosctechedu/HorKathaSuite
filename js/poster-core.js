@@ -971,7 +971,7 @@
         const ctx = canvas.getContext('2d');
         const band = qrBandH(W, H); // QR नीचे-पट्टी: poster ऊपर के हिस्से में अपने-आप सिमट जाता है
         if (S.tpl === 'suvichar') svDraw(ctx, W, H - band);
-        else proDraw(ctx, W, H - band);
+        else { proDraw(ctx, W, H - band); if (S.tpl !== 'letter' && S.tpl !== 'vcard') webCredit(ctx, W, H - band); }
         if (band) qrBand(ctx, W, H, band); else qrDraw(ctx, W, H);
     }
 
@@ -1425,9 +1425,104 @@
         ctx.restore();
         return y + b.h;
     }
+
+    // ============================================================
+    // 🌐 WEB BACKGROUND (v55): online होने पर Category के हिसाब से असली फोटो
+    //   Wikimedia Commons (free license, CORS ठीक — Download/Share काम करता है)
+    //   अपनी Background लगाई हो तो वही रहती है। Offline हो तो built-in design।
+    // ============================================================
+    const WEB = { auto: true, img: null, credit: '', key: '', busy: '', list: {}, idx: {}, fail: {} };
+    try { const a = localStorage.getItem('hk_poster_webbg_auto'); if (a === '0') WEB.auto = false; } catch (e) {}
+    const WEB_TPLS = { festival: 1, invite: 1, quote: 1 };       // इनमें अपने-आप
+    const WEB_KW = [
+        [/सुप्रभात/, 'sunrise morning flowers'], [/रात्रि/, 'night sky moon stars'], [/जन्मदिन|Welcome Baby/i, 'birthday balloons cake'],
+        [/सालगिरह|वर्षगाँठ/, 'anniversary roses'], [/शुभ वार/, 'temple sunrise india'], [/Motivational/i, 'mountain summit sunrise'],
+        [/प्रेम|दोस्ती/, 'friendship flowers'], [/धार्मिक|भक्ति/, 'diya temple india'], [/Thank/i, 'flowers bouquet'], [/Get Well/i, 'flowers sunlight'],
+        [/नववर्ष/, 'new year fireworks'], [/सोहराय|दासाइँ|दिसोम|आदिवासी पहचान/, 'sohrai painting'], [/बाहा|सरहुल/, 'sal tree flowers'],
+        [/करम/, 'tribal dance jharkhand'], [/हूल|सिदो|कान्हू|बिरसा/, 'jharkhand forest hills'], [/आदिवासी दिवस/, 'tribal dance india'],
+        [/Ol Chiki|रघुनाथ/, 'ol chiki'], [/दीपावली/, 'diwali diya lamps'], [/छठ/, 'chhath puja'], [/होली/, 'holi colours'],
+        [/दुर्गा|दशहरा/, 'durga puja pandal'], [/संक्रांति|टुसू/, 'kite festival sky'], [/ईद/, 'mosque eid'], [/क्रिसमस/, 'christmas tree lights'],
+        [/रक्षाबंधन/, 'rakhi'], [/जन्माष्टमी/, 'krishna janmashtami'], [/सरस्वती/, 'saraswati puja'], [/गुरु|शिक्षक/, 'teacher classroom india'],
+        [/गणतंत्र|स्वतंत्रता|वोट|चुनाव/, 'india flag tricolour'], [/झारखंड स्थापना/, 'jharkhand landscape'], [/अम्बेडकर/, 'ambedkar statue'],
+        [/गाँधी/, 'mahatma gandhi'], [/महिला/, 'women india'], [/बाल दिवस/, 'children playing india'], [/पर्यावरण|वृक्षारोपण/, 'tree planting green forest'],
+        [/योग/, 'yoga sunrise'], [/मातृभाषा/, 'books library'], [/श्रद्धांजलि|शोक|पुण्यतिथि/, 'white flowers candle'],
+        [/Result|टॉपर|Selected|Student of/i, 'students graduation'], [/Admission|Exam|Holiday|Parent|School|GK|शब्द/i, 'school classroom india'],
+        [/Annual|वार्षिक|सांस्कृतिक|नाच/i, 'stage performance dance india'], [/प्रशस्ति|Certificate|सम्मान/i, 'award trophy'],
+        [/Coaching|Demo|Course|Typing|Online Class|Workshop|Seminar|Notes|Fees/i, 'computer classroom students'], [/Vacancy|भर्ती|नौकरी|Resume|Admit/i, 'office desk work'],
+        [/Offer|Sale|Stock|Arrival/i, 'shopping market india'], [/दुकान|Service|CSC|Price|Delivery|Mobile|Recharge/i, 'shop market india'],
+        [/उद्घाटन|Opening/i, 'ribbon cutting celebration'], [/Restaurant|नाश्ता|Menu/i, 'indian food thali'], [/Beauty|Salon/i, 'beauty salon'],
+        [/बैठक|ग्राम सभा|पंचायत|योजना|शिविर|विकास/, 'indian village meeting'], [/स्वच्छता|नशा|जागरूकता/, 'clean village india'], [/किसान|खेती/, 'paddy field farmer india'],
+        [/फुटबॉल|खेल|Match|विजेता/i, 'football match village'], [/रक्तदान|स्वास्थ्य/, 'blood donation camp'], [/मेला|हाट/, 'village fair india'],
+        [/धरना|आंदोलन|रैली/, 'rally crowd india'], [/विवाह|Save the Date|Biodata/i, 'indian wedding decoration'], [/छठी|नामकरण/, 'baby cradle flowers'],
+        [/गृहप्रवेश/, 'house warming rangoli'], [/Retirement|विदाई/i, 'farewell flowers'], [/सफलता|जीत/, 'celebration confetti'], [/Family/i, 'family india']
+    ];
+    const WEB_TPL_KW = { festival: 'festival lights india', invite: 'flowers decoration', quote: 'nature landscape sunrise', notice: 'paper texture' };
+    function webQuery() {
+        const it = HK_CAT_FLAT[S.cat];
+        const name = it && it[1] === S.tpl ? [it[0], it[4], it[5]].join(' ') : '';
+        if (name) for (const [rx, kw] of WEB_KW) if (rx.test(name)) return kw;
+        return WEB_TPL_KW[S.tpl] || '';
+    }
+    function webWanted() { return WEB.auto && !S.pro.bg && (WEB_TPLS[S.tpl] || WEB.force === S.tpl) && navigator.onLine !== false; }
+    function webBgImg() { return (webWanted() && WEB.img && WEB.key === webQuery()) ? WEB.img : null; }
+    function webStrip(h) { let t = ''; try { t = new DOMParser().parseFromString(String(h || ''), 'text/html').body.textContent || ''; } catch (e) { t = String(h || '').replace(/<[^>]*>/g, ''); } return t.replace(/\s+/g, ' ').trim().slice(0, 40); }
+    async function webList(kw) {
+        if (WEB.list[kw]) return WEB.list[kw];
+        try { const c = JSON.parse(sessionStorage.getItem('hkwb:' + kw) || 'null'); if (c && c.length) return (WEB.list[kw] = c); } catch (e) {}
+        const u = 'https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrnamespace=6&gsrlimit=24'
+            + '&gsrsearch=' + encodeURIComponent(kw + ' filetype:bitmap') + '&prop=imageinfo&iiprop=url|size|mime|extmetadata&iiextmetadatafilter=Artist|LicenseShortName&iiurlwidth=1600';
+        const ctl = ('AbortController' in window) ? new AbortController() : null; const tm = setTimeout(() => ctl && ctl.abort(), 9000);
+        try {
+            const r = await fetch(u, { signal: ctl ? ctl.signal : undefined }); const d = await r.json();
+            const pages = Object.values((d.query && d.query.pages) || {}).sort((a, b) => (a.index || 0) - (b.index || 0));
+            const out = [];
+            pages.forEach(p => { const ii = p.imageinfo && p.imageinfo[0]; if (!ii || !ii.thumburl || !/jpeg|png|webp/.test(ii.mime || '') || (ii.width || 0) < 900) return;
+                const m = ii.extmetadata || {}; const lic = webStrip(m.LicenseShortName && m.LicenseShortName.value);
+                if (/NC|ND|fair use|non-free/i.test(lic)) return;
+                out.push({ u: ii.thumburl, a: webStrip(m.Artist && m.Artist.value) || 'Wikimedia Commons', l: lic || 'CC' }); });
+            if (!out.length && kw.split(' ').length > 1 && !webList._retry) { webList._retry = 1; try { const r2 = await webList(kw.split(' ').slice(0, 2).join(' ')); WEB.list[kw] = r2; return r2; } finally { webList._retry = 0; } }
+            WEB.list[kw] = out; try { sessionStorage.setItem('hkwb:' + kw, JSON.stringify(out)); } catch (e) {}
+            return out;
+        } catch (e) { return []; } finally { clearTimeout(tm); }
+    }
+    async function webLoad(step) {
+        const kw = webQuery(); if (!kw || !webWanted()) return;
+        if (!step && (WEB.key === kw && WEB.img)) return;
+        if (WEB.busy === kw && !step) return; WEB.busy = kw;
+        const st = modal && modal.querySelector('#proWebSt'); if (st) st.textContent = '⏳ फोटो ढूँढ रहे हैं…';
+        try {
+            const list = await webList(kw);
+            if (!list.length) { WEB.fail[kw] = Date.now(); if (st) st.textContent = 'फोटो नहीं मिली — built-in design चल रहा है'; return; }
+            let i = WEB.idx[kw]; if (i == null) { try { i = +localStorage.getItem('hkwb_i:' + kw); } catch (e) {} if (!(i >= 0)) i = Math.floor(Math.random() * Math.min(6, list.length)); }
+            if (step) i = (i + 1) % list.length; i = i % list.length;
+            for (let n = 0; n < Math.min(4, list.length); n++) {
+                const it = list[(i + n) % list.length];
+                const img = await new Promise(res => { const im = new Image(); im.crossOrigin = 'anonymous'; im.referrerPolicy = 'no-referrer'; im.onload = () => res(im); im.onerror = () => res(null); im.src = it.u; setTimeout(() => res(null), 12000); });
+                if (img) { WEB.img = img; WEB.key = kw; WEB.credit = '📷 ' + it.a + ' · ' + it.l + ' · Wikimedia Commons'; WEB.idx[kw] = (i + n) % list.length; try { localStorage.setItem('hkwb_i:' + kw, String(WEB.idx[kw])); } catch (e) {} if (st) st.textContent = '✅ ' + WEB.credit; schedule(); return; }
+            }
+            if (st) st.textContent = 'फोटो load नहीं हुई — internet जाँचें';
+        } finally { if (WEB.busy === kw) WEB.busy = ''; }
+    }
+    function webMaybe() {
+        if (!webWanted()) return; const kw = webQuery(); if (!kw) return;
+        if (WEB.key === kw && WEB.img) return; if (WEB.busy) return;
+        if (WEB.fail[kw] && Date.now() - WEB.fail[kw] < 60000) return;
+        setTimeout(() => webLoad(false), 0);
+    }
+    function webCredit(ctx, W, H) {
+        if (!webBgImg() || !WEB.credit) return;
+        const U = Math.min(W, H), fs = Math.max(10, Math.round(U * 0.016));
+        ctx.save(); ctx.font = '600 ' + fs + 'px "Noto Sans", "Noto Sans Devanagari", sans-serif'; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
+        ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.shadowColor = 'rgba(0,0,0,.7)'; ctx.shadowBlur = fs * 0.4;
+        ctx.fillText(WEB.credit, W - fs * 0.8, H - fs * 0.5); ctx.restore();
+    }
+    window.addEventListener('online', () => { try { webMaybe(); } catch (e) {} });
+    window.addEventListener('offline', () => { try { schedule(); } catch (e) {} });
+
     function proBg(ctx, W, H, P, mode) {
-        if (S.pro.bg) {
-            ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); drawCover(ctx, S.pro.bg, 0, 0, W, H, 1, 0, 0);
+        const bgi = S.pro.bg || webBgImg();
+        if (bgi) {
+            ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); drawCover(ctx, bgi, 0, 0, W, H, 1, 0, 0);
             if (S.pro.ov > 0) { ctx.fillStyle = hexA(P.bg[0], S.pro.ov / 100); ctx.fillRect(0, 0, W, H); }
             return;
         }
@@ -2465,6 +2560,14 @@
         pick('#proBgBtn', '#proBgFile', 'bg', 1920, 0.8);
         q('#proLogoDel').onclick = () => { S.pro.logo = null; S.pro.logoUrl = ''; proSave(); schedule(); };
         q('#proBgDel').onclick = () => { S.pro.bg = null; S.pro.bgUrl = ''; proSave(); schedule(); };
+        const wa = q('#proWebAuto'); if (wa) { wa.checked = WEB.auto; wa.onchange = () => { WEB.auto = wa.checked; try { localStorage.setItem('hk_poster_webbg_auto', WEB.auto ? '1' : '0'); } catch (e) {} if (WEB.auto) WEB.force = S.tpl; schedule(); }; }
+        const wn = q('#proWebNext'); if (wn) wn.onclick = () => {
+            if (navigator.onLine === false) { toast('Internet नहीं है — Web Photo के लिए online हों।', 'warning'); return; }
+            if (S.pro.bg) { S.pro.bg = null; S.pro.bgUrl = ''; proSave(); }
+            WEB.auto = true; WEB.force = S.tpl; if (wa) wa.checked = true; try { localStorage.setItem('hk_poster_webbg_auto', '1'); } catch (e) {}
+            webLoad(WEB.key === webQuery() && !!WEB.img);
+        };
+        const wo = q('#proWebOff'); if (wo) wo.onclick = () => { WEB.auto = false; WEB.force = ''; if (wa) wa.checked = false; try { localStorage.setItem('hk_poster_webbg_auto', '0'); } catch (e) {} schedule(); };
         q('#proOv').addEventListener('input', () => { S.pro.ov = +q('#proOv').value; q('#proOvV').textContent = S.pro.ov + '%'; proSave(); schedule(); });
         const cw = q('#proColors');
         PRO_COLOR_KEYS.forEach(c => cw.appendChild(el('label', null, '<input type="color" data-pc="' + c[0] + '"> ' + c[1])));
@@ -2500,6 +2603,7 @@
     }
 
     function schedule() {
+        try { webMaybe(); } catch (e) {}
         if (raf) return;
         raf = requestAnimationFrame(() => { raf = 0; try { draw(canvas); } catch (e) { console.warn('[poster]', e); } });
     }
@@ -4415,6 +4519,9 @@ var qrcode = function() {
       <div class="hkp-sec">🖼️ Background</div>
       <div class="hkp-row"><button type="button" class="hkp-btn" id="proBgBtn">🖼️ अपनी Background</button><button type="button" class="hkp-btn ghost" id="proBgDel">↩️ Built-in</button></div>
       <input type="file" accept="image/*" id="proBgFile" style="display:none">
+      <div class="hkp-row"><label style="display:flex;align-items:center;gap:6px;font-weight:700;"><input type="checkbox" id="proWebAuto"> 🌐 Web Photo (Category के हिसाब से, Auto)</label></div>
+      <div class="hkp-row"><button type="button" class="hkp-btn" id="proWebNext">🔄 दूसरी फोटो</button><button type="button" class="hkp-btn ghost" id="proWebOff">🎨 Design वाला Background</button></div>
+      <div id="proWebSt" style="font-size:12px;opacity:.8;margin:2px 0 6px;"></div>
       <div><label>परत (Overlay): <span id="proOvV">45%</span></label><input type="range" min="0" max="85" step="5" value="45" id="proOv" style="width:100%;"></div>
       <div class="hkp-sec">🌈 रंग (हर चीज़)</div>
       <div class="hkp-svcolors" id="proColors"></div>

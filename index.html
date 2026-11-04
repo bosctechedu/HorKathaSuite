@@ -11,7 +11,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com https://www.gstatic.com https://apis.google.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://api.qrserver.com https://quickchart.io https://www.gstatic.com; connect-src 'self' https://hor-katha-api.bosctechedu.workers.dev https://*.firebaseio.com https://*.firebasedatabase.app https://*.cloudfunctions.net https://*.run.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://formsubmit.co https://api.qrserver.com https://quickchart.io; media-src 'self' blob:; object-src 'none'; worker-src 'self' blob:; manifest-src 'self'; frame-src 'self' blob: https://*.firebaseapp.com; base-uri 'self'; form-action 'self' https://formsubmit.co;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com https://www.gstatic.com https://apis.google.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://api.qrserver.com https://quickchart.io https://www.gstatic.com https://upload.wikimedia.org https://thumb.wikimedia.org; connect-src 'self' https://commons.wikimedia.org https://upload.wikimedia.org https://thumb.wikimedia.org https://hor-katha-api.bosctechedu.workers.dev https://*.firebaseio.com https://*.firebasedatabase.app https://*.cloudfunctions.net https://*.run.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://formsubmit.co https://api.qrserver.com https://quickchart.io; media-src 'self' blob:; object-src 'none'; worker-src 'self' blob:; manifest-src 'self'; frame-src 'self' blob: https://*.firebaseapp.com; base-uri 'self'; form-action 'self' https://formsubmit.co;">
     <script>/* 🎨 हर load पर Light theme (v35) */try{localStorage.setItem("hor_katha_theme","light");document.documentElement.setAttribute("data-theme","light");}catch(e){}</script>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="assets/icon.ico">
@@ -2640,40 +2640,52 @@ function hpConvertAllText() {
 <script>
 (function setupHeaderBadgeUpdater() {
     'use strict';
+    // v55: plan के हिसाब से हमेशा बदलता badge (Free / Trial / P1 / P2 / P3)
+    const BADGE = {
+        P3: ['Ultimate', 'linear-gradient(135deg, #f59e0b, #b45309)', 'rgba(245,158,11,0.45)', '#fde68a'],
+        P2: ['Commercial', 'linear-gradient(135deg, #10b981, #047857)', 'rgba(16,185,129,0.45)', '#a7f3d0'],
+        P1: ['Community', 'linear-gradient(135deg, #3b82f6, #1d4ed8)', 'rgba(59,130,246,0.45)', '#bfdbfe'],
+        TRIAL: ['Trial', 'linear-gradient(135deg, #fb923c, #ea580c)', 'rgba(251,146,60,0.45)', '#fed7aa'],
+        FREE: ['Free', 'linear-gradient(135deg, #ec4899, #7c3aed)', 'rgba(236,72,153,0.4)', '#fbcfe8']
+    };
+    let want = '', applying = false;
+    function currentPlan() {
+        let tier = null, days = 0;
+        try { if (typeof window.hkProVerified === 'function') { const v = window.hkProVerified(); if (v) tier = String(v).toUpperCase(); } } catch (e) {}
+        if (!tier) {
+            try { const raw = localStorage.getItem('hk_pro_license') || localStorage.getItem('hk_pro_license_backup'); const lic = raw ? JSON.parse(raw) : null; if (lic && lic.tier) { const u = String(lic.tier).toUpperCase(); if (/^P[123]/.test(u)) tier = u.slice(0, 2); } } catch (e) {}
+        }
+        if (!tier) {
+            try { const raw = localStorage.getItem('hk_trial_data') || localStorage.getItem('hk_trial_data_backup'); const tr = raw ? JSON.parse(raw) : null; if (tr && tr.expiresAt && Date.now() < tr.expiresAt) { tier = 'TRIAL'; days = Math.max(1, Math.ceil((tr.expiresAt - Date.now()) / 86400000)); } } catch (e) {}
+        }
+        return { tier: tier || 'FREE', days };
+    }
     function updateHeaderLicenseBadges() {
         try {
-            const versionBadge = document.getElementById('versionBadge');
-            const trialInfo = document.getElementById('trialInfo');
-            if (!versionBadge || !trialInfo) return;
-            let licRaw = localStorage.getItem('hk_pro_license') || localStorage.getItem('hk_pro_license_backup');
-            let trRaw = localStorage.getItem('hk_trial_data') || localStorage.getItem('hk_trial_data_backup');
-            let tier = null, isTrial = false;
-            if (licRaw) { let lic = JSON.parse(licRaw); if (lic && lic.tier) tier = lic.tier.toUpperCase(); }
-            else if (trRaw) { let tr = JSON.parse(trRaw); if (tr && tr.expiresAt && Date.now() < tr.expiresAt) { tier = 'P3_TRIAL'; isTrial = true; } }
-            if (tier === 'P3' || tier === 'P2' || tier === 'P1') {
-                versionBadge.textContent = `${tier} Pro Active`;
-                versionBadge.style.background = 'linear-gradient(135deg, #10b981, #059669)';
-                versionBadge.style.boxShadow = '0 2px 8px rgba(16,185,129,0.4)';
-                versionBadge.style.borderColor = '#a7f3d0';
-                trialInfo.textContent = '⭐ Lifetime Pro';
-                trialInfo.style.color = '#16a34a'; trialInfo.style.fontWeight = '800';
-            } else if (tier === 'P3_TRIAL' || isTrial) {
-                versionBadge.textContent = `Trial Active`;
-                versionBadge.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
-                versionBadge.style.boxShadow = '0 2px 8px rgba(245,158,11,0.4)';
-                versionBadge.style.borderColor = '#fde68a';
-                trialInfo.innerHTML = `⏳ Trial Active`;
-                trialInfo.style.color = '#d97706'; trialInfo.style.fontWeight = '800';
-            } else {
-                versionBadge.textContent = `v3.7.4 Free`;
-                versionBadge.style.background = 'linear-gradient(135deg, #ec4899, #7c3aed)';
-                versionBadge.style.boxShadow = '0 2px 8px rgba(236,72,153,0.4)';
-                versionBadge.style.borderColor = '#fbcfe8';
-                trialInfo.textContent = 'Free Mode';
-                trialInfo.style.color = ''; trialInfo.style.fontWeight = '';
-            }
-        } catch (e) {}
+            const vb = document.getElementById('versionBadge'); if (!vb) return;
+            const ver = (typeof APP_CONFIG !== 'undefined' && APP_CONFIG && APP_CONFIG.VERSION) ? APP_CONFIG.VERSION : '3.7.4';
+            const p = currentPlan(), b = BADGE[p.tier] || BADGE.FREE;
+            const text = p.tier === 'FREE' ? `v${ver} Free` : p.tier === 'TRIAL' ? `v${ver} Trial · ${p.days} दिन` : `v${ver} ${p.tier} ${b[0]}`;
+            want = text;
+            if (vb.textContent === text && vb.dataset.plan === p.tier) return;
+            applying = true;
+            vb.textContent = text; vb.dataset.plan = p.tier;
+            vb.style.background = b[1]; vb.style.boxShadow = '0 2px 8px ' + b[2]; vb.style.borderColor = b[3]; vb.style.color = '#fff';
+            vb.title = p.tier === 'FREE' ? 'Free Mode' : p.tier === 'TRIAL' ? 'Trial Active' : p.tier + ' Plan Active';
+            const ti = document.getElementById('trialInfo');
+            if (ti) { ti.textContent = p.tier === 'FREE' ? 'Free Mode' : p.tier === 'TRIAL' ? '⏳ Trial Active' : '⭐ ' + p.tier + ' Pro'; }
+            setTimeout(() => { applying = false; }, 0);
+        } catch (e) { applying = false; }
     }
+    // कोई पुराना code badge को "Free" कर दे तो तुरंत सही plan वापस
+    function watch() {
+        const vb = document.getElementById('versionBadge'); if (!vb || vb.__hkObs || !('MutationObserver' in window)) return;
+        vb.__hkObs = new MutationObserver(() => { if (!applying && vb.textContent !== want) updateHeaderLicenseBadges(); });
+        vb.__hkObs.observe(vb, { childList: true, characterData: true, subtree: true });
+    }
+    window.addEventListener('storage', (e) => { if (/^hk_(pro_license|trial_data)/.test(e.key || '')) updateHeaderLicenseBadges(); });
+    setInterval(updateHeaderLicenseBadges, 60000);
+    [600, 2000, 5000].forEach(d => setTimeout(() => { updateHeaderLicenseBadges(); watch(); }, d));
     window.updateHeaderLicenseBadges = updateHeaderLicenseBadges;
     window.addEventListener('app-ready', () => { setTimeout(updateHeaderLicenseBadges, 200); });
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(updateHeaderLicenseBadges, 200));
