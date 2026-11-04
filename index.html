@@ -1780,11 +1780,14 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
     }
     try { Object.defineProperty(window, 'hkCheckProKey', { value: checkProKey, writable: false, configurable: false }); } catch (e) {}
 
+    // v54: signed key सच में पास हुई तो यहाँ दर्ज (typing lock इसी से खुलता है)
+    let verifiedPlan = null;
+    try { Object.defineProperty(window, 'hkProVerified', { value: function () { return verifiedPlan; }, writable: false, configurable: false }); } catch (e) {}
     let running = false;
     async function check() {
         if (running) return; running = true;
         try {
-            let bad = false;
+            let bad = false, okPlan = null;
             for (const k of ['hk_pro_license', 'hk_pro_license_backup']) {
                 let raw = null; try { raw = localStorage.getItem(k); } catch (e) {}
                 if (!raw) continue;
@@ -1792,10 +1795,15 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
                 if (!lic || typeof lic !== 'object') { bad = true; try { localStorage.removeItem(k); } catch (e) {} continue; }
                 const r = await checkProKey(lic.name, lic.email, lic.mobile, lic.key);
                 const tierOk = r.valid && String(lic.tier || '').toUpperCase() === r.plan;
+                if (tierOk) okPlan = r.plan;
                 if ((r.valid && !tierOk) || (!r.valid && r.hard)) {
                     bad = true;
                     try { localStorage.removeItem(k); } catch (e) {}
                 }
+            }
+            verifiedPlan = bad ? null : okPlan;
+            if (okPlan && !bad && typeof window.checkLicenseIntegrity === 'function') {
+                try { if (typeof window.hasProLevelAccess === 'function' && !window.hasProLevelAccess()) window.checkLicenseIntegrity(); } catch (e) {}
             }
             if (bad) {
                 console.warn('[License] Invalid/tampered Pro license removed');

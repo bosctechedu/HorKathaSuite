@@ -914,6 +914,18 @@ async function _doCheckLicenseIntegrity() {
             savedMobile = localStorage.getItem('hor_lic_mobile');
             savedKey = localStorage.getItem('hor_lic_key');
         } catch (e) {}
+        // v54: hor_lic_* हट गए हों पर hk_pro_license (signed key + OTP से बना) मौजूद हो → वहीं से वापस भरें
+        if (!(savedName && savedEmail && savedMobile && savedKey)) {
+            try {
+                const raw = localStorage.getItem('hk_pro_license') || localStorage.getItem('hk_pro_license_backup');
+                const lic = raw ? JSON.parse(raw) : null;
+                if (lic && lic.name && lic.email && lic.mobile && lic.key) {
+                    savedName = String(lic.name); savedEmail = String(lic.email); savedMobile = String(lic.mobile); savedKey = String(lic.key).trim().toUpperCase();
+                    localStorage.setItem('hor_lic_user', savedName); localStorage.setItem('hor_lic_email', savedEmail);
+                    localStorage.setItem('hor_lic_mobile', savedMobile); localStorage.setItem('hor_lic_key', savedKey);
+                }
+            } catch (e) {}
+        }
         const now = Date.now();
 
         if (_licenseSessionCache.verified && _licenseSessionCache.user === savedName && _licenseSessionCache.key === savedKey && (now - _licenseSessionCache.timestamp) < LICENSE_SESSION_CACHE_TTL_MS) { isProLicensed = true; applyProState(savedName, _licenseSessionCache.plan, false); return; }
@@ -933,7 +945,7 @@ async function _doCheckLicenseIntegrity() {
             } else {
                 _licenseSessionCache = { user: null, email: null, mobile: null, key: null, verified: false, plan: null, expiry: null, timestamp: 0 };
                 if (verification.reason !== 'Clock Tampering Detected' && verification.reason !== 'License Expired' && verification.reason !== 'License Revoked' && verification.reason !== 'Missing Details') { try { const deviceId = _sessionLabel(); _sendSecurityAlert('trackFailedKey', savedKey, deviceId); } catch (e) {} }
-                if (verification.reason === 'Clock Tampering Detected') { if (typeof showToast === 'function') showToast('⚠️ System time change detected.', 'error', 6000); try { localStorage.removeItem('hor_lic_user'); localStorage.removeItem('hor_lic_email'); localStorage.removeItem('hor_lic_mobile'); localStorage.removeItem('hor_lic_key'); } catch (e) {} }
+                if (verification.reason === 'Clock Tampering Detected') { if (typeof showToast === 'function') showToast('⚠️ Device का Date/Time गलत है — ठीक करें, Pro अपने-आप वापस चालू होगा।', 'error', 6000); }
             }
         }
     } catch (e) { _licenseSessionCache = { user: null, email: null, mobile: null, key: null, verified: false, plan: null, expiry: null, timestamp: 0 }; }

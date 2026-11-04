@@ -1,5 +1,5 @@
 // ============================================================
-// 🛡️ LANG GUARD — Hoṛ Katha Suite (v34)
+// 🛡️ LANG GUARD — Hoṛ Katha Suite (v34, v54 Pro check fix)
 // ------------------------------------------------------------
 // समस्या: Hindi / Santali / Ol Chiki चुनने के बाद भी hardware
 // keyboard से English अक्षर आ जाते थे (App Virtual या System mode).
@@ -38,8 +38,11 @@
     }
 
     function hasPro() {
-        try { if (typeof _hasProAccess === 'function') return _hasProAccess() === true; } catch (e) {}
-        try { if (typeof window.hasProLevelAccess === 'function') return window.hasProLevelAccess() === true; } catch (e) {}
+        // v54: index.html का signed-key check (hk_pro_license) पास हो चुका है → Pro
+        try { if (typeof window.hkProVerified === 'function' && window.hkProVerified()) return true; } catch (e) {}
+        try { if (typeof _hasProAccess === 'function' && _hasProAccess() === true) return true; } catch (e) {}
+        try { if (typeof window.hasProLevelAccess === 'function' && window.hasProLevelAccess() === true) return true; } catch (e) {}
+        try { if (typeof window.hasProLevelAccess === 'function') return false; } catch (e) {}
         return true; // check उपलब्ध नहीं तो typing न रोकें
     }
 
