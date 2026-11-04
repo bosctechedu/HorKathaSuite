@@ -524,89 +524,7 @@
         .vh-version-time { font-size: 0.82rem; font-weight: 800; color: #78350f; }
         .vh-version-meta { font-size: 0.68rem; color: #92400e; font-weight: 600; margin-top: 2px; }
         @media (max-width: 640px) { .dm-doc-row { padding: 8px 10px; gap: 8px; } .dm-doc-icon { font-size: 1.3rem; } .dm-doc-name { font-size: 0.8rem; } .dm-action-btn { width: 28px; height: 28px; font-size: 0.85rem; } }
-        /* ═══ ADMIN LOCK + LOGIN v2 + PANEL + PERMANENT VOCAB ═══ */
-        #btn-admin-lock { position: relative; transition: all 0.25s; }
-        #btn-admin-lock.is-admin { background: linear-gradient(135deg, #10b981, #059669) !important; color: #fff !important; border-color: #059669 !important; box-shadow: 0 2px 10px rgba(16,185,129,0.45) !important; }
-        .alm-modal { width: 100%; max-width: 460px; background: #fff; border-radius: 22px; display: flex; flex-direction: column; overflow: hidden; animation: nmModalIn 0.4s cubic-bezier(0.34,1.56,0.64,1); box-shadow: 0 25px 70px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1); }
-        .alm-header { background: linear-gradient(135deg, #0c0a1f 0%, #1e1b4b 40%, #4c1d95 100%); padding: 24px 60px 24px 22px; color: #fff; position: relative; display: flex; align-items: center; gap: 14px; }
-        .alm-icon { width: 52px; height: 52px; border-radius: 14px; background: rgba(255,255,255,0.12); border: 1.5px solid rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
-        .alm-title { font-size: 1.25rem; font-weight: 900; line-height: 1.15; }
-        .alm-title span { color: #fbbf24; }
-        .alm-subtitle { font-size: 0.72rem; color: #c4b5fd; font-weight: 600; margin-top: 3px; }
-        .alm-close { position: absolute; top: 12px; right: 14px; width: 34px; height: 34px; background: rgba(255,255,255,0.15); border: 1.5px solid rgba(255,255,255,0.25); border-radius: 50%; color: #fff; font-size: 1.05rem; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-        .alm-close:hover { background: rgba(255,255,255,0.3); transform: rotate(90deg); }
-        .alm-body { padding: 24px 22px; display: flex; flex-direction: column; gap: 16px; }
-        .alm-lock-visual { text-align: center; font-size: 3.5rem; line-height: 1; margin-bottom: 4px; filter: drop-shadow(0 4px 12px rgba(124,58,237,0.3)); }
-        .alm-info { font-size: 0.8rem; color: #475569; font-weight: 600; text-align: center; line-height: 1.5; margin: 0; }
-        .alm-field label { display: block; font-size: 0.72rem; font-weight: 900; color: #4c1d95; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
-        .alm-input-wrap { position: relative; }
-        .alm-input-wrap input { width: 100%; padding: 14px 44px 14px 16px; border: 2px solid #cbd5e1; border-radius: 12px; font-size: 0.95rem; font-weight: 700; outline: none; background: #f8fafc; color: #0f172a; box-sizing: border-box; font-family: inherit; letter-spacing: 1px; transition: all 0.2s; }
-        .alm-input-wrap input:focus { border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,0.15); background: #fff; }
-        .alm-eye { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; background: transparent; border: none; cursor: pointer; font-size: 1.1rem; border-radius: 8px; }
-        .alm-eye:hover { background: #f1f5f9; }
-        .alm-status { display: none; padding: 10px 14px; border-radius: 10px; font-size: 0.78rem; font-weight: 800; text-align: center; }
-        .alm-status.success { display: block; background: #dcfce7; color: #166534; border: 2px solid #16a34a; }
-        .alm-status.error { display: block; background: #fee2e2; color: #991b1b; border: 2px solid #dc2626; }
-        .alm-footer { padding: 16px 22px; background: #f8fafc; border-top: 2px solid #e2e8f0; display: flex; gap: 10px; }
-        .alm-btn-cancel, .alm-btn-login { flex: 1; padding: 12px 16px; border-radius: 10px; font-size: 0.85rem; font-weight: 900; cursor: pointer; font-family: inherit; transition: all 0.2s; }
-        .alm-btn-cancel { background: #fff; color: #64748b; border: 2px solid #cbd5e1; }
-        .alm-btn-login { background: linear-gradient(135deg, #7c3aed, #a855f7); color: #fff; border: none; box-shadow: 0 4px 14px rgba(124,58,237,0.4); }
-        .alm-btn-login:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(124,58,237,0.5); }
-        /* ═══ ADMIN LOGIN V2 (TRENDING DARK DESIGN) ═══ */
-        .alm-modal-v2 { width: 100%; max-width: 440px; background: #0f0f1a; border-radius: 24px; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(139,92,246,0.25); animation: nmModalIn 0.45s cubic-bezier(0.34,1.56,0.64,1); position: relative; }
-        .alm-modal-v2::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #7c3aed, #ec4899, #f59e0b, #ec4899, #7c3aed); background-size: 300% 100%; animation: almShift 5s ease infinite; z-index: 20; }
-        @keyframes almShift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
-        .alm-header-v2 { background: linear-gradient(135deg, #0a0a15 0%, #1e1b4b 50%, #4c1d95 100%); padding: 28px 60px 24px 24px; color: #fff; position: relative; display: flex; align-items: center; gap: 16px; overflow: hidden; }
-        .alm-header-v2::after { content: ""; position: absolute; top: -60%; right: -20%; width: 300px; height: 300px; background: radial-gradient(circle, rgba(139,92,246,0.25) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
-        .alm-hero-icon { position: relative; width: 64px; height: 64px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-        .alm-hero-ring { position: absolute; inset: 0; border-radius: 50%; border: 2px solid rgba(139,92,246,0.5); animation: almRingPulse 2s ease-in-out infinite; }
-        @keyframes almRingPulse { 0%,100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.12); opacity: 1; } }
-        .alm-hero-lock { font-size: 1.8rem; z-index: 2; filter: drop-shadow(0 4px 12px rgba(139,92,246,0.7)); animation: almLockBob 3s ease-in-out infinite; }
-        @keyframes almLockBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
-        .alm-hero-text { position: relative; z-index: 1; }
-        .alm-hero-text .alm-title { font-size: 1.35rem; font-weight: 900; letter-spacing: -0.3px; }
-        .alm-hero-text .alm-title span { color: #a78bfa; }
-        .alm-hero-text .alm-subtitle { font-size: 0.72rem; color: #c4b5fd; font-weight: 600; margin-top: 4px; }
-        .alm-body-v2 { padding: 22px 24px 24px; display: flex; flex-direction: column; gap: 16px; background: #0f0f1a; }
-        .alm-field-v2 label { display: flex; align-items: center; gap: 6px; font-size: 0.7rem; font-weight: 900; color: #a78bfa; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
-        .alm-fld-icon { font-size: 0.85rem; }
-        .alm-modal-v2 .alm-input-wrap input { width: 100%; padding: 14px 46px 14px 16px; border: 1.5px solid #2a2a3e; border-radius: 12px; font-size: 0.92rem; font-weight: 600; outline: none; background: #181825; color: #f1f5f9; box-sizing: border-box; font-family: inherit; letter-spacing: 0.3px; transition: all 0.25s; }
-        .alm-modal-v2 .alm-input-wrap input::placeholder { color: #4a4a5e; }
-        .alm-modal-v2 .alm-input-wrap input:focus { border-color: #7c3aed; background: #1e1e2e; box-shadow: 0 0 0 4px rgba(139,92,246,0.15); }
-        .alm-modal-v2 .alm-eye { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; background: rgba(139,92,246,0.1); border: none; cursor: pointer; font-size: 1rem; border-radius: 8px; color: #a78bfa; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-        .alm-modal-v2 .alm-eye:hover { background: rgba(139,92,246,0.25); transform: translateY(-50%) scale(1.05); }
-        .alm-row-v2 { display: flex; justify-content: space-between; align-items: center; margin-top: -4px; gap: 10px; }
-        .alm-remember { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; color: #94a3b8; font-weight: 700; cursor: pointer; user-select: none; }
-        .alm-remember input[type="checkbox"] { width: 16px; height: 16px; accent-color: #7c3aed; cursor: pointer; }
-        .alm-forgot-link { background: none; border: none; padding: 4px 6px; color: #a78bfa; font-size: 0.75rem; font-weight: 800; cursor: pointer; font-family: inherit; border-radius: 6px; transition: all 0.2s; }
-        .alm-forgot-link:hover { background: rgba(139,92,246,0.15); color: #c4b5fd; }
-        .alm-modal-v2 .alm-status { display: none; padding: 11px 14px; border-radius: 10px; font-size: 0.78rem; font-weight: 800; text-align: center; }
-        .alm-modal-v2 .alm-status.success { display: block; background: rgba(16,185,129,0.15); color: #34d399; border: 1.5px solid rgba(16,185,129,0.4); }
-        .alm-modal-v2 .alm-status.error { display: block; background: rgba(220,38,38,0.15); color: #f87171; border: 1.5px solid rgba(220,38,38,0.4); }
-        .alm-login-btn-v2 { width: 100%; padding: 14px; border-radius: 12px; border: none; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #ec4899 100%); background-size: 200% 200%; color: #fff; font-size: 0.9rem; font-weight: 900; cursor: pointer; font-family: inherit; box-shadow: 0 8px 24px rgba(124,58,237,0.4); letter-spacing: 0.3px; transition: all 0.25s; animation: almBtnShift 4s ease infinite; }
-        @keyframes almBtnShift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
-        .alm-login-btn-v2:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(124,58,237,0.6); }
-        .alm-login-btn-v2:active { transform: translateY(0); }
-        .alm-security-badge { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.68rem; font-weight: 700; color: #64748b; padding-top: 8px; border-top: 1px solid #2a2a3e; letter-spacing: 0.2px; }
-        .alm-security-badge span { font-size: 0.85rem; }
-        .alm-warning-banner { background: rgba(220,38,38,0.12); border: 1.5px solid rgba(220,38,38,0.35); border-radius: 10px; padding: 12px 14px; color: #fca5a5; font-size: 0.75rem; font-weight: 700; line-height: 1.5; text-align: center; }
-        .alm-warning-banner b { color: #f87171; }
-        @media (max-width: 480px) { .alm-modal-v2 { max-width: 96vw; border-radius: 20px; } .alm-header-v2 { padding: 20px 50px 20px 18px; gap: 12px; } .alm-hero-icon { width: 52px; height: 52px; } .alm-hero-lock { font-size: 1.5rem; } .alm-hero-text .alm-title { font-size: 1.15rem; } .alm-body-v2 { padding: 18px 18px 20px; gap: 14px; } .alm-row-v2 { flex-wrap: wrap; } }
-        .adm-modal { width: 100%; max-width: 640px; max-height: 92vh; background: #fff; border-radius: 22px; display: flex; flex-direction: column; overflow: hidden; animation: nmModalIn 0.4s; box-shadow: 0 25px 70px rgba(0,0,0,0.5); }
-        .adm-header { background: linear-gradient(135deg, #7c3aed 0%, #4c1d95 50%, #1e1b4b 100%); padding: 22px 60px 22px 22px; color: #fff; position: relative; }
-        .adm-title { font-size: 1.3rem; font-weight: 900; display: flex; align-items: center; gap: 10px; }
-        .adm-close { position: absolute; top: 12px; right: 14px; width: 34px; height: 34px; background: rgba(255,255,255,0.15); border: 1.5px solid rgba(255,255,255,0.25); border-radius: 50%; color: #fff; font-size: 1.05rem; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .adm-close:hover { background: rgba(255,255,255,0.3); transform: rotate(90deg); }
-        .adm-body { padding: 22px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 16px; }
-        .adm-section { background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 16px; }
-        .adm-section h3 { font-size: 0.85rem; font-weight: 900; color: #4c1d95; margin: 0 0 12px 0; }
-        .adm-section textarea { width: 100%; padding: 12px; border: 2px solid #cbd5e1; border-radius: 10px; font-size: 0.85rem; font-weight: 600; font-family: inherit; outline: none; box-sizing: border-box; resize: vertical; }
-        .adm-section textarea:focus { border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,0.15); }
-        .adm-section button { padding: 10px 18px; border-radius: 8px; border: none; background: linear-gradient(135deg, #7c3aed, #a855f7); color: #fff; font-size: 0.78rem; font-weight: 900; cursor: pointer; font-family: inherit; margin-top: 10px; transition: all 0.2s; }
-        .adm-section button:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(124,58,237,0.35); }
-        .adm-trial-item { padding: 8px 10px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 6px; font-size: 0.72rem; font-weight: 700; }
-        .adm-trial-item b { color: #4c1d95; }
-        .adm-danger { background: linear-gradient(135deg, #dc2626, #ef4444) !important; }
+        /* v57: Keyboard-site Admin Login removed; permanent vocab line kept */
         .vocab-permanent-entry { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border-radius: 10px; background: linear-gradient(135deg, #fef3c7, #fde68a); border: 1.5px solid #f59e0b; box-shadow: 0 2px 8px rgba(245,158,11,0.15); }
         .vocab-permanent-text { flex: 1; font-size: 0.85rem; font-weight: 800; color: #78350f; font-family: 'Inter', sans-serif; line-height: 1.4; word-wrap: break-word; }
         .vocab-permanent-label { font-size: 0.62rem; font-weight: 900; color: #7c3aed; background: #fff; padding: 3px 9px; border-radius: 12px; text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0; border: 1px solid #c4b5fd; }
@@ -793,6 +711,7 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
             <span class="greeting-text" id="greetingText">नमस्ते!</span>
         </div>
         <div class="top-settings-bar">
+            <a href="https://horkathasantali.pages.dev/" class="tool-btn priority-0" id="btn-back-santali" title="HorKathaSantali पेज पर वापस जाएँ" aria-label="Back to HorKathaSantali" style="text-decoration:none; display:inline-flex; align-items:center; gap:4px; background:linear-gradient(135deg,#f59e0b,#ea580c); color:#fff; border-color:#fdba74; font-weight:700;">🏠 <span class="btn-label">Santali</span></a>
             <button class="btn-kb-mode-action priority-1" id="btn-kb-choice" onmousedown="event.preventDefault()" onclick="toggleKeyboardPreference()" title="Keyboard: App Virtual">App Virtual: ⌨️</button>
             <button id="pwa-install-btn" class="btn-pwa-install priority-1" onmousedown="event.preventDefault()" onclick="installPWA()" title="Install as PWA app">📲 <span class="btn-label">Install</span></button>
             <button class="tool-btn priority-2" onmousedown="event.preventDefault()" onclick="openPreviewModal()" title="Live Preview">📱 <span class="btn-label">Preview</span></button>
@@ -815,7 +734,6 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
             <button class="tool-btn hk-labeled priority-1" id="btn-leaderboard" onmousedown="event.preventDefault()" onclick="hkOpenLeaderboard()" title="Leaderboard" aria-label="Weekly leaderboard">🏆</button>
             <button class="tool-btn hk-labeled priority-1" id="btn-refer" onmousedown="event.preventDefault()" onclick="hkOpenReferral()" title="Refer &amp; Earn" aria-label="Refer and earn">🎁</button>
             <button class="tool-btn hk-labeled priority-1" id="btn-docs-pro" onmousedown="event.preventDefault()" onclick="hkOpenDocsPro()" title="Docs Pro — Convert, Spell Check, Export, Templates, Cloud" aria-label="Docs Pro">📄</button>
-            <button class="tool-btn btn-icon-only priority-0" id="btn-admin-lock" onmousedown="event.preventDefault()" onclick="openAdminLoginModal()" title="Admin Login" aria-label="Admin Login">🔒</button>
         </div>
     </div>
 
@@ -1344,101 +1262,6 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
         <div class="modal-header" style="background: linear-gradient(135deg, #15803d, #22c55e);"><div class="modal-title" style="color:#fff;">🧾 Receipt</div><button class="modal-close" onclick="closeReceiptModal()" aria-label="Close">✕</button></div>
         <div class="modal-body">
             <div id="rcptNumber">-</div><div id="rcptDate">-</div><div id="rcptName">-</div><div id="rcptDevice" style="display:none;">-</div><div id="rcptEmail">-</div><div id="rcptMobile">-</div><div id="rcptPlan">-</div><div id="rcptAmount">-</div>
-        </div>
-    </div>
-</div>
-
-<!-- ═══ 👑 ADMIN LOGIN MODAL (TRENDING DARK V2) ═══ -->
-<div class="modal-overlay" id="adminLoginModal" onclick="handleModalOutsideClick(event, 'adminLoginModal')">
-    <div class="alm-modal alm-modal-v2" onclick="event.stopPropagation()">
-        <div class="alm-header alm-header-v2">
-            <div class="alm-hero-icon"><div class="alm-hero-ring"></div><div class="alm-hero-lock">🔐</div></div>
-            <div class="alm-hero-text">
-                <div class="alm-title">Admin <span>Portal</span></div>
-                <div class="alm-subtitle">Secure access • Authorized only</div>
-            </div>
-            <button class="alm-close" onclick="closeAdminLoginModal()" aria-label="Close">✕</button>
-        </div>
-        <div class="alm-body alm-body-v2">
-            <div class="alm-field alm-field-v2">
-                <label for="adminUsernameInput"><span class="alm-fld-icon">👤</span> Username</label>
-                <div class="alm-input-wrap">
-                    <input type="text" id="adminUsernameInput" placeholder="Enter username..." autocomplete="username" spellcheck="false" onkeydown="if(event.key==='Enter'){document.getElementById('adminPasswordInput').focus();}">
-                </div>
-            </div>
-            <div class="alm-field alm-field-v2">
-                <label for="adminPasswordInput"><span class="alm-fld-icon">🔑</span> Password</label>
-                <div class="alm-input-wrap">
-                    <input type="password" id="adminPasswordInput" placeholder="Enter password..." autocomplete="current-password" onkeydown="if(event.key==='Enter') submitAdminLogin()">
-                    <button type="button" class="alm-eye" onclick="toggleAdminPasswordVisibility()" aria-label="Show/Hide">👁️</button>
-                </div>
-            </div>
-            <div class="alm-row-v2">
-                <label class="alm-remember" title="30 din tak auto-login"><input type="checkbox" id="adminRememberMe"><span>Remember me (30 days)</span></label>
-                <button type="button" class="alm-forgot-link" onclick="openAdminResetModal()">Forgot password?</button>
-            </div>
-            <div id="adminLoginStatus" class="alm-status"></div>
-            <button type="button" class="alm-login-btn-v2" onclick="submitAdminLogin()"><span>🔓 Login to Admin</span></button>
-            <div class="alm-security-badge"><span>🛡️</span> Protected Session • Auto-lock in 30 min</div>
-        </div>
-    </div>
-</div>
-
-<!-- ═══ 👑 ADMIN PASSWORD RESET MODAL ═══ -->
-<div class="modal-overlay" id="adminResetModal" onclick="handleModalOutsideClick(event, 'adminResetModal')">
-    <div class="alm-modal alm-modal-v2" onclick="event.stopPropagation()" style="max-width: 480px;">
-        <div class="alm-header alm-header-v2" style="background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 40%, #b91c1c 100%);">
-            <div class="alm-hero-icon"><div class="alm-hero-ring" style="border-color: rgba(254,202,202,0.3);"></div><div class="alm-hero-lock">🔁</div></div>
-            <div class="alm-hero-text">
-                <div class="alm-title">Reset <span style="color: #fca5a5;">Credentials</span></div>
-                <div class="alm-subtitle">Use your master reset code</div>
-            </div>
-            <button class="alm-close" onclick="closeAdminResetModal()" aria-label="Close">✕</button>
-        </div>
-        <div class="alm-body alm-body-v2">
-            <div class="alm-warning-banner">⚠️ <b>Master Reset Code चाहिए</b> — यह code सिर्फ developer के पास है।</div>
-            <div class="alm-field alm-field-v2">
-                <label for="adminResetCodeInput"><span class="alm-fld-icon">🔐</span> Master Reset Code</label>
-                <div class="alm-input-wrap"><input type="password" id="adminResetCodeInput" placeholder="Master reset code" autocomplete="off" spellcheck="false"></div>
-            </div>
-            <div class="alm-field alm-field-v2">
-                <label for="adminNewUsernameInput"><span class="alm-fld-icon">👤</span> New Username</label>
-                <div class="alm-input-wrap"><input type="text" id="adminNewUsernameInput" placeholder="Min 3 characters" autocomplete="off" spellcheck="false"></div>
-            </div>
-            <div class="alm-field alm-field-v2">
-                <label for="adminNewPasswordInput"><span class="alm-fld-icon">🔑</span> New Password</label>
-                <div class="alm-input-wrap"><input type="password" id="adminNewPasswordInput" placeholder="Min 8 characters" autocomplete="new-password"></div>
-            </div>
-            <div class="alm-field alm-field-v2">
-                <label for="adminConfirmPasswordInput"><span class="alm-fld-icon">✓</span> Confirm Password</label>
-                <div class="alm-input-wrap"><input type="password" id="adminConfirmPasswordInput" placeholder="Re-enter password" autocomplete="new-password"></div>
-            </div>
-            <div id="adminResetStatus" class="alm-status"></div>
-            <button type="button" class="alm-login-btn-v2" onclick="submitAdminReset()" style="background: linear-gradient(135deg, #dc2626, #b91c1c); box-shadow: 0 8px 24px rgba(220,38,38,0.4);"><span>🔄 Reset Credentials</span></button>
-            <button type="button" class="alm-login-btn-v2" onclick="closeAdminResetModal()" style="background: #f1f5f9; color: #475569; box-shadow: none; margin-top: 8px;"><span>← Back to Login</span></button>
-        </div>
-    </div>
-</div>
-
-<!-- ═══ ADMIN PANEL MODAL ═══ -->
-<div class="modal-overlay" id="adminPanelModal" onclick="handleModalOutsideClick(event, 'adminPanelModal')">
-    <div class="adm-modal" onclick="event.stopPropagation()">
-        <div class="adm-header"><div class="adm-title">👑 Admin Panel</div><button class="adm-close" onclick="closeAdminPanelModal()" aria-label="Close">✕</button></div>
-        <div class="adm-body">
-            <div class="adm-section">
-                <h3>🎯 Permanent Vocabulary Text (Vocabulary Manager)</h3>
-                <textarea id="admPermanentVocabInput" rows="3" placeholder="Enter permanent text..."></textarea>
-                <button onclick="adminSaveVocabText()">💾 Save Permanent Text</button>
-            </div>
-            <div class="adm-section">
-                <h3>🎁 Trial History Manager</h3>
-                <div id="admTrialHistoryList" style="max-height:200px; overflow-y:auto;"></div>
-                <button class="adm-danger" onclick="adminClearTrialHistory()">🗑️ Clear All Trial History</button>
-            </div>
-            <div class="adm-section">
-                <h3>🚪 Session</h3>
-                <button class="adm-danger" onclick="adminLogout()">Logout Admin Session</button>
-            </div>
         </div>
     </div>
 </div>
@@ -3429,284 +3252,19 @@ function hpConvertAllText() {
 
 <!-- 👑 ADMIN SYSTEM v2 — Complete with Remember Me + Username/Password/Reset -->
 <script>
-(function setupAdminSystemAndPermanentVocab() {
+(function setupPermanentVocab() {
     'use strict';
-
-    // ═════════════════════════════════════════════════════════════
-    // 🔐 ADMIN CREDENTIALS (v3.7.4-sec1)
-    //   Plaintext/Base64 हटाया गया। अब सिर्फ़ PBKDF2-SHA256 hash रखा जाता है।
-    //   Password बदलने के लिए Reset modal इस्तेमाल करें।
-    // ═════════════════════════════════════════════════════════════
-    const DEFAULT_USERNAME = 'admin';
-    const PBKDF2_ITERATIONS = 150000;
-    const DEFAULT_PASS_SALT = '5bda9722f6dd8cfed6d7ba18db5ee8a7';
-    const DEFAULT_PASS_HASH = '1e43c7b159288aa143538342c4106777df0e23060cb8be26d09d352b9d244157';
-    const RESET_CODE_SALT = 'd4eb97799ec9971b153868af136311b1';
-    const RESET_CODE_HASH = 'fcae35d26a8e429a306e7dbb4ab75968c910dd78b945626e12f8c9eeb4a151bd';
-    const ADMIN_SESSION_KEY = 'hk_admin_session';
-    const SESSION_DURATION_MS = 30 * 60 * 1000;
-    const PERMANENT_VOCAB_KEY = 'hk_permanent_vocab_text';
+    // v57: Keyboard site Admin Login removed (admin work is on horkathasantali.pages.dev).
+    // Only the fixed "Permanent" vocabulary line stays for users.
     const DEFAULT_PERMANENT_VOCAB = 'The quick brown fox jumps over the lazy dog.';
-    const REMEMBER_KEY = 'hk_admin_remember';
-    const REMEMBER_EXP_KEY = 'hk_admin_remember_exp';
-    const REMEMBER_DURATION_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
-    const LOCK_KEY = 'hk_admin_lock';
-    const MAX_ATTEMPTS = 5;
-    const LOCK_DURATION_MS = 5 * 60 * 1000;
-
-    function _hexToBytes(hex) { const out = new Uint8Array(hex.length / 2); for (let i = 0; i < out.length; i++) out[i] = parseInt(hex.substr(i * 2, 2), 16); return out; }
-    function _bytesToHex(buf) { return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join(''); }
-    function _randomHex(n) { const a = new Uint8Array(n); crypto.getRandomValues(a); return _bytesToHex(a); }
-    function _safeEqual(a, b) { if (typeof a !== 'string' || typeof b !== 'string' || a.length !== b.length) return false; let r = 0; for (let i = 0; i < a.length; i++) r |= a.charCodeAt(i) ^ b.charCodeAt(i); return r === 0; }
-    async function _pbkdf2Hex(secret, saltHex) {
-        const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(String(secret)), { name: 'PBKDF2' }, false, ['deriveBits']);
-        const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: _hexToBytes(saltHex), iterations: PBKDF2_ITERATIONS }, km, 256);
-        return _bytesToHex(bits);
-    }
-    async function _sha256Hex(str) { return _bytesToHex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str))); }
-
-    function getAdminUsername() { try { return localStorage.getItem('hk_admin_username') || DEFAULT_USERNAME; } catch(e) { return DEFAULT_USERNAME; } }
-    function getAdminPassRecord() {
-        try {
-            const salt = localStorage.getItem('hk_admin_pass_salt');
-            const hash = localStorage.getItem('hk_admin_pass_hash');
-            if (salt && hash) return { salt, hash };
-        } catch(e) {}
-        return { salt: DEFAULT_PASS_SALT, hash: DEFAULT_PASS_HASH };
-    }
-    async function setAdminCredentials(u, plainPass) {
-        const salt = _randomHex(16);
-        const hash = await _pbkdf2Hex(plainPass, salt);
-        try {
-            localStorage.setItem('hk_admin_username', u);
-            localStorage.setItem('hk_admin_pass_salt', salt);
-            localStorage.setItem('hk_admin_pass_hash', hash);
-            localStorage.removeItem('hk_admin_password_b64'); // पुराना base64 हटाओ
-            localStorage.removeItem(REMEMBER_KEY); localStorage.removeItem(REMEMBER_EXP_KEY);
-        } catch(e) {}
-    }
-    // पुराने version का base64 password हमेशा के लिए हटाओ
-    try { localStorage.removeItem('hk_admin_password_b64'); } catch(e) {}
-
-    // Remember-Me token: credential hash + expiry से बना, सिर्फ़ 'true' लिखने से अब login नहीं होगा
-    async function _makeRememberToken(exp) { const rec = getAdminPassRecord(); return _sha256Hex(getAdminUsername() + '|' + rec.hash + '|' + exp); }
-
-    // Brute-force lock
-    function _getLock() { try { return JSON.parse(localStorage.getItem(LOCK_KEY) || '{}'); } catch(e) { return {}; } }
-    function _lockedMs() { const l = _getLock(); return (l.until && Date.now() < l.until) ? (l.until - Date.now()) : 0; }
-    function _registerFail() { const l = _getLock(); const n = (l.until && Date.now() >= l.until) ? 1 : (l.count || 0) + 1; const rec = { count: n }; if (n >= MAX_ATTEMPTS) { rec.until = Date.now() + LOCK_DURATION_MS; rec.count = 0; } try { localStorage.setItem(LOCK_KEY, JSON.stringify(rec)); } catch(e) {} return rec; }
-    function _clearFails() { try { localStorage.removeItem(LOCK_KEY); } catch(e) {} }
-
-    window.isAdminSession = function() {
-        try { const exp = parseInt(sessionStorage.getItem(ADMIN_SESSION_KEY) || '0', 10); return Date.now() < exp; }
-        catch(e) { return false; }
-    };
-
-    function updateAdminLockIcon() {
-        const btn = document.getElementById('btn-admin-lock');
-        if (!btn) return;
-        if (window.isAdminSession()) { btn.textContent = '🔓'; btn.title = 'Admin Panel (Logged in)'; btn.classList.add('is-admin'); }
-        else { btn.textContent = '🔒'; btn.title = 'Admin Login'; btn.classList.remove('is-admin'); }
-    }
-    window.updateAdminLockIcon = updateAdminLockIcon;
-
-    // ─── LOGIN MODAL ───
-    window.openAdminLoginModal = async function() {
-        if (window.isAdminSession()) { window.openAdminPanelModal(); return; }
-        // ✅ Remember Me auto-restore
-        try {
-            const remToken = localStorage.getItem(REMEMBER_KEY);
-            const rememberExp = parseInt(localStorage.getItem(REMEMBER_EXP_KEY) || '0', 10);
-            if (remToken && Date.now() < rememberExp) {
-                const expected = await _makeRememberToken(rememberExp);
-                if (_safeEqual(remToken, expected)) {
-                    sessionStorage.setItem(ADMIN_SESSION_KEY, String(Date.now() + SESSION_DURATION_MS));
-                    window.openAdminPanelModal();
-                    return;
-                }
-            }
-            if (remToken) { localStorage.removeItem(REMEMBER_KEY); localStorage.removeItem(REMEMBER_EXP_KEY); }
-        } catch(e) {}
-        const m = document.getElementById('adminLoginModal');
-        if (!m) return;
-        m.style.display = 'flex';
-        const uInput = document.getElementById('adminUsernameInput');
-        const pInput = document.getElementById('adminPasswordInput');
-        const status = document.getElementById('adminLoginStatus');
-        const rememberChk = document.getElementById('adminRememberMe');
-        if (uInput) uInput.value = '';
-        if (pInput) { pInput.value = ''; pInput.type = 'password'; }
-        if (status) { status.textContent = ''; status.className = 'alm-status'; }
-        if (rememberChk) rememberChk.checked = false;
-        setTimeout(() => { if (uInput) uInput.focus(); }, 250);
-    };
-    window.closeAdminLoginModal = function() { const m = document.getElementById('adminLoginModal'); if (m) m.style.display = 'none'; };
-    window.toggleAdminPasswordVisibility = function() {
-        const input = document.getElementById('adminPasswordInput');
-        if (!input) return;
-        input.type = input.type === 'password' ? 'text' : 'password';
-    };
-    let _adminLoginBusy = false;
-    window.submitAdminLogin = async function() {
-        if (_adminLoginBusy) return;
-        const uInput = document.getElementById('adminUsernameInput');
-        const pInput = document.getElementById('adminPasswordInput');
-        const status = document.getElementById('adminLoginStatus');
-        if (!uInput || !pInput || !status) return;
-        const lockMs = _lockedMs();
-        if (lockMs > 0) {
-            status.className = 'alm-status error';
-            status.textContent = '⛔ बहुत ज़्यादा गलत कोशिशें। ' + Math.ceil(lockMs / 60000) + ' मिनट बाद फिर कोशिश करें।';
-            return;
-        }
-        const username = uInput.value.trim();
-        const password = pInput.value;
-        if (!username || !password) {
-            status.className = 'alm-status error';
-            status.textContent = '❌ Username और Password दोनों भरें।';
-            return;
-        }
-        _adminLoginBusy = true;
-        status.className = 'alm-status';
-        status.textContent = '⏳ Checking...';
-        let ok = false;
-        try {
-            const rec = getAdminPassRecord();
-            const hash = await _pbkdf2Hex(password, rec.salt);
-            ok = _safeEqual(username, getAdminUsername()) & _safeEqual(hash, rec.hash);
-        } catch(e) { ok = false; }
-        _adminLoginBusy = false;
-        if (!ok) {
-            const r = _registerFail();
-            status.className = 'alm-status error';
-            status.textContent = r.until ? '⛔ 5 गलत कोशिशें। 5 मिनट के लिए लॉक।' : '❌ Invalid username or password.';
-            pInput.value = ''; pInput.focus();
-            return;
-        }
-        _clearFails();
-        try { sessionStorage.setItem(ADMIN_SESSION_KEY, String(Date.now() + SESSION_DURATION_MS)); } catch(e) {}
-        // ✅ Remember Me — 30 days, signed token
-        try {
-            const rememberChk = document.getElementById('adminRememberMe');
-            if (rememberChk && rememberChk.checked) {
-                const exp = Date.now() + REMEMBER_DURATION_MS;
-                localStorage.setItem(REMEMBER_KEY, await _makeRememberToken(exp));
-                localStorage.setItem(REMEMBER_EXP_KEY, String(exp));
-            } else {
-                localStorage.removeItem(REMEMBER_KEY);
-                localStorage.removeItem(REMEMBER_EXP_KEY);
-            }
-        } catch(e) {}
-        status.className = 'alm-status success';
-        status.textContent = '✅ Login successful! Opening admin panel...';
-        updateAdminLockIcon();
-        setTimeout(function() { window.closeAdminLoginModal(); window.openAdminPanelModal(); }, 800);
-    };
-
-    // ─── RESET MODAL ───
-    window.openAdminResetModal = function() {
-        const loginModal = document.getElementById('adminLoginModal');
-        if (loginModal) loginModal.style.display = 'none';
-        const m = document.getElementById('adminResetModal');
-        if (!m) return;
-        m.style.display = 'flex';
-        ['adminResetCodeInput', 'adminNewUsernameInput', 'adminNewPasswordInput', 'adminConfirmPasswordInput'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.value = '';
-        });
-        const st = document.getElementById('adminResetStatus');
-        if (st) { st.textContent = ''; st.className = 'alm-status'; }
-    };
-    window.closeAdminResetModal = function() { const m = document.getElementById('adminResetModal'); if (m) m.style.display = 'none'; };
-    window.submitAdminReset = async function() {
-        const code = (document.getElementById('adminResetCodeInput') || {}).value || '';
-        const newUser = (document.getElementById('adminNewUsernameInput') || {}).value || '';
-        const newPass = (document.getElementById('adminNewPasswordInput') || {}).value || '';
-        const confirmPass = (document.getElementById('adminConfirmPasswordInput') || {}).value || '';
-        const status = document.getElementById('adminResetStatus');
-        if (!status) return;
-        const lockMs = _lockedMs();
-        if (lockMs > 0) { status.className = 'alm-status error'; status.textContent = '⛔ ' + Math.ceil(lockMs / 60000) + ' मिनट बाद फिर कोशिश करें।'; return; }
-        let codeOk = false;
-        try { codeOk = _safeEqual(await _pbkdf2Hex(code.trim().toUpperCase(), RESET_CODE_SALT), RESET_CODE_HASH); } catch(e) {}
-        if (!codeOk) { const r = _registerFail(); status.className = 'alm-status error'; status.textContent = r.until ? '⛔ 5 गलत कोशिशें। 5 मिनट के लिए लॉक।' : '❌ Invalid master reset code.'; return; }
-        _clearFails();
-        if (newUser.trim().length < 3) { status.className = 'alm-status error'; status.textContent = '❌ Username कम से कम 3 characters का होना चाहिए।'; return; }
-        if (newPass.length < 8) { status.className = 'alm-status error'; status.textContent = '❌ Password कम से कम 8 characters का होना चाहिए।'; return; }
-        if (newPass !== confirmPass) { status.className = 'alm-status error'; status.textContent = '❌ Password और Confirm Password match नहीं हैं।'; return; }
-        await setAdminCredentials(newUser.trim(), newPass);
-        status.className = 'alm-status success';
-        status.textContent = '✅ Credentials reset successful! Login करें।';
-        setTimeout(function() { window.closeAdminResetModal(); window.openAdminLoginModal(); }, 1200);
-    };
-
-    // ─── ADMIN PANEL ───
-    window.openAdminPanelModal = function() {
-        if (!window.isAdminSession()) { window.openAdminLoginModal(); return; }
-        const m = document.getElementById('adminPanelModal');
-        if (!m) return;
-        const ta = document.getElementById('admPermanentVocabInput');
-        if (ta) ta.value = getPermanentVocabText();
-        renderAdminTrialHistory();
-        m.style.display = 'flex';
-    };
-    window.closeAdminPanelModal = function() { const m = document.getElementById('adminPanelModal'); if (m) m.style.display = 'none'; };
-    window.adminLogout = function() {
-        try { sessionStorage.removeItem(ADMIN_SESSION_KEY); } catch(e) {}
-        // ✅ Logout pe remember bhi clear
-        try { localStorage.removeItem(REMEMBER_KEY); localStorage.removeItem(REMEMBER_EXP_KEY); } catch(e) {}
-        updateAdminLockIcon();
-        window.closeAdminPanelModal();
-        if (typeof showToast === 'function') showToast('🚪 Admin session closed', 'info');
-    };
-
-    // ─── PERMANENT VOCAB ───
-    function getPermanentVocabText() {
-        try { return localStorage.getItem(PERMANENT_VOCAB_KEY) || DEFAULT_PERMANENT_VOCAB; }
-        catch(e) { return DEFAULT_PERMANENT_VOCAB; }
-    }
+    try {
+        ['hk_admin_session'].forEach(function(k) { sessionStorage.removeItem(k); });
+        ['hk_admin_username', 'hk_admin_pass_salt', 'hk_admin_pass_hash', 'hk_admin_remember', 'hk_admin_remember_exp', 'hk_admin_lock', 'hk_permanent_vocab_text']
+            .forEach(function(k) { localStorage.removeItem(k); });
+    } catch(e) {}
+    window.isAdminSession = function() { return false; };
+    function getPermanentVocabText() { return DEFAULT_PERMANENT_VOCAB; }
     window.getPermanentVocabText = getPermanentVocabText;
-    window.adminSaveVocabText = function() {
-        if (!window.isAdminSession()) { if (typeof showToast === 'function') showToast('🔒 Admin only', 'error'); return; }
-        const ta = document.getElementById('admPermanentVocabInput');
-        if (!ta) return;
-        const txt = ta.value.trim();
-        if (!txt) { if (typeof showToast === 'function') showToast('Cannot be empty', 'error'); return; }
-        try { localStorage.setItem(PERMANENT_VOCAB_KEY, txt); } catch(e) {}
-        renderPermanentVocabEntry();
-        if (typeof window.updateSuggestionBar === 'function') window.updateSuggestionBar();
-        if (typeof showToast === 'function') showToast('✅ Permanent text saved', 'success');
-    };
-
-    // ─── TRIAL HISTORY ───
-    function renderAdminTrialHistory() {
-        const el = document.getElementById('admTrialHistoryList');
-        if (!el) return;
-        let hist = {};
-        try { hist = JSON.parse(localStorage.getItem('hk_trial_history') || '{}'); } catch(e) {}
-        const keys = Object.keys(hist);
-        if (keys.length === 0) { el.innerHTML = '<div style="text-align:center;padding:16px;color:#94a3b8;font-size:0.75rem;font-weight:600;">No trial history yet</div>'; return; }
-        el.innerHTML = keys.map(function(k) {
-            const v = hist[k];
-            const email = v.email || k.replace('email:', '');
-            const now = Date.now();
-            const expired = v.expiresAt && now >= v.expiresAt;
-            const remainDays = v.expiresAt ? Math.max(0, Math.ceil((v.expiresAt - now) / 86400000)) : 0;
-            const dateStr = v.activatedAt ? new Date(v.activatedAt).toLocaleDateString('en-IN') : '—';
-            return '<div class="adm-trial-item"><b>📧 ' + escapeHtml(email) + '</b> · '
-                + (expired ? '<span style="color:#dc2626;">EXPIRED</span>' : '<span style="color:#16a34a;">' + remainDays + 'd left</span>')
-                + '<br><small style="color:#64748b;">Started: ' + dateStr + ' · Name: ' + escapeHtml(v.name || '—') + '</small></div>';
-        }).join('');
-    }
-    window.adminClearTrialHistory = function() {
-        if (!window.isAdminSession()) return;
-        if (!confirm('Clear ALL trial history?\n\nUsers will be able to activate FRESH 7-day trials again.')) return;
-        try { localStorage.removeItem('hk_trial_history'); } catch(e) {}
-        renderAdminTrialHistory();
-        if (typeof showToast === 'function') showToast('🗑️ Trial history cleared', 'success');
-    };
-
-    // ─── PERMANENT VOCAB ENTRY INJECTION ───
     function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, function(c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
     let _permVocabRendering = false;
     function renderPermanentVocabEntry() {
@@ -3755,20 +3313,13 @@ function hpConvertAllText() {
         }
     }
     function init() {
-        updateAdminLockIcon();
         attachVocabObserver();
         hookVocabModalOpen();
-        setInterval(updateAdminLockIcon, 60000);
     }
-    window.addEventListener('app-ready', function() { setTimeout(function() { updateAdminLockIcon(); attachVocabObserver(); hookVocabModalOpen(); }, 200); });
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function() { setTimeout(init, 500); });
     else setTimeout(init, 500);
     window.addEventListener('app-ready', function() { setTimeout(init, 800); });
 
-    // 🔒 Debug helper: सिर्फ़ status, password/reset कुछ नहीं
-    window.__adminDebug = {
-        isAdmin: function() { return window.isAdminSession(); }
-    };
 })();
 </script>
 
