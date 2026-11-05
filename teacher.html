@@ -126,7 +126,15 @@ td.num,th.num{text-align:right}
   const $ = id => document.getElementById(id);
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const ls = k => { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } };
-  const lic = { name: ls('hor_lic_user'), email: ls('hor_lic_email'), mobile: ls('hor_lic_mobile'), key: ls('hor_lic_key') };
+  // Pro/Institute license; न हो (या P1/P2 हो) तो ₹9 Trial का Worker-signed token — असली जाँच Worker पर
+  const proLic = { name: ls('hor_lic_user'), email: ls('hor_lic_email'), mobile: ls('hor_lic_mobile'), key: ls('hor_lic_key') };
+  const trialLic = (() => {
+    for (const k of ['hk_trial_data', 'hk_trial_data_backup']) {
+      try { const t = JSON.parse(ls(k) || 'null'); if (t && t.key && t.email && t.token && t.sig && Number(t.expiresAt) > Date.now()) return { name: t.name || '', email: t.email, mobile: t.mobile || '', key: t.key, trialToken: t.token, trialSig: t.sig }; } catch (e) {}
+    }
+    return null;
+  })();
+  let lic = proLic.key ? proLic : (trialLic || proLic);
   let cur = null, sortK = 'avg', sortDir = -1;
 
   function toast(m) { const t = $('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), 2600); }
@@ -141,11 +149,16 @@ td.num,th.num{text-align:right}
   const fmtDate = t => t ? new Date(t).toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : '—';
 
   async function init() {
-    if (!lic.key || !lic.email) { gate('इस browser में कोई license activate नहीं है। पहले <a href="./">app</a> में अपनी <b>P3 Ultimate</b> या <b>Institute</b> license activate करें, फिर यह page दोबारा खोलें।', true); return; }
+    if (!lic.key || !lic.email) { gate('इस browser में कोई license activate नहीं है। पहले <a href="./">app</a> में अपनी <b>P3 Ultimate</b> / <b>Institute</b> license या <b>₹9 Trial</b> activate करें, फिर यह page दोबारा खोलें।', true); return; }
     $('who').textContent = (lic.name || lic.email) + ' · ' + lic.email;
-    try { const d = await call('list'); $('gate').classList.add('hide'); $('app').classList.remove('hide'); renderClasses(d.classes); }
+    try {
+      let d;
+      try { d = await call('list'); }
+      catch (e) { if (e.code === 'NEED_P3' && trialLic && lic !== trialLic) { lic = trialLic; $('who').textContent = (lic.name || lic.email) + ' · ' + lic.email + ' · ₹9 Trial'; d = await call('list'); } else throw e; }
+      $('gate').classList.add('hide'); $('app').classList.remove('hide'); renderClasses(d.classes);
+    }
     catch (e) {
-      if (e.code === 'NEED_P3') gate('Teacher Dashboard सिर्फ़ <b>P3 Ultimate (₹999)</b> और <b>Institute</b> plan में है। <a href="./">App</a> में upgrade करें।', true);
+      if (e.code === 'NEED_P3') gate('Teacher Dashboard <b>P3 Ultimate (₹999)</b>, <b>Institute</b> plan और <b>₹9 Trial</b> में है। <a href="./">App</a> में upgrade करें।', true);
       else gate(esc(e.message) + ' — <a href="#" onclick="location.reload();return false">दोबारा कोशिश करें</a>', true);
     }
   }

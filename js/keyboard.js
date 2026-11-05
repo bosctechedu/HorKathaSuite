@@ -895,6 +895,10 @@
     // Returns highest tier level from hk_pro_license / hk_trial_data
     // ============================================================
     function _getEffectiveTierLevel() {
+        // v58: central plan helper (plan.js) — signed key / signed trial से; localStorage का tier अकेले नहीं
+        if (typeof window.hkPlanLevel === 'function') {
+            try { return window.hkPlanLevel(); } catch (e) { return 0; }
+        }
         try {
             // Priority 1: NEW Pro license (from OTP activation)
             var licRaw = localStorage.getItem('hk_pro_license') ||
@@ -926,6 +930,7 @@
     // Reads NEW license FIRST, then falls back to legacy checks
     // ============================================================
     function _getProAccess() {
+        if (typeof window.hkPlanLevel === 'function') return _getEffectiveTierLevel() >= 1; // v58
         // ✅ Priority 0: NEW localStorage license (from OTP activation)
         const newTier = _getEffectiveTierLevel();
         if (newTier >= 1) {
@@ -993,6 +998,7 @@
                     '| hasProAccess:', hasProAccess);
 
         if (mode !== 'english' && !hasProAccess) {
+            if (typeof window.hkLocked === 'function') { window.hkLocked('langs'); return; } // v58
             if (typeof showToast === 'function') {
                 showToast('🎁 Pro लाइसेंस या Trial आवश्यक है (₹9 में 7 दिन)', 'warning');
             } else {
@@ -1090,6 +1096,7 @@
     function cycleNextLanguage() {
         const hasAccess = _getProAccess();
         const order = hasAccess ? KEYBOARD_LANGUAGES : ['english'];
+        // (हिन्दी फोनेटिक KEYBOARD_LANGUAGES में नहीं है — वह सिर्फ़ tab से, P3/Trial gate के साथ)
 
         if (order.length <= 1) {
             if (typeof showToast === 'function') {

@@ -115,6 +115,7 @@
 
     // ═══ 1. CONVERTER ═══
     function openConverter() {
+        if (!pro('Script Converter')) return; // v58: Script Converter = P2/P3/Trial
         open('🔤 Document Converter', (b) => {
             const from = el('select', { 'aria-label': 'किस script से' }, el('option', { value: 'auto', text: '🔍 Auto-detect' }), ...Object.entries(SCRIPTS).map(([k, v]) => el('option', { value: k, text: v })));
             const to = el('select', { 'aria-label': 'किस script में' }, ...Object.entries(SCRIPTS).map(([k, v]) => el('option', { value: k, text: v })));

@@ -1,5 +1,7 @@
 // ============================================================
-// 🔄 SERVICE WORKER — Cache + Offline Support (v21)
+// 🔄 SERVICE WORKER — Cache + Offline Support (v58: plan.js, config-private.js precache हटाया)
+// ============================================================
+// 🔄 (पुराना header) SERVICE WORKER (v21)
 // BOSC Tech & Edu · Hoṛ Katha Suite v3.7.4 Pro Ultra
 // ============================================================
 // ✅ v21 — CRITICAL VERSION BUMP:
@@ -16,7 +18,7 @@
 //    • Any JS logic (even if not cached)
 //    • Any HTML/CSS in this project
 //    Without bumping, users will keep old cached versions!
-const SW_VERSION = '57';
+const SW_VERSION = '58';
 
 const CACHE_NAME = `hor-katha-v374-cache-v${SW_VERSION}`;
 const CACHE_PREFIX = 'hor-katha-v374-cache-';
@@ -100,7 +102,6 @@ const ASSETS_TO_CACHE = [
     './css/certificate.css',
 
     // ─── Core JS ───
-    './js/config-private.js',      // ✅ Template (safe)
     './js/config.js',
     './js/keymaps.js',
     './js/audio.js',
@@ -108,6 +109,7 @@ const ASSETS_TO_CACHE = [
     './js/tracker.js',
     './js/security.js',
     './js/license.js',
+    './js/plan.js',                // 🎫 v58 central plan helper
     './js/session.js',
     './js/editor.js',
     './js/keyboard.js',

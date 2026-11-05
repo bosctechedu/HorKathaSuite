@@ -1,6 +1,6 @@
 // ============================================================
 // 🏫 Classroom (v42) — student class join + test result report
-//    Teacher Dashboard: teacher.html (P3 / Institute)
+//    Teacher Dashboard: teacher.html (P3 / Institute / ₹9 Trial) — hkCan('teacher'), असली जाँच Worker पर
 // ============================================================
 (function () {
     'use strict';
@@ -108,7 +108,7 @@
         document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('open')) close(); });
     }
     function close() { if (modal) modal.classList.remove('open'); }
-    const teacherBlock = () => '<hr><div class="hkc-sub" style="margin-top:8px">👩‍🏫 Teacher हैं? P3 Ultimate या Institute plan में अपनी class बनाएँ, lesson दें और हर student की WPM, accuracy और streak देखें।</div><button type="button" class="hkc-btn teach" id="hkcTeach">👩‍🏫 Teacher Dashboard खोलें</button>';
+    const teacherBlock = () => '<hr><div class="hkc-sub" style="margin-top:8px">👩‍🏫 Teacher हैं? P3 Ultimate, Institute plan या ₹9 Trial में अपनी class बनाएँ, lesson दें और हर student की WPM, accuracy और streak देखें।</div><button type="button" class="hkc-btn teach" id="hkcTeach">👩‍🏫 Teacher Dashboard खोलें</button>';
 
     function renderJoin(prefill, err) {
         const b = modal.querySelector('#hkcBody');
@@ -163,7 +163,10 @@
         };
         b.querySelector('#hkcTeach').onclick = openTeacher;
     }
-    function openTeacher() { window.open('teacher.html', '_blank', 'noopener'); }
+    function openTeacher() {
+        if (typeof window.hkCan === 'function' && !window.hkCan('teacher')) { if (typeof window.hkLocked === 'function') window.hkLocked('teacher'); return; }
+        window.open('teacher.html', '_blank', 'noopener');
+    }
 
     async function openClassroom(prefill) {
         build(); modal.classList.add('open');

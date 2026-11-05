@@ -22,6 +22,7 @@ function hpOpenAddWordModal() {
     try {
         // FIX #7: Pro block pe user ko feedback do (pehle silent return tha)
         if (typeof requireProAccess === 'function' && !requireProAccess('Hindi Phonetic Add Word')) {
+            if (typeof window.hkLocked === 'function') return; // v58: संदेश requireProAccess दिखा चुका
             if (typeof toastWarning === 'function') {
                 toastWarning('Yeh Pro feature hai. Pro unlock karein.');
             } else if (typeof toastError === 'function') {

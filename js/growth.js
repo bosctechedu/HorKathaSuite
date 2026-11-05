@@ -24,6 +24,8 @@
         if (ls('hor_lic_key')) return null; // पहले से Pro
         let t = null;
         try { t = JSON.parse(ls('hk_trial_data') || ls('hk_trial_data_backup') || 'null'); } catch (e) {}
+        // v58: trial खत्म होते ही hk_trial_data हट जाता है — plan.js की रखी जानकारी से 7 दिन की छूट चालू रहे
+        if (!t || !t.expiresAt || !t.email) { try { t = JSON.parse(ls('hk_trial_last') || 'null'); } catch (e) {} }
         if (!t || !t.expiresAt || !t.email) return null;
         const graceEnd = Number(t.expiresAt) + OFFER.TRIAL_UPGRADE_GRACE_DAYS * 86400000;
         if (Date.now() > graceEnd) return null;

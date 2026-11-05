@@ -913,6 +913,11 @@ function _renderResultExtras() {
 // 🔓 OPEN / CLOSE MODAL
 // ============================================================
 function openTypingTestModal() {
+    // v58: Typing Practice = P3 / ₹9 Trial (Class वाले बटन से भी यही जाँच)
+    if (typeof window.hkCan === 'function' && !window.hkCan('typingTest')) {
+        if (typeof window.hkLocked === 'function') window.hkLocked('typingTest');
+        return;
+    }
     const modal = document.getElementById('typingTestModal');
     if (!modal) return;
 

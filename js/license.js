@@ -154,6 +154,8 @@ function _getCachedDeviceHash() {
 
 function hasProLevelAccess() {
     try {
+        // v58: central plan helper (plan.js) — सिर्फ़ signed key / signed trial
+        try { if (typeof window.hkPlanLevel === 'function') return window.hkPlanLevel() >= 1; } catch (e) {}
         try { if (typeof isProLicensed !== 'undefined' && isProLicensed === true) return true; } catch (e) {}
         // HKT (₹9) trial keys retired — अब सिर्फ़ Worker-signed OTP trial मान्य
         try { if (typeof window.hkSignedTrialActive === 'function' && window.hkSignedTrialActive() === true) return true; } catch (e) {}
@@ -998,6 +1000,12 @@ function applyFreeState() {
 }
 
 function requireProAccess(featureName) {
+    // v58: feature के हिसाब से plan (जैसे Script Converter = P2, Kruti Dev = P1) — plan.js
+    if (typeof window.hkCan === 'function') {
+        if (window.hkCan(featureName)) return true;
+        if (typeof window.hkLocked === 'function') window.hkLocked(featureName);
+        return false;
+    }
     if (!hasProLevelAccess()) {
         if (typeof showToast === 'function') showToast(`'${featureName}' सुविधा Pro में उपलब्ध है।`, 'warning');
         else alert(`'${featureName}' सुविधा Pro में उपलब्ध है।`);
@@ -1121,6 +1129,8 @@ window.ClockGuard = ClockGuard; window.getDeviceHardwareFingerprint = getDeviceH
 // ============================================================
 const _HK_VERIFY = verifyLicensePayload; // load के समय पकड़ा; बाद में global बदलने से असर नहीं
 try { Object.defineProperty(window, 'hkVerifyLicense', { value: _HK_VERIFY, writable: false, configurable: false }); } catch (e) {}
+// v58: license.js का अपना signed-verified plan (plan.js इसे भी मानता है)
+try { Object.defineProperty(window, 'hkLicenseVerifiedPlan', { value: function () { try { if (isProLicensed === true && _licenseSessionCache && _licenseSessionCache.verified === true && (Date.now() - _licenseSessionCache.timestamp) < LICENSE_SESSION_CACHE_TTL_MS && VALID_PLAN_CODES.includes(_licenseSessionCache.plan)) { const k = localStorage.getItem('hor_lic_key'); if (k && k === _licenseSessionCache.key) return _licenseSessionCache.plan; } } catch (e) {} return null; }, writable: false, configurable: false }); } catch (e) {}
 
 (function _proWatchdog() {
     const RESET_REASONS = ['Missing Details', 'Invalid Key Format', 'Invalid Plan Code', 'Invalid Signature Format',

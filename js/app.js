@@ -205,6 +205,7 @@ function saveTTSSettings(immediate = false) {
 // 🔐 PRO ACCESS CHECK
 // ============================================================
 function _hasProAccess() {
+    if (typeof window.hkPlanLevel === 'function') { try { return window.hkPlanLevel() >= 1; } catch (e) { return false; } } // v58
     if (typeof window.hasProLevelAccess === 'function') {
         try { return window.hasProLevelAccess() === true; } catch (e) {}
     }
@@ -2941,6 +2942,11 @@ console.log('══════════════════════�
 
     window.switchLanguage = function(lang, ...args) {
         if (lang === 'hindi-phonetic') {
+            // v58: हिन्दी फोनेटिक सिर्फ़ P3 / ₹9 Trial में (पहले यहाँ कोई जाँच नहीं थी)
+            if (typeof window.hkCan === 'function' && !window.hkCan('hindiPhonetic')) {
+                if (typeof window.hkLocked === 'function') window.hkLocked('hindiPhonetic');
+                return;
+            }
             window.currentLayout = 'hindi-phonetic';
             document.body.setAttribute('data-hindi-phonetic', 'true');
 
@@ -2956,7 +2962,7 @@ console.log('══════════════════════�
             if (dt) dt.textContent = 'Hindi Phonetic — Type English, get Devanagari';
 
             const lc = document.querySelector('#statusLanguage span:last-child');
-            if (lc) lc.textContent = 'Hindi ✨';
+            if (lc) lc.textContent = 'हिन्दी फोनेटिक';
 
             document.querySelectorAll('.tab-pill').forEach(t => t.classList.remove('active'));
             const tab = document.getElementById('tab-hindi-phonetic');

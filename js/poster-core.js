@@ -124,6 +124,8 @@
     // 🔐 Watermark rule
     // ------------------------------------------------------------
     function isWatermarkFree() {
+        // v58: Free / P1 = watermark; P2, P3, Trial (और P2/P3 seat) = बिना watermark — signed plan से
+        if (typeof window.hkCan === 'function') { try { return window.hkCan('posterNoWatermark'); } catch (e) { return false; } }
         const t = String(window.currentTier || window.__HK_CURRENT_TIER__ || '').toUpperCase();
         return /P2|P3|COMMERCIAL|ULTIMATE|TRIAL/.test(t);
     }

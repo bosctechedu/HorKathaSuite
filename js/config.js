@@ -590,7 +590,7 @@ const APP_CONFIG = (function buildAppConfig() {
         PLANS: {
             P1: { name: "Community", price: 199, devices: 1 },
             P2: { name: "Commercial", price: 399, devices: 3 },
-            P3: { name: "Enterprise", price: 999, devices: 5 }
+            P3: { name: "Ultimate Lifetime", price: 999, devices: 5 }
         },
 
         TOAST_WELCOME_ENABLED: true,

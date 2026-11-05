@@ -15,8 +15,7 @@
     <script>/* 🎨 हर load पर Light theme (v35) */try{localStorage.setItem("hor_katha_theme","light");document.documentElement.setAttribute("data-theme","light");}catch(e){}</script>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="assets/icon.ico">
-    <script src="js/config-private.local.js" onerror="(function(){try{console.log('ℹ️ config-private.local.js not present');}catch(e){}})()"></script>
-    <script src="js/config-private.js" onerror="(function(){try{console.warn('⚠️ config-private.js NOT FOUND — using public config only');}catch(e){}})()"></script>
+    <!-- v58: config-private*.js tags हटाए — ये files live पर नहीं हैं, Pages index.html लौटाता था → console SyntaxError -->
     <script src="js/config.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js" defer></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js" defer></script>
@@ -759,7 +758,7 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
             <button id="tab-santali-dev" class="tab-pill" data-tier="1" onmousedown="event.preventDefault()" onclick="switchLanguage('santali-dev')" role="tab" aria-selected="false">Santali (D)</button>
             <button id="tab-olchiki" class="tab-pill" data-tier="1" onmousedown="event.preventDefault()" onclick="switchLanguage('olchiki')" role="tab" aria-selected="false">ओ़लचिकी</button>
             <button id="tab-hindi-dev" class="tab-pill" data-tier="1" onmousedown="event.preventDefault()" onclick="switchLanguage('hindi-dev')" role="tab" aria-selected="false">हिन्दी</button>
-            <button id="tab-hindi-phonetic" class="tab-pill" data-tier="3" onmousedown="event.preventDefault()" onclick="switchLanguage('hindi-phonetic')" role="tab" aria-selected="false" title="Type in English → Devanagari">हिन्दी ✨</button>
+            <button id="tab-hindi-phonetic" class="tab-pill" data-tier="3" onmousedown="event.preventDefault()" onclick="switchLanguage('hindi-phonetic')" role="tab" aria-selected="false" title="Type in English → Devanagari (P3 / ₹9 Trial)">हिन्दी फोनेटिक*</button>
             <button id="tab-english" class="tab-pill active" data-tier="0" onmousedown="event.preventDefault()" onclick="switchLanguage('english')" role="tab" aria-selected="true">Eng</button>
         </div>
         <div class="status-chip" id="statusMode"><span class="pulse-dot orange"></span><span>Checking...</span></div>
@@ -857,7 +856,7 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
                 <div class="action-btns" id="actionBtnsCapsule">
                     <button class="btn-action" onmousedown="event.preventDefault()" onclick="shareViaWhatsApp()">📲 Share</button>
                     <button class="btn-action" data-tier="1" onmousedown="event.preventDefault()" onclick="openKrutiDevModal()">🅰️ KrutiDev</button>
-                    <button class="btn-action" data-tier="1" onmousedown="event.preventDefault()" onclick="openConverterModal()">🔄 Convert</button>
+                    <button class="btn-action" data-tier="2" onmousedown="event.preventDefault()" onclick="openConverterModal()">🔄 Convert</button>
                     <button class="btn-action" data-tier="2" onmousedown="event.preventDefault()" onclick="openImeExportModal()">⚙️ IME Map</button>
                     <button class="btn-action" onmousedown="event.preventDefault()" onclick="openEmojiModal()">😀 Emoji</button>
                     <button class="btn-action" onmousedown="event.preventDefault()" onclick="openCharMapModal()">🔣 Char Map</button>
@@ -1031,25 +1030,25 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
                     <label class="bm-plan bmr-plan" id="cardPlanTrial" style="border-color: #a855f7; background: linear-gradient(180deg, #ffffff 0%, #faf5ff 100%);">
                         <input type="radio" name="licPlan" id="planTrial" onchange="selectTrialPlan()">
                         <span class="bmr-plan-icon" style="background: linear-gradient(135deg, #7c3aed, #a855f7);">🎁</span>
-                        <span class="bmr-plan-info"><span class="bmr-plan-title">(0) ₹9 Trial — 7 Days Full Access</span><span class="bmr-plan-sub">1 Email / Mobile · 7 Days Only</span><span class="bmr-plan-feat">Unlocks P3 (Ultimate) temporarily</span></span>
+                        <span class="bmr-plan-info"><span class="bmr-plan-title">(0) ₹9 Trial — 7 Days Full Access</span><span class="bmr-plan-sub">1 Email / Mobile · 7 Days Only</span><span class="bmr-plan-feat">7 दिन तक P3 (Ultimate) की सभी सुविधाएँ · 1 Login</span></span>
                         <span class="bmr-plan-price"><span class="bmr-discount" style="background: #7c3aed;">सिर्फ ₹9</span><span class="bmr-new-price" style="color: #7c3aed;">₹9</span></span>
                     </label>
                     <label class="bm-plan bmr-plan active-plan" id="cardPlan1">
                         <input type="radio" name="licPlan" id="plan1" checked onchange="selectPlan(199, 'P1 — Community (₹199)', 'cardPlan1')">
                         <span class="bmr-plan-icon" style="background:#0284c7;">👤</span>
-                        <span class="bmr-plan-info"><span class="bmr-plan-title">(1) P1 — Community Single PC</span><span class="bmr-plan-sub">1 Login · Individual / Student Use</span><span class="bmr-plan-feat">Basic Export (Word/TXT) + Kruti Dev</span></span>
+                        <span class="bmr-plan-info"><span class="bmr-plan-title">(1) P1 — Community Single PC</span><span class="bmr-plan-sub">1 Login · Individual / Student Use</span><span class="bmr-plan-feat">Basic Export (Word/TXT) + Kruti Dev · Poster पर Watermark</span></span>
                         <span class="bmr-plan-price"><span class="bmr-discount">33% OFF</span><span class="bmr-old-price">₹299</span><span class="bmr-new-price">₹199</span></span>
                     </label>
                     <label class="bm-plan bmr-plan" id="cardPlan2">
                         <input type="radio" name="licPlan" id="plan2" onchange="selectPlan(399, 'P2 — Commercial (₹399)', 'cardPlan2')">
                         <span class="bmr-plan-icon" style="background:#f59e0b;">🖨️</span>
-                        <span class="bmr-plan-info"><span class="bmr-plan-title">(2) P2 — Commercial / DTP Cafe ⭐</span><span class="bmr-plan-sub">3 एक साथ Logins · Commercial Use Allowed</span><span class="bmr-plan-feat">IME Map + Script Converter + 1 Yr Updates</span></span>
+                        <span class="bmr-plan-info"><span class="bmr-plan-title">(2) P2 — Commercial / DTP Cafe ⭐</span><span class="bmr-plan-sub">3 एक साथ Logins · Commercial Use Allowed</span><span class="bmr-plan-feat">IME Map + Script Converter + बिना Watermark Poster + 1 Yr Updates</span></span>
                         <span class="bmr-plan-price"><span class="bmr-discount">20% OFF</span><span class="bmr-old-price">₹499</span><span class="bmr-new-price">₹399</span></span>
                     </label>
                     <label class="bm-plan bmr-plan" id="cardPlan3" style="border: 2px solid #ec4899; box-shadow: 0 4px 15px rgba(236,72,153,0.15);">
                         <input type="radio" name="licPlan" id="plan3" onchange="selectPlan(999, 'P3 — Ultimate Lifetime (₹999)', 'cardPlan3')">
                         <span class="bmr-plan-icon" style="background:linear-gradient(135deg, #ec4899, #7c3aed);">👑</span>
-                        <span class="bmr-plan-info"><span class="bmr-plan-title">(3) P3 — Ultimate Lifetime 👑</span><span class="bmr-plan-sub">5 एक साथ Logins · Lifetime Updates</span><span class="bmr-plan-feat">Cloud AI + Typing Test + Everything Unlocked</span></span>
+                        <span class="bmr-plan-info"><span class="bmr-plan-title">(3) P3 — Ultimate Lifetime 👑</span><span class="bmr-plan-sub">5 एक साथ Logins · Lifetime Updates</span><span class="bmr-plan-feat">Cloud AI + Typing Test + हिन्दी फोनेटिक + Teacher Dashboard — Everything Unlocked</span></span>
                         <span class="bmr-plan-price"><span class="bmr-discount" style="background: #ec4899;">BEST VALUE</span><span class="bmr-old-price">₹1499</span><span class="bmr-new-price" style="color: #ec4899;">₹999</span></span>
                     </label>
                 </div>
@@ -1071,7 +1070,7 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
                         <li><span class="bmr-tick">✓</span> ऑटो-सिंक फॉन्ट्स (Print &amp; Word)</li>
                         <li><span class="bmr-tick">✓</span> System IME Map &amp; Kruti Dev</li>
                         <li><span class="bmr-tick">✓</span> ऑफलाइन लाइफटाइम एक्सेस</li>
-                        <li><span class="bmr-tick">✓</span> डिवाइस लॉकिंग के साथ सुरक्षा</li>
+                        <li><span class="bmr-tick">✓</span> Login limit के साथ सुरक्षा (P1: 1 · P2: 3 · P3: 5)</li>
                         <li><span class="bmr-tick">✓</span> Word / TXT / PDF Export</li>
                         <li><span class="bmr-tick">✓</span> Voice Typing + Text-to-Speech</li>
                         <li><span class="bmr-tick">✓</span> Emoji + Char Map + Auto-Save</li>
@@ -1606,10 +1605,16 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
     // v54: signed key सच में पास हुई तो यहाँ दर्ज (typing lock इसी से खुलता है)
     let verifiedPlan = null;
     try { Object.defineProperty(window, 'hkProVerified', { value: function () { return verifiedPlan; }, writable: false, configurable: false }); } catch (e) {}
-    let running = false;
+    let running = null;
+    // v58: एक समय में एक ही check; बाद वाला call पिछले के खत्म होने का इंतज़ार करके फिर चलता है
     async function check() {
-        if (running) return; running = true;
-        try {
+        if (running) { try { await running; } catch (e) {} }
+        running = doCheck();
+        try { await running; } finally { running = null; }
+        try { if (typeof window.hkPlanSync === 'function') window.hkPlanSync(false); } catch (e) {}
+    }
+    async function doCheck() {
+        {
             let bad = false, okPlan = null;
             for (const k of ['hk_pro_license', 'hk_pro_license_backup']) {
                 let raw = null; try { raw = localStorage.getItem(k); } catch (e) {}
@@ -1634,8 +1639,9 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
                 try { if (typeof window.applyLocks === 'function') window.applyLocks('FREE'); } catch (e) {}
                 setTimeout(() => location.reload(), 300);
             }
-        } finally { running = false; }
+        }
     }
+    try { Object.defineProperty(window, 'hkRecheckPro', { value: check, writable: false, configurable: false }); } catch (e) {}
     check();
     setInterval(check, 60000);
     window.addEventListener('storage', (e) => { if (e.key === 'hk_pro_license' || e.key === 'hk_pro_license_backup') check(); });
@@ -1645,8 +1651,10 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
 <script>
 (function signedTrialGate() {
     const TRIAL_PUBLIC_KEY = {"kty":"EC","x":"pQZtWailju2QItOKLvsHFJ6H_N-sxKc-xpJtmM949Ws","y":"RVSIGCnR4EaFhUI8znzkexJrsN4GigrpzHFWQyUP5eg","crv":"P-256"};
-    // इस तारीख से पहले के पुराने (बिना token) trials अपनी 7 दिन की अवधि तक चलेंगे
-    const LEGACY_CUTOFF = Date.UTC(2026, 10, 7); // 7 Nov 2026
+    // इस तारीख से पहले के पुराने (बिना token) trials अपनी 7 दिन की अवधि तक चलेंगे।
+    // v58: 2026-11-07 → 2026-10-31 (signed trial token उससे पहले से है)। पहले वाली तारीख भविष्य में थी,
+    // इसलिए कोई भी localStorage में नकली "legacy" trial लिखकर 7 दिन P3 खोल सकता था।
+    const LEGACY_CUTOFF = Date.UTC(2026, 9, 31); // 2026-10-31
     const MAX_TRIAL_MS = 7 * 86400000 + 3600000;
     let _key = null;
 
@@ -1681,7 +1689,13 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
 
     let _verifiedUntil = 0;
     try { Object.defineProperty(window, 'hkSignedTrialActive', { value: () => Date.now() < _verifiedUntil, writable: false, configurable: false }); } catch (e) {}
+    try { Object.defineProperty(window, 'hkSignedTrialUntil', { value: () => (Date.now() < _verifiedUntil ? _verifiedUntil : 0), writable: false, configurable: false }); } catch (e) {}
     async function check() {
+        await doCheck();
+        try { if (typeof window.hkPlanSync === 'function') window.hkPlanSync(false); } catch (e) {}
+    }
+    try { Object.defineProperty(window, 'hkRecheckTrial', { value: check, writable: false, configurable: false }); } catch (e) {}
+    async function doCheck() {
         let changed = false, until = 0;
         for (const k of ['hk_trial_data', 'hk_trial_data_backup']) {
             let raw = null; try { raw = localStorage.getItem(k); } catch (e) {}
@@ -1704,6 +1718,8 @@ var MIN_DISPLAY_MS = 500, MAX_DISPLAY_MS = 5000;
     window.addEventListener('storage', (e) => { if (e.key === 'hk_trial_data' || e.key === 'hk_trial_data_backup') check(); });
 })();
 </script>
+<!-- 🎫 v58: एक central plan helper (hkPlan / hkCan) -->
+<script src="js/plan.js"></script>
 <!-- 🎁 TRIAL FLOW -->
 <script>
 let trialStep = 'send_otp';
@@ -1845,11 +1861,14 @@ window.handleTrialFlow = async function() {
                 : `✅ Trial Activated! ${remainingDays} दिनों के लिए सभी features unlocked।`;
             statusEl.className = 'trm-status success';
             statusEl.textContent = successMsg;
-            setTimeout(() => {
-                if (typeof window.applyLocks === 'function') window.applyLocks('P3_TRIAL');
-                if (typeof window.__startTierWatchdog === 'function') window.__startTierWatchdog('P3');
-                location.reload();
-            }, 1500);
+            // v58: reload के बिना — signed trial दोबारा जाँचो और सब gates ताज़ा करो
+            setTimeout(async () => {
+                try { if (typeof window.hkRecheckTrial === 'function') await window.hkRecheckTrial(); } catch (e) {}
+                try { if (typeof window.checkLicenseIntegrity === 'function') window.checkLicenseIntegrity(); } catch (e) {}
+                try { if (typeof window.hkPlanSync === 'function') window.hkPlanSync(true); } catch (e) {}
+                try { if (typeof window.initLicenseWidget === 'function') window.initLicenseWidget(); } catch (e) {}
+                try { if (typeof closeTrialActivationModal === 'function') closeTrialActivationModal(); } catch (e) {}
+            }, 1200);
         } catch (error) {
             console.error("Verify Error:", error);
             btn.textContent = '✅ Verify OTP';
@@ -1975,11 +1994,14 @@ window.verifyProOtp = async function() {
         statusEl.textContent = `✅ Success! ${tier} License Activated. Reloading...`;
         if (typeof showToast === 'function') showToast(`🎉 ${tier} License Activated!`, 'success');
         if (typeof closeProOtpModal === 'function') closeProOtpModal();
-        setTimeout(() => {
-            if (typeof window.applyLocks === 'function') { try { window.applyLocks(tier); } catch (e) {} }
-            if (typeof window.__startTierWatchdog === 'function') { try { window.__startTierWatchdog(tier); } catch (e) {} }
-            setTimeout(() => location.reload(), 300);
-        }, 500);
+        // v58: reload के बिना — signed key दोबारा जाँचो और सब gates ताज़ा करो
+        setTimeout(async () => {
+            try { if (typeof window.hkRecheckPro === 'function') await window.hkRecheckPro(); } catch (e) {}
+            try { if (typeof window.hkRecheckTrial === 'function') await window.hkRecheckTrial(); } catch (e) {}
+            try { if (typeof window.checkLicenseIntegrity === 'function') window.checkLicenseIntegrity(); } catch (e) {}
+            try { if (typeof window.hkPlanSync === 'function') window.hkPlanSync(true); } catch (e) {}
+            try { if (typeof window.initLicenseWidget === 'function') window.initLicenseWidget(); } catch (e) {}
+        }, 300);
     } catch (error) {
         console.error("Verify Pro Error:", error);
         statusEl.style.display = 'block'; statusEl.style.color = '#ef4444';
@@ -2017,7 +2039,7 @@ window.verifyProOtp = async function() {
     function forceLockEl(el, requiredTier) {
         if (!el) return;
         el.classList.add('is-locked');
-        el.setAttribute('title', `🔒 Requires Plan: P${requiredTier} or higher`);
+        el.setAttribute('title', requiredTier >= 3 ? '🔒 P3 Ultimate या ₹9 Trial में' : requiredTier === 2 ? '🔒 P2/P3 (या ₹9 Trial) में' : '🔒 P1/P2/P3 (या ₹9 Trial) में');
         if (el.hasAttribute('onclick') && !el.hasAttribute('data-original-onclick')) {
             el.setAttribute('data-original-onclick', el.getAttribute('onclick'));
             el.removeAttribute('onclick');
@@ -2025,7 +2047,11 @@ window.verifyProOtp = async function() {
         if (!el.dataset.hasLockListener) {
             el.lockInterceptor = function (e) {
                 e.preventDefault(); e.stopPropagation();
-                if (typeof showToast === 'function') showToast(`🔒 Upgrade to P${requiredTier} to unlock this.`, 'warning');
+                // v58: हिन्दी संदेश + "प्लान देखें" बटन (plan.js)
+                const feat = el.getAttribute('data-feature') || (el.id === 'tab-hindi-phonetic' ? 'hindiPhonetic' : (el.classList.contains('tab-pill') ? 'langs' : null))
+                    || ({ 1: 'export', 2: 'converter', 3: 'typingTest' })[requiredTier];
+                if (typeof window.hkLocked === 'function') { window.hkLocked(feat); return; }
+                if (typeof showToast === 'function') showToast(`🔒 यह सुविधा P${requiredTier} में है — अपग्रेड करें`, 'warning');
                 if (typeof openBuyModal === 'function') openBuyModal();
                 setTimeout(() => { const t = document.getElementById(`plan${requiredTier}`); if (t) t.click(); }, 300);
             };
@@ -2039,6 +2065,13 @@ window.verifyProOtp = async function() {
         if (normalized === 'P3') tierLevel = TIER_P3;
         else if (normalized === 'P2') tierLevel = TIER_P2;
         else if (normalized === 'P1') tierLevel = TIER_P1;
+        // v58: जो tier माँगा गया, उससे ज़्यादा कभी नहीं — असली (signed) plan से ऊपर नहीं जा सकता
+        const verifiedLevel = (typeof window.hkPlanLevel === 'function') ? window.hkPlanLevel() : TIER_FREE;
+        if (tierLevel > verifiedLevel) {
+            tierLevel = verifiedLevel;
+            const pi = (typeof window.hkPlanInfo === 'function') ? window.hkPlanInfo() : null;
+            tierString = !pi || pi.plan === 'free' ? 'FREE' : pi.plan === 'trial' ? 'P3_TRIAL' : pi.keyPlan;
+        }
         window.currentTier = tierString;
         try { window.__HK_CURRENT_TIER__ = tierString; } catch (e) {}
         document.querySelectorAll('[data-tier]').forEach(el => {
@@ -2100,6 +2133,7 @@ window.verifyProOtp = async function() {
                 const t = normalizeTier(window.currentTier || tierString);
                 let lvl = TIER_FREE;
                 if (t === 'P3') lvl = TIER_P3; else if (t === 'P2') lvl = TIER_P2; else if (t === 'P1') lvl = TIER_P1;
+                lvl = Math.min(lvl, (typeof window.hkPlanLevel === 'function') ? window.hkPlanLevel() : TIER_FREE); // v58
                 if (lvl >= TIER_P1) {
                     document.querySelectorAll('.tab-pill, [data-tier]').forEach(el => {
                         const req = parseInt(el.getAttribute('data-tier') || '0');
@@ -2174,12 +2208,8 @@ window.verifyProOtp = async function() {
             window.__integrityWrapped = true;
             const original = window.checkLicenseIntegrity;
             window.checkLicenseIntegrity = function() {
-                try {
-                    const lic = localStorage.getItem('hk_pro_license') || localStorage.getItem('hk_pro_license_backup');
-                    if (lic) { const parsed = JSON.parse(lic); if (parsed && parsed.tier && ['P1','P2','P3'].indexOf(String(parsed.tier).toUpperCase()) !== -1) return; }
-                    const trial = localStorage.getItem('hk_trial_data');
-                    if (trial) { const t = JSON.parse(trial); if (t && t.expiresAt && Date.now() < t.expiresAt) return; }
-                } catch (e) {}
+                // v58: सिर्फ़ signed plan चालू हो तभी पुराना check छोड़ें (localStorage का tier अकेले नहीं)
+                try { if (typeof window.hkPlan === 'function' && window.hkPlan() !== 'free') return; } catch (e) {}
                 return original.apply(this, arguments);
             };
             clearInterval(interval);
@@ -2449,6 +2479,7 @@ function hpConvertAllText() {
     };
     window.hpSetEngine = function(mode) {
         if (['auto', 'cloud', 'local'].indexOf(mode) === -1) return;
+        if (mode === 'cloud' && typeof window.hkRequire === 'function' && !window.hkRequire('cloudAI')) return; // v58
         document.querySelectorAll('.hp-tb-seg').forEach(function(btn) { btn.classList.toggle('active', btn.dataset.engine === mode); });
         try { localStorage.setItem('hp_engine_mode', mode); } catch (e) {}
         var labels = { auto: 'Auto Mode', cloud: 'Cloud AI Mode', local: 'Local Mode' };
@@ -2472,29 +2503,32 @@ function hpConvertAllText() {
         FREE: ['Free', 'linear-gradient(135deg, #ec4899, #7c3aed)', 'rgba(236,72,153,0.4)', '#fbcfe8']
     };
     let want = '', applying = false;
+    // v58: badge सिर्फ़ signed plan (plan.js hkPlanInfo) से — localStorage का tier अकेले नहीं
     function currentPlan() {
-        let tier = null, days = 0;
-        try { if (typeof window.hkProVerified === 'function') { const v = window.hkProVerified(); if (v) tier = String(v).toUpperCase(); } } catch (e) {}
-        if (!tier) {
-            try { const raw = localStorage.getItem('hk_pro_license') || localStorage.getItem('hk_pro_license_backup'); const lic = raw ? JSON.parse(raw) : null; if (lic && lic.tier) { const u = String(lic.tier).toUpperCase(); if (/^P[123]/.test(u)) tier = u.slice(0, 2); } } catch (e) {}
-        }
-        if (!tier) {
-            try { const raw = localStorage.getItem('hk_trial_data') || localStorage.getItem('hk_trial_data_backup'); const tr = raw ? JSON.parse(raw) : null; if (tr && tr.expiresAt && Date.now() < tr.expiresAt) { tier = 'TRIAL'; days = Math.max(1, Math.ceil((tr.expiresAt - Date.now()) / 86400000)); } } catch (e) {}
-        }
-        return { tier: tier || 'FREE', days };
+        let tier = 'FREE', days = 0, seat = false;
+        try {
+            const pi = (typeof window.hkPlanInfo === 'function') ? window.hkPlanInfo() : null;
+            if (pi && pi.plan === 'trial') {
+                tier = 'TRIAL';
+                const until = (typeof window.hkSignedTrialUntil === 'function') ? window.hkSignedTrialUntil() : 0;
+                days = until ? Math.max(1, Math.ceil((until - Date.now()) / 86400000)) : 1;
+            } else if (pi && pi.keyPlan) { tier = pi.keyPlan; seat = pi.plan === 'seat'; }
+        } catch (e) {}
+        return { tier, days, seat };
     }
     function updateHeaderLicenseBadges() {
         try {
             const vb = document.getElementById('versionBadge'); if (!vb) return;
             const ver = (typeof APP_CONFIG !== 'undefined' && APP_CONFIG && APP_CONFIG.VERSION) ? APP_CONFIG.VERSION : '3.7.4';
             const p = currentPlan(), b = BADGE[p.tier] || BADGE.FREE;
-            const text = p.tier === 'FREE' ? `v${ver} Free` : p.tier === 'TRIAL' ? `v${ver} Trial · ${p.days} दिन` : `v${ver} ${p.tier} ${b[0]}`;
+            const text = p.tier === 'FREE' ? `v${ver} Free` : p.tier === 'TRIAL' ? `v${ver} Trial · ${p.days} दिन` : p.seat ? `v${ver} Institute Seat (${p.tier})` : `v${ver} ${p.tier} ${b[0]}`;
             want = text;
             if (vb.textContent === text && vb.dataset.plan === p.tier) return;
+            // पुराना code versionBadge को "PRO (P1)" आदि लिख देता है — data-plan भी साथ बदलें
             applying = true;
             vb.textContent = text; vb.dataset.plan = p.tier;
             vb.style.background = b[1]; vb.style.boxShadow = '0 2px 8px ' + b[2]; vb.style.borderColor = b[3]; vb.style.color = '#fff';
-            vb.title = p.tier === 'FREE' ? 'Free Mode' : p.tier === 'TRIAL' ? 'Trial Active' : p.tier + ' Plan Active';
+            vb.title = p.tier === 'FREE' ? 'Free Mode' : p.tier === 'TRIAL' ? 'Trial Active' : p.tier === 'P3' ? 'P3 Ultimate Lifetime Active' : p.tier + ' Plan Active';
             const ti = document.getElementById('trialInfo');
             if (ti) { ti.textContent = p.tier === 'FREE' ? 'Free Mode' : p.tier === 'TRIAL' ? '⏳ Trial Active' : '⭐ ' + p.tier + ' Pro'; }
             setTimeout(() => { applying = false; }, 0);
@@ -2507,6 +2541,7 @@ function hpConvertAllText() {
         vb.__hkObs.observe(vb, { childList: true, characterData: true, subtree: true });
     }
     window.addEventListener('storage', (e) => { if (/^hk_(pro_license|trial_data)/.test(e.key || '')) updateHeaderLicenseBadges(); });
+    window.addEventListener('hk-plan-changed', () => updateHeaderLicenseBadges());
     setInterval(updateHeaderLicenseBadges, 60000);
     [600, 2000, 5000].forEach(d => setTimeout(() => { updateHeaderLicenseBadges(); watch(); }, d));
     window.updateHeaderLicenseBadges = updateHeaderLicenseBadges;

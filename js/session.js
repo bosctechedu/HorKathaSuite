@@ -66,7 +66,9 @@
             : post({ op: 'login', sid: sid(), key: k, email: c.email, name: c.name, mobile: c.mobile });
         req.then(function (d) {
             if (d.success && d.active) {
-                lsSet(OK_KEY, JSON.stringify({ k: k, at: Date.now(), limit: d.limit || (ok && ok.limit) || null }));
+                // v58: tier (SEAT/P1/P2/P3/TRIAL) भी रखें — Institute seat का badge इसी से
+                lsSet(OK_KEY, JSON.stringify({ k: k, at: Date.now(), limit: d.limit || (ok && ok.limit) || null, tier: d.tier || (ok && ok.k === k && ok.tier) || null }));
+                if (d.tier && (!ok || ok.tier !== d.tier)) { try { if (typeof window.hkPlanSync === 'function') window.hkPlanSync(false); } catch (e) {} }
                 if (d.evicted) toast('ℹ️ Login limit (' + d.limit + ') पूरी थी — आपका सबसे पुराना login अपने-आप logout कर दिया गया।');
             } else if (d.success && d.active === false) {
                 localLogout('🔒 आपके account से किसी दूसरी जगह नया login हुआ, इसलिए login limit के कारण यहाँ से logout हो गया। दोबारा Activate करने पर सबसे पुराना login हट जाएगा।');
@@ -101,6 +103,7 @@
         document.addEventListener('visibilitychange', function () { if (!document.hidden) run(); });
         window.addEventListener('online', run);
         window.addEventListener('license-changed', function () { setTimeout(run, 500); });
+        window.addEventListener('hk-plan-changed', function () { setTimeout(run, 500); });
         window.addEventListener('storage', function (e) { if (LICENSE_KEYS.indexOf(e.key) !== -1 && e.key !== OK_KEY) setTimeout(run, 500); });
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();

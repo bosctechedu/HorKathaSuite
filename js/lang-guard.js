@@ -38,6 +38,8 @@
     }
 
     function hasPro() {
+        // v58: central plan helper (plan.js)
+        try { if (typeof window.hkCan === 'function') return window.hkCan(layout() === 'hindi-phonetic' ? 'hindiPhonetic' : 'langs'); } catch (e) {}
         // v54: index.html का signed-key check (hk_pro_license) पास हो चुका है → Pro
         try { if (typeof window.hkProVerified === 'function' && window.hkProVerified()) return true; } catch (e) {}
         try { if (typeof _hasProAccess === 'function' && _hasProAccess() === true) return true; } catch (e) {}
@@ -109,7 +111,8 @@
 
         // Editor (App Virtual mode) में Hindi/Ol Chiki Pro feature है
         if (kind === 'editor' && window.keyboardMode !== 'system' && !hasPro()) {
-            toast('🔒 Hindi / Ol Chiki typing के लिए Pro या Trial चालू करें', 'info');
+            if (typeof window.hkLocked === 'function') { if (Date.now() - lastToast > 4000) { lastToast = Date.now(); window.hkLocked('langs'); } }
+            else toast('🔒 Hindi / Ol Chiki typing के लिए Pro या Trial चालू करें', 'info');
             return;
         }
 
