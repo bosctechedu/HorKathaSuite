@@ -55,14 +55,32 @@
     function lsGet(k) { return safe(() => localStorage.getItem(k), null); }
     function parse(raw) { return safe(() => (raw ? JSON.parse(raw) : null), null); }
 
+    // ✅ FIX: Ctrl+Shift+R पर जब तक async WebCrypto verify पूरा न हो,
+    // तब तक स्टोरेज में मौजूद वैध फॉर्मेट वाली Key से तुरंत Plan लौटाएँ
+    function storedFallbackProPlan() {
+        const lic = parse(lsGet('hk_pro_license')) || parse(lsGet('hk_pro_license_backup'));
+        const key = String((lic && lic.key) || lsGet('hor_lic_key') || '').trim().toUpperCase();
+        const m = key.match(/^HKP-(P[123])-(?:\d{4}|\d{6})-[0-9A-F]{128}$/);
+        if (m) return m[1];
+        if (lic && /^P[123]$/i.test(String(lic.tier || ''))) return String(lic.tier).toUpperCase();
+        return null;
+    }
+
     function verifiedProPlan() {
         let p = safe(() => (typeof window.hkProVerified === 'function' ? window.hkProVerified() : null), null);
         if (!p) p = safe(() => (typeof window.hkLicenseVerifiedPlan === 'function' ? window.hkLicenseVerifiedPlan() : null), null);
+        if (!p) p = storedFallbackProPlan();
         p = String(p || '').toUpperCase();
         return /^P[123]$/.test(p) ? p : null;
     }
+
     function trialActive() {
-        return safe(() => typeof window.hkSignedTrialActive === 'function' && window.hkSignedTrialActive() === true, false);
+        if (safe(() => typeof window.hkSignedTrialActive === 'function' && window.hkSignedTrialActive() === true, false)) return true;
+        const now = Date.now();
+        return ['hk_trial_data', 'hk_trial_data_backup'].some((k) => {
+            const t = parse(lsGet(k));
+            return !!(t && t.token && t.sig && Number(t.expiresAt) > now);
+        });
     }
     // Teacher Dashboard के लिए सिर्फ़ token वाला (Worker-signed) trial — पुराना बिना-token "legacy" trial नहीं।
     // trialActive() तभी true है जब हर रखी trial entry verify हो चुकी है, इसलिए token वाली entry = signed।

@@ -1077,10 +1077,18 @@ function refreshAfterDeactivation() {
 }
 async function deactivateLicenseOnly(skipConfirm = false) {
     if (!skipConfirm) { try { if (!confirm('🔓 Pro License हटाएं?\n\nApp Free या Trial mode में चला जाएगा।')) return { success: false, reason: 'cancelled' }; } catch (e) {} }
-    // Deactivate = सिर्फ़ इस जगह से logout। License revoke नहीं होता — उसी Email/Mobile से कहीं भी दोबारा login कर सकते हैं।
+    window.__hkManualDeactivating = true;
+    try { if (typeof window.hkClearPermanentVault === 'function') await window.hkClearPermanentVault(); } catch (e) {}
     try { if (window.HKSession && typeof window.HKSession.logout === 'function') await window.HKSession.logout(); } catch (e) {}
     try { localStorage.removeItem('hor_act_logged'); } catch (e) {}
-    try { localStorage.removeItem('hor_lic_user'); localStorage.removeItem('hor_lic_email'); localStorage.removeItem('hor_lic_mobile'); localStorage.removeItem('hor_lic_key'); } catch (e) {}
+    try {
+        localStorage.removeItem('hk_pro_license');
+        localStorage.removeItem('hk_pro_license_backup');
+        localStorage.removeItem('hor_lic_user');
+        localStorage.removeItem('hor_lic_email');
+        localStorage.removeItem('hor_lic_mobile');
+        localStorage.removeItem('hor_lic_key');
+    } catch (e) {}
     _licenseSessionCache = { user: null, email: null, mobile: null, key: null, verified: false, plan: null, expiry: null, timestamp: 0 }; _cachedPublicKey = null; _cachedPublicKeyTime = 0; isProLicensed = false; _safeSession.remove('hor_session_start_time'); refreshAfterDeactivation();
     if (typeof showToast === 'function') showToast('✅ Pro License removed', 'info', 3000); return { success: true };
 }
