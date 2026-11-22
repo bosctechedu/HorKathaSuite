@@ -3720,5 +3720,35 @@ function hpConvertAllText() {
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => apply(load())); else apply(load());
 })();
 </script>
+<!-- Cross-promo banner: promo-santalarsi -->
+<style>
+#promo-santalarsi{position:fixed;right:16px;bottom:16px;z-index:2147483000;max-width:340px;display:none;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff;font-family:"Noto Sans Devanagari","Plus Jakarta Sans",Inter,system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.25);animation:promo-santalarsiin .4s ease-out}
+#promo-santalarsi .pb-ico{flex:0 0 42px;height:42px;border-radius:12px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:22px}
+#promo-santalarsi .pb-txt{flex:1;min-width:0;line-height:1.3}
+#promo-santalarsi .pb-t{font-weight:800;font-size:15px}
+#promo-santalarsi .pb-s{font-size:12.5px;opacity:.92;margin-top:2px}
+#promo-santalarsi .pb-go{display:inline-block;margin-top:8px;padding:6px 14px;border-radius:999px;background:#fff;color:#7c3aed;font-weight:700;font-size:13px;text-decoration:none}
+#promo-santalarsi .pb-x{position:absolute;top:4px;right:6px;width:30px;height:30px;border:0;background:transparent;color:#fff;font-size:20px;cursor:pointer;opacity:.85}
+@keyframes promo-santalarsiin{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
+@media(max-width:600px){#promo-santalarsi{left:10px;right:10px;bottom:10px;max-width:none}}
+@media print{#promo-santalarsi{display:none!important}}
+</style>
+<div id="promo-santalarsi" role="complementary" aria-label="Santal Arsi">
+  <div class="pb-ico">📖</div>
+  <div class="pb-txt">
+    <div class="pb-t">Santal आ़रसी</div>
+    <div class="pb-s">Santali dictionary, keyboard aur festivals, sab ek jagah</div>
+    <a class="pb-go" href="https://santalarsi.pages.dev/" target="_blank" rel="noopener">Kholo →</a>
+  </div>
+  <button class="pb-x" type="button" aria-label="Close">×</button>
+</div>
+<script>
+(function(){
+  var el=document.getElementById("promo-santalarsi"),k="promo-santalarsi_closed";
+  try{var t=+localStorage.getItem(k);if(t&&Date.now()-t<7*864e5)return;}catch(e){}
+  setTimeout(function(){el.style.display="flex";},3000);
+  el.querySelector(".pb-x").onclick=function(){el.style.display="none";try{localStorage.setItem(k,Date.now());}catch(e){}};
+})();
+</script>
 </body>
 </html>
