@@ -3720,34 +3720,91 @@ function hpConvertAllText() {
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => apply(load())); else apply(load());
 })();
 </script>
-<!-- Cross-promo banner: promo-santalarsi -->
+<!-- Cross-promo popup: Santal Arsi top 10 (v65, gentle) -->
 <style>
-#promo-santalarsi{position:fixed;right:16px;bottom:16px;z-index:2147483000;max-width:340px;display:none;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff;font-family:"Noto Sans Devanagari","Plus Jakarta Sans",Inter,system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.25);animation:promo-santalarsiin .4s ease-out}
-#promo-santalarsi .pb-ico{flex:0 0 42px;height:42px;border-radius:12px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:22px}
-#promo-santalarsi .pb-txt{flex:1;min-width:0;line-height:1.3}
-#promo-santalarsi .pb-t{font-weight:800;font-size:15px}
-#promo-santalarsi .pb-s{font-size:12.5px;opacity:.92;margin-top:2px}
-#promo-santalarsi .pb-go{display:inline-block;margin-top:8px;padding:6px 14px;border-radius:999px;background:#fff;color:#7c3aed;font-weight:700;font-size:13px;text-decoration:none}
-#promo-santalarsi .pb-x{position:absolute;top:4px;right:6px;width:30px;height:30px;border:0;background:transparent;color:#fff;font-size:20px;cursor:pointer;opacity:.85}
-@keyframes promo-santalarsiin{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
-@media(max-width:600px){#promo-santalarsi{left:10px;right:10px;bottom:10px;max-width:none}}
-@media print{#promo-santalarsi{display:none!important}}
+#sa-pop{position:fixed;inset:0;z-index:2147483000;display:none;align-items:center;justify-content:center;padding:14px;background:rgba(15,10,40,.55);backdrop-filter:blur(3px);font-family:"Noto Sans Devanagari","Plus Jakarta Sans",Inter,system-ui,sans-serif}
+#sa-pop.on{display:flex}
+#sa-pop .sp-card{position:relative;width:100%;max-width:620px;max-height:92vh;display:flex;flex-direction:column;border-radius:22px;background:#fff;color:#1e1b2e;box-shadow:0 24px 60px rgba(0,0,0,.35);overflow:hidden;animation:sa-in .35s cubic-bezier(.2,.9,.3,1.2)}
+#sa-pop .sp-head{display:flex;gap:14px;align-items:center;padding:18px 56px 16px 20px;color:#fff;background:linear-gradient(135deg,#7c3aed 0%,#db2777 60%,#f59e0b 100%)}
+#sa-pop .sp-logo{flex:0 0 56px;height:56px;border-radius:16px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 6px 18px rgba(0,0,0,.2)}
+#sa-pop .sp-logo img{width:40px;height:40px}
+#sa-pop .sp-new{display:inline-block;padding:2px 9px;border-radius:999px;background:rgba(255,255,255,.22);font-size:11px;font-weight:700;letter-spacing:.5px}
+#sa-pop .sp-t{margin:4px 0 2px;font-size:22px;font-weight:800;line-height:1.2}
+#sa-pop .sp-s{font-size:13.5px;opacity:.95;line-height:1.35}
+#sa-pop .sp-body{overflow:auto;padding:14px 16px 4px}
+#sa-pop .sp-h{margin:0 4px 10px;font-size:13px;font-weight:700;color:#6d28d9;letter-spacing:.4px;text-transform:uppercase}
+#sa-pop .sp-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#sa-pop .sp-grid li{display:flex;gap:10px;align-items:flex-start;padding:11px;border:1px solid #ece8f6;border-radius:14px;background:#fbfaff}
+#sa-pop .sp-n{position:relative;flex:0 0 38px;height:38px;border-radius:11px;background:#f1eaff;display:flex;align-items:center;justify-content:center;font-size:19px}
+#sa-pop .sp-n i{position:absolute;top:-6px;left:-6px;width:18px;height:18px;border-radius:50%;background:#7c3aed;color:#fff;font-size:10px;font-style:normal;font-weight:800;display:flex;align-items:center;justify-content:center}
+#sa-pop .sp-grid b{display:block;font-size:14px;color:#3b0f86;line-height:1.3}
+#sa-pop .sp-grid small{display:block;margin-top:2px;color:#5b5670;font-size:12.5px;line-height:1.35}
+#sa-pop .sp-foot{display:flex;gap:10px;align-items:center;padding:12px 16px 16px;border-top:1px solid #f1eef8}
+#sa-pop .sp-go{flex:1;text-align:center;padding:13px;border-radius:14px;background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff;font-weight:800;font-size:16px;text-decoration:none;min-height:48px;box-sizing:border-box}
+#sa-pop .sp-later{padding:12px 18px;border:0;border-radius:14px;background:#f3f1f8;color:#4b4760;font-weight:600;font-size:14px;cursor:pointer;min-height:48px;font-family:inherit}
+#sa-pop .sp-x{position:absolute;top:8px;right:8px;width:44px;height:44px;border:0;border-radius:50%;background:rgba(255,255,255,.2);color:#fff;font-size:24px;line-height:1;cursor:pointer}
+#sa-pop .sp-by{padding:0 16px 12px;text-align:center;font-size:12px;color:#6b6680}
+@keyframes sa-in{from{transform:translateY(24px) scale(.96);opacity:0}to{transform:none;opacity:1}}
+@media (max-width:520px){#sa-pop{padding:10px}#sa-pop .sp-grid{gap:8px}#sa-pop .sp-grid li{flex-direction:column;gap:6px;padding:10px}#sa-pop .sp-grid small{display:none}#sa-pop .sp-t{font-size:19px}#sa-pop .sp-later{padding:12px}}
+@media (prefers-reduced-motion:reduce){#sa-pop .sp-card{animation:none}}
+@media print{#sa-pop{display:none!important}}
 </style>
-<div id="promo-santalarsi" role="complementary" aria-label="Santal Arsi">
-  <div class="pb-ico">📖</div>
-  <div class="pb-txt">
-    <div class="pb-t">Santal आ़रसी</div>
-    <div class="pb-s">Santali dictionary, keyboard aur festivals, sab ek jagah</div>
-    <a class="pb-go" href="https://santalarsi.pages.dev/" target="_blank" rel="noopener">Kholo →</a>
+<div id="sa-pop" role="dialog" aria-modal="true" aria-labelledby="sa-pop-t">
+  <div class="sp-card">
+    <button class="sp-x" type="button" aria-label="Band karein">×</button>
+    <div class="sp-head">
+      <div class="sp-logo"><img src="https://santalarsi.pages.dev/favicon.svg" alt="" width="40" height="40" loading="lazy" onerror="this.parentNode.textContent='📖'"></div>
+      <div>
+        <span class="sp-new">✨ BOSC TECH &amp; EDU</span>
+        <div class="sp-t" id="sa-pop-t">Santal आ़रसी</div>
+        <div class="sp-s">संताली भाषा सीखने, लिखने और समझने का पूरा प्लेटफ़ॉर्म, बिल्कुल फ्री</div>
+      </div>
+    </div>
+    <div class="sp-body">
+      <div class="sp-h">Top 10 Features</div>
+      <ul class="sp-grid">
+        <li><span class="sp-n"><i>1</i>📚</span><span><b>50,000+ शब्दकोश</b><small>संताली, हिंदी, English में अर्थ</small></span></li>
+        <li><span class="sp-n"><i>2</i>⌨️</span><span><b>संताली कीबोर्ड</b><small>देवनागरी व यूनिकोड टाइपिंग</small></span></li>
+        <li><span class="sp-n"><i>3</i>🔄</span><span><b>बहुभाषी अनुवादक</b><small>संताली ↔ हिंदी ↔ English</small></span></li>
+        <li><span class="sp-n"><i>4</i>🤖</span><span><b>AI सर्च</b><small>कोई भी सवाल, तुरंत जवाब</small></span></li>
+        <li><span class="sp-n"><i>5</i>🔤</span><span><b>लिपि परिवर्तक</b><small>Ol Chiki ↔ देवनागरी ↔ Roman</small></span></li>
+        <li><span class="sp-n"><i>6</i>🎓</span><span><b>संताली सीखें</b><small>व्याकरण, बातचीत, पहाड़ा, ऑडियो</small></span></li>
+        <li><span class="sp-n"><i>7</i>🎮</span><span><b>गेम्स व दैनिक क्विज़</b><small>Wordle, क्रॉसवर्ड, फ़्लैशकार्ड</small></span></li>
+        <li><span class="sp-n"><i>8</i>🌾</span><span><b>पर्व व सांस्कृतिक कैलेंडर</b><small>बाहा, सोहराय और अनुष्ठान</small></span></li>
+        <li><span class="sp-n"><i>9</i>🪕</span><span><b>लोकगीत, कहावतें, कहानियाँ</b><small>संताली विरासत का खज़ाना</small></span></li>
+        <li><span class="sp-n"><i>10</i>📲</span><span><b>ऑफ़लाइन ऐप</b><small>फ़ोन पर इंस्टॉल, बिना नेट चले</small></span></li>
+      </ul>
+    </div>
+    <div class="sp-foot">
+      <a class="sp-go" href="https://santalarsi.pages.dev/" target="_blank" rel="noopener">Santal आ़रसी खोलें →</a>
+      <button class="sp-later" type="button">बाद में</button>
+    </div>
   </div>
-  <button class="pb-x" type="button" aria-label="Close">×</button>
 </div>
 <script>
 (function(){
-  var el=document.getElementById("promo-santalarsi"),k="promo-santalarsi_closed";
-  try{var t=+localStorage.getItem(k);if(t&&Date.now()-t<7*864e5)return;}catch(e){}
-  setTimeout(function(){el.style.display="flex";},3000);
-  el.querySelector(".pb-x").onclick=function(){el.style.display="none";try{localStorage.setItem(k,Date.now());}catch(e){}};
+  /* Anti-irritation rules:
+     1) Pehli visit par kabhi nahi; doosri visit se, 20s baad.
+     2) Kul maximum 3 baar; "Kholo" dabane par hamesha ke liye band.
+     3) Do baar ke beech kam se kam 7 din; typing chal rahi ho to intezaar. */
+  var p=document.getElementById("sa-pop"),K="sa_pop_v2";if(!p)return;
+  var st;try{st=JSON.parse(localStorage.getItem(K)||"{}");}catch(e){st={};}
+  function save(){try{localStorage.setItem(K,JSON.stringify(st));}catch(e){}}
+  st.visits=(st.visits||0)+1;save();
+  if(st.done||st.visits<2||(st.shown||0)>=3||(st.last&&Date.now()-st.last<7*864e5))return;
+  var lastKey=0;document.addEventListener("keydown",function(){lastKey=Date.now();},true);
+  function busy(){var a=document.activeElement;return Date.now()-lastKey<8000||(a&&(a.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)));}
+  function esc(e){if(e.key==="Escape")close();}
+  function close(){p.classList.remove("on");document.removeEventListener("keydown",esc);}
+  function show(){
+    if(document.hidden||busy()){setTimeout(show,5000);return;}
+    st.shown=(st.shown||0)+1;st.last=Date.now();save();
+    p.classList.add("on");document.addEventListener("keydown",esc);
+  }
+  setTimeout(show,20000);
+  p.querySelector(".sp-x").onclick=close;p.querySelector(".sp-later").onclick=close;
+  p.querySelector(".sp-go").addEventListener("click",function(){st.done=1;save();close();});
+  p.addEventListener("click",function(e){if(e.target===p)close();});
 })();
 </script>
 </body>
